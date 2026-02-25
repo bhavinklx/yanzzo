@@ -4,20 +4,20 @@
         <nav class="navbar navbar-expand-lg header-nav">
             <div class="navbar-header">
                 <a id="mobile_btn" href="javascript:void(0);">
-			        <span class="bar-icon">
-			        	<span></span>
-			        	<span></span>
-			        	<span></span>
-			        </span>
+				    <span class="bar-icon">
+				    	<span></span>
+				    	<span></span>
+				    	<span></span>
+				    </span>
                 </a>
                 <a href="{{ url('/') }}" class="navbar-brand logo">
-                    <img src="{{ url('/public/img/logo.png') }}" class="img-fluid" alt="Logo" style=" max-width: 150px; ">
+                    <img src="{{ url('/image/logo.png') }}" class="img-fluid" alt="Logo">
                 </a>
             </div>
             <div class="main-menu-wrapper">
                 <div class="menu-header">
                     <a href="{{ url('/') }}" class="menu-logo">
-                        <img src="{{ url('/public/img/logo.png') }}" class="img-fluid" alt="Logo">
+                        <img src="{{ url('/image/logo.png') }}" class="img-fluid" alt="Logo">
                     </a>
                     <a id="menu_close" class="menu-close" href="javascript:void(0);"> <i class="fas fa-times"></i></a>
                 </div>
@@ -50,7 +50,7 @@
                                             @else
                                                 @php $SITE_URL = url($sub->page_slug . '/'); @endphp
                                             @endif
-                                                <li><a href="{{ $SITE_URL }}">{{ $sub->page_title }}</a></li>
+                                            <li><a href="{{ $SITE_URL }}">{{ $sub->page_title }}</a></li>
                                         @endforeach
                                     </ul>
                                 </li>
@@ -60,65 +60,47 @@
                             </li>
                         @endforeach
                     @endif
-                    @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                        <li class="login-link">
-                            <a href="javascript: void (0)" {{--class="dropdown-toggle nav-link" data-bs-toggle="dropdown"--}}><span><i class="feather-users"></i></span> {{ Session::get('customer_name') }}</a>
-                            {{--<div class="dropdown-menu dropdown-menu-end" style="right: 11%">
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="{{ url('/my-account') }}">Dashboard</a></p>
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="javascript: void (0)" onclick="return logout()">Logout</a></p>
-                            </div>--}}
-                        </li>
-                        <li class="login-link">
-                            <a href="{{ url('/my-account') }}">Dashboard</a>
-                        </li>
-                        <li class="login-link">
-                            <a href="javascript: void (0)" onclick="return logout()">Logout</a>
-                        </li>
-                    @else
-                        <li class="login-link">
-                            <a href="javascript: void (0)" onclick="return signup_popup()">Register</a>
-                        </li>
-                        <li class="login-link">
-                            <a href="javascript: void (0)" onclick="return signin_popup()">Login</a>
-                        </li>
-                        <li>
-                            <a href="{{ url('/become-partner') }}">Become Partner</a>
-                        </li>
-                    @endif
                 </ul>
             </div>
             <ul class="nav header-navbar-rht">
                 <li class="nav-item">
                     <div class="nav-link btn btn-white log-register">
-                        @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                            <a href="javascript: void (0)" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><span><i class="feather-users"></i></span> {{ Session::get('customer_name') }}</a>
-                            <div class="dropdown-menu dropdown-menu-end" style="right: 11%">
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="{{ url('/my-account') }}">Dashboard</a></p>
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="javascript: void (0)" onclick="return logout()">Logout</a></p>
-                            </div>
-                        @else
-                            <a href="javascript: void (0)" onclick="return signin_popup()"><span><i class="feather-users"></i></span>Login</a> / <a href="javascript: void (0)" onclick="return signup_popup()">Register</a>
-                        @endif
+                        <a href="login.html"><span><i class="feather-users"></i></span>Login</a> / <a href="register.html">Register</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-secondary" href="{{ url('/become-partner') }}"><span><i class="feather-check-circle"></i></span>Become Partner</a>
-                </li>
-            </ul>
-            <ul class="nav header-navbar-rht nav-mobile">
-                <li class="nav-item">
-                    <div class="nav-link btn btn-white log-register">
-                        @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                            <a href="javascript: void (0)" class="dropdown-toggle nav-link" data-bs-toggle="dropdown"><span><i class="feather-users"></i></span> {{ ucwords(substr(strtok(Session::get('customer_name'), ' '), 0, 4)) }}</a>
-                            <div class="dropdown-menu dropdown-menu-end" style="right: 11%">
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="{{ url('/my-account') }}">Dashboard</a></p>
-                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="javascript: void (0)" onclick="return logout()">Logout</a></p>
+                {{--<li class="nav-item">
+                    <div class="search-wrapper">
+                        <!-- Toggle Button -->
+                        <button class="search-toggle-btn" id="searchToggle">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Form -->
+                        <div class="search-dropdown" id="searchDropdown">
+                            <div class="search-dropdown-inner">
+                                <form action="coaches-grid.html" id="searchForm">
+                                    <div class="search-input-group">
+                                        <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <circle cx="11" cy="11" r="8"/>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                        </svg>
+                                        <input
+                                                type="text"
+                                                name="q"
+                                                class="search-input"
+                                                placeholder="Search coaches, sports, location..."
+                                                autocomplete="off"
+                                        >
+                                    </div>
+                                    <button type="submit" class="search-submit">Search</button>
+                                </form>
                             </div>
-                        @else
-                            <a href="javascript: void (0)" onclick="return signin_popup()"><span><i class="feather-users"></i></span>Login</a>
-                        @endif
+                        </div>
                     </div>
-                </li>
+                </li>--}}
             </ul>
         </nav>
     </div>

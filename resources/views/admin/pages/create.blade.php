@@ -1,226 +1,257 @@
-@extends("admin.layouts.app")
-@section("content")
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Pages</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Add Page</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="pagesFrm" action="{{ route("pages-insert") }}" method="post">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    <div class="tab-pane active" role="tabpanel">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row card-body m-t-20">
-                                                    <div class="form-group col-md-6 m-b-40 m-t-5">
-                                                        <select class="form-control p-0"  name="page_parent" id="page_parent">
-                                                            <option value="0" >Select as Parent</option>
-                                                            @foreach ($parentPages as $pages)
-                                                                <option value="{{ $pages->id }}" >{{ $pages->page_title }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <span class="bar"></span>
-                                                        <label for="page_parent">Page Parent</label>
-                                                    </div>
+@extends('admin.layouts.app')
+@section('content')
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route('dashboard') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Add Page
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                                                    <div class="form-group col-md-6 m-b-40" id="p_link">
-                                                        <input type="text" class="form-control" name="page_link" id="page_link" >
-                                                        <span class="bar"></span>
-                                                        <label for="page_link">Page Link</label>
-                                                        <span class="help-block"><small id="msg_page_link" class="text-danger"></small></span>
-                                                    </div>
+    <!-- App body starts -->
+    <form id="pagesFrm" method="post" action="{{ route('pages-insert') }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Add Page</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="roles">Page Parent</label>
+                                        <select class="form-select" id="page_parent" name="page_parent">
+                                            <option value="0">Select as Parent</option>
+                                            @foreach ($parentPages as $pages)
+                                                <option value="{{ $pages->page_id }}">{{ $pages->page_title }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-6 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_link">Page Link</label>
+                                        <input type="text" class="form-control" id="page_link" name="page_link" placeholder="Enter Page Link">
+                                        <div class="invalid-feedback" id="msg_page_link"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_title">Page Title</label>
+                                        <input type="text" class="form-control" id="page_title" name="page_title" placeholder="Enter Page Title">
+                                        <div class="invalid-feedback" id="msg_page_title"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_slug">Page Slug</label>
+                                        <input type="text" class="form-control" id="page_slug" name="page_slug" placeholder="Enter Page Slug">
+                                        <div class="invalid-feedback" id="msg_page_slug"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                    <div class="form-group col-md-6 m-b-40" id="p_title">
-                                                        <input type="text" class="form-control" name="page_title" id="page_title" >
-                                                        <span class="bar"></span>
-                                                        <label for="page_title">Page Title <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_page_title" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6 m-b-40" id="p_slug">
-                                                        <input type="text" class="form-control" id="page_slug" name="page_slug" >
-                                                        <span class="bar"></span>
-                                                        <label for="page_slug">Page Slug <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_page_slug" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="col-md-6 m-b-40">
-                                                        <label>Page Image</label><br><br>
-                                                        <input type="file" class="dropify" data-default-file="" id="page_image" name="page_image" aria-describedby="fileHelp">
-                                                        <span style="color: red;font-size: 12px;">Best size: (Width:1920px X Height:430px)</span>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group m-b-40">
-                                                            <input type="text" class="form-control" name="page_meta_title" id="page_meta_title" >
-                                                            <span class="bar"></span>
-                                                            <label for="page_meta_title">Meta Title</label>
-                                                            <span class="help-block"><small id="msg_page_meta_title" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40">
-                                                            <textarea class="form-control" name="page_meta_keyword" id="page_meta_keyword"></textarea>
-                                                            <span class="bar"></span>
-                                                            <label for="page_meta_keyword">Meta Keyword</label>
-                                                            <span class="help-block"><small id="msg_page_meta_keyword" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40">
-                                                            <textarea class="form-control" name="page_meta_desc" id="page_meta_desc"></textarea>
-                                                            <span class="bar"></span>
-                                                            <label for="page_meta_desc">Meta Description</label>
-                                                            <span class="help-block"><small id="msg_page_meta_desc" class="text-danger"></small></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-md-12 m-b-40">
-                                                        <label for="page_desc" class="m-b-20" style="position: initial;">Description</label>
-                                                        <textarea id="page_desc" name="page_desc"></textarea>
-                                                        <script type="text/javascript">
-                                                            CKEDITOR.replace( 'page_desc',
-                                                                    {
-                                                                        filebrowserBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html') }}',
-                                                                        filebrowserUploadUrl : '{{ url('assets/ckfinder/userfiles') }}',
-                                                                        filebrowserImageBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Images') }}',
-                                                                        filebrowserFlashBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Flash') }}',
-                                                                        filebrowserUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
-                                                                        filebrowserImageUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
-                                                                        filebrowserFlashUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
-                                                                        enterMode: CKEDITOR.ENTER_P,
-                                                                    }
-                                                            );
-                                                        </script>
-                                                    </div>
-
-                                                    <div class="form-group col-md-3 m-b-20">
-                                                        <select class="form-control p-0" name="page_status" id="page_status">
-                                                            <option value="1" >Active</option>
-                                                            <option value="0" >Inactive</option>
-                                                        </select><span class="bar"></span>
-                                                        <label for="page_status">Status</label>
-                                                    </div>
-
-                                                    <div class="form-group col-md-3 m-b-20">
-                                                        <select class="form-control p-0" name="page_header_status" id="page_header_status">
-                                                            <option value="1" >Active</option>
-                                                            <option value="0" >Inactive</option>
-                                                        </select><span class="bar"></span>
-                                                        <label for="page_header_status">Header Status</label>
-                                                    </div>
-
-                                                    <div class="form-group col-md-3 m-b-20">
-                                                        <select class="form-control p-0" name="page_footer_status" id="page_footer_status">
-                                                            <option value="1" >Active</option>
-                                                            <option value="0" >Inactive</option>
-                                                        </select><span class="bar"></span>
-                                                        <label for="page_footer_status">Footer Status</label>
-                                                    </div>
-
-                                                    <div class="form-group col-md-3 m-b-20">
-                                                        <select class="form-control p-0" name="page_app_status" id="page_app_status">
-                                                            <option value="1" >Active</option>
-                                                            <option value="0" >Inactive</option>
-                                                        </select><span class="bar"></span>
-                                                        <label for="page_app_status">App Status</label>
-                                                    </div>
-                                                </div>
+                            <div class="row g-3">
+                                <!-- Page Image -->
+                                <div class="col-lg-6">
+                                    <form class="dropzone" id="image-upload" method="POST" action="{{ route('pages-image-upload') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <label class="form-label">Page Image</label>
+                                        <div class="dropzone dz-clickable" id="image-upload">
+                                            <div class="dz-message">
+                                                <button type="button" class="dz-button">
+                                                    Click here to upload your photo
+                                                </button>
                                             </div>
                                         </div>
+                                    </form>
+                                    <input type="hidden" name="page_image" id="page_image">
+
+                                </div>
+
+                                <!-- Page Fields -->
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="page_meta_title">Meta Title</label>
+                                                <input type="text" class="form-control" id="page_meta_title" name="page_meta_title" placeholder="Enter Meta Title">
+                                                <div class="invalid-feedback" id="msg_page_meta_title"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="page_meta_keyword">Meta Keyword</label>
+                                                <input type="text" class="form-control" id="page_meta_keyword" name="page_meta_keyword" placeholder="Meta Keyword">
+                                                <div class="invalid-feedback" id="msg_page_meta_keyword"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-12 col-lg-6 col-sm-6 mt-sm-2">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="page_meta_desc">Meta Description</label>
+                                                <textarea type="text" class="form-control" id="page_meta_desc" name="page_meta_desc" rows="2"></textarea>
+                                                <div class="invalid-feedback" id="msg_page_meta_desc"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label for="page_desc" class="form-label">Description</label>
+                                <textarea id="page_desc" name="page_desc"></textarea>
+                                <script type="text/javascript">
+                                    CKEDITOR.replace( 'page_desc',
+                                        {
+                                            filebrowserBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html') }}',
+                                            filebrowserUploadUrl : '{{ url('assets/ckfinder/userfiles') }}',
+                                            filebrowserImageBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Images') }}',
+                                            filebrowserFlashBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Flash') }}',
+                                            filebrowserUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+                                            filebrowserImageUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+                                            filebrowserFlashUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
+                                            enterMode: CKEDITOR.ENTER_P,
+                                        }
+                                    );
+                                </script>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_status">Status</label>
+                                        <select class="form-select" id="page_status" name="page_status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_header_status">Header Status</label>
+                                        <select class="form-select" id="page_header_status" name="page_header_status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_footer_status">Footer Status</label>
+                                        <select class="form-select" id="page_footer_status" name="page_footer_status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="page_app_status">App Status</label>
+                                        <select class="form-select" id="page_app_status" name="page_app_status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('pages-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Add Page
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-            },100);
-        });
-
         $('#page_title').keyup(function(e) {
             $.ajax({
                 url: "{{ route('pages-create-slug') }}",
                 type: "GET",
-                data: {'page_title' : $(this).val()},
-                success: function (response) {
-                    $('#p_slug').addClass('focused')
+                data: {
+                    'page_title': $(this).val()
+                },
+                success: function(response) {
                     $('#page_slug').val(response.slug);
                 }
             });
         });
 
-        $("#pagesFrm").on('submit', function (e)
-        {
+        $('#pagesFrm').submit(function(e) {
             e.preventDefault();
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
                 CKEDITOR.config.allowedContent=true;
             }
-            var form    = $('#pagesFrm')[0];
-            var formData= new FormData(form);
-            $("#pagesFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
-                cache : false,
+                method: 'POST',
+                data: formData,
                 enctype: 'multipart/form-data',
-                contentType: false,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    //alert(response.redirect_url)
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/pages-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
+        });
+
+        // Dropzone image upload
+        Dropzone.autoDiscover = false;
+        let dz = new Dropzone("#image-upload", {
+            url: "{{ route('pages-image-upload') }}",
+            maxFiles: 1,
+            acceptedFiles: ".jpg,.jpeg,.png,.webp",
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            }
+        });
+
+        dz.on("success", function(file, response) {
+            document.getElementById('page_image').value = response.filename;
         });
     </script>
 @endsection

@@ -5,20 +5,16 @@ namespace App\Http\Controllers\Banner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
-use Validator;
-use Session;
-use DataTables;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BannerController extends Controller
 {
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-
-        $this->middleware('permission:banner-list')->only(['view', 'load_table']);
-        $this->middleware('permission:banner-add')->only(['create', 'insert']);
-        $this->middleware('permission:banner-edit')->only(['edit', 'update']);
-        $this->middleware('permission:banner-delete')->only(['delete']);
     }
 
     public function create()
@@ -28,16 +24,13 @@ class BannerController extends Controller
 
     public function insert(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $banner = new Banner();
         $this->saveUpdateData($banner, $request);
 
-        Session::flash('successMsg', 'Banner details added successfully');
-        return ['redirect_url' => 'banner-add'];
+        Session::flash('successMsg', 'Banner added successfully');
+        return response()->json(['redirect_url' => route('banner-list')]);
     }
 
     public function edit($id)
@@ -48,16 +41,13 @@ class BannerController extends Controller
 
     public function update(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $banner = Banner::findOrFail($request->banner_id);
         $this->saveUpdateData($banner, $request, true);
 
-        Session::flash('successMsg', 'Banner details updated successfully');
-        return ['redirect_url' => 'banner-edit', 'id' => $request->banner_id];
+        Session::flash('successMsg', 'Banner updated successfully');
+        return response()->json(['redirect_url' => route('banner-list')]);
     }
 
     public function view()
@@ -71,7 +61,7 @@ class BannerController extends Controller
         $bannerDetail = Banner::orderBy("banner_order")->get();
         return DataTables::of($bannerDetail)
             ->editColumn("checkbox", function ($banner){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$banner->banner_id.'" class="custom-checkbox check_class" />';
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $banner->banner_id . '"> </div>';
             })
             ->editColumn("title", function ($banner){
                 return $banner->banner_title;
@@ -83,21 +73,22 @@ class BannerController extends Controller
                     return;
                 }
             })
-            ->editColumn("status", function ($banner){
-                if ($banner->banner_status == '1') {
-                    return '<span id="td_status_'.$banner->banner_id.'"><a href="javascript:void(0)" onclick="change_status('.$banner->banner_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
+            ->editColumn("status", function ($banner) {
+                if ($banner->blog_status == '1') {
+                    return '<div id="td_status_' . $banner->banner_id . '"><a href="javascript:void(0)" onclick="change_status(' . $banner->banner_id . ',0)" ><span class="badge bg-success">Active</span></a></div>';
                 } else {
-                    return '<span id="td_status_'.$banner->banner_id.'"><a href="javascript:void(0)" onclick="change_status('.$banner->banner_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
+                    return '<div id="td_status_' . $banner->banner_id . '"><a href="javascript:void(0)" onclick="change_status(' . $banner->banner_id . ',1)" ><span class="badge bg-danger">Inactive</span></a></div>';
                 }
             })
             ->editColumn("action", function ($banner){
-                $action = "";
-                if (auth()->user()->can('banner-edit')) {
-                    $action.= '<a href="'.route("banner-edit", ['id' => $banner->banner_id]).'" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                }
+                $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('banner-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $banner->banner_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $banner->banner_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Blog"> <i class="ri-delete-bin-line"></i> </button>';
                 }
+                if (auth()->user()->can('banner-edit')) {
+                    $action.= '<a href="'.route("banner-edit", ['id' => $banner->banner_id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Blog"> <i class="ri-edit-box-line"></i> </a>';
+                }
+                $action.= '</div>';
                 return $action;
             })
             //for add table row class
@@ -106,6 +97,9 @@ class BannerController extends Controller
             })
             //for add table row attr
             ->setRowAttr([
+                "id" => function ($banner) {
+                    return 'row_' . $banner->banner_id;
+                },
                 'data-id' => function($banner) {
                     return $banner->banner_id;
                 }
@@ -152,8 +146,8 @@ class BannerController extends Controller
 
     private function validateData(Request $request)
     {
-        return Validator::make($request->all(), [
-            'banner_title' => 'required|string|max:255'
+        return $request->validate([
+            'banner_title'              => 'required|string|max:255'
         ]);
     }
 
@@ -166,13 +160,11 @@ class BannerController extends Controller
             $banner->banner_image       = $this->uploadFile($request->file('banner_image'));
         }
 
-        if ($request->hasFile('banner_icon')) {
-            if ($isUpdate) {
-                $this->deleteFile($banner->banner_icon);
-            }
-            $banner->banner_icon        = $this->uploadFile($request->file('banner_icon'));
+        //Dropzone async upload
+        if ($request->banner_image) {
+            $banner->banner_image       = $request->banner_image; // filename string
         }
-
+        
         if ($isUpdate) {
             $banner->updated_at         = date('Y-m-d H:i:s');
         } else {
@@ -183,14 +175,27 @@ class BannerController extends Controller
             'banner_title'              => $request->banner_title,
             'banner_text'               => $request->banner_text,
             'banner_text1'              => $request->banner_text1,
-            'banner_desc'               => $request->banner_desc,
             'banner_status'             => '1'
         ]);
 
         $banner->save();
     }
 
-    private function uploadFile($file)
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        //Call protected method
+        $filename = $this->storeImage($request->file('file'));
+
+        return response()->json([
+            'filename' => $filename
+        ]);
+    }
+
+    protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/banner'), $filename);

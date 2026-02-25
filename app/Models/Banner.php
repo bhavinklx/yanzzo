@@ -14,10 +14,8 @@ class Banner extends Model
         "banner_id",
         "banner_title",
         "banner_image",
-        "banner_icon",
         "banner_text",
         "banner_text1",
-        "banner_desc",
         "banner_order",
         "banner_status",
         "created_at"

@@ -15,8 +15,7 @@ class ContactController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:contact-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:contact-delete', ['only' => ['delete']]);
+        date_default_timezone_set('Asia/Kolkata');
     }
 
     public function view()
@@ -29,7 +28,7 @@ class ContactController extends Controller
         $contactDetail = Contact::orderBy("contact_order", "DESC")->get();
         return DataTables::of($contactDetail)
             ->editColumn("checkbox", function ($contact){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$contact->contact_id.'" class="custom-checkbox check_class" />';
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $contact->contact_id . '"> </div>';
             })
             ->editColumn("title", function ($contact){
                 return $contact->contact_name;
@@ -56,10 +55,11 @@ class ContactController extends Controller
                 return $contact->contact_ip;
             })*/
             ->editColumn("action", function ($contact){
-                $action = "";
+                $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('contact-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $contact->contact_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $contact->contact_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Contact"> <i class="ri-delete-bin-line"></i> </button>';
                 }
+                $action.= '</div>';
                 return $action;
             })
             ->setRowClass(function () {

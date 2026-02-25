@@ -5,43 +5,41 @@ namespace App\Http\Controllers\Bcategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bcategory;
-use Validator;
-use Session;
-use DataTables;
-use App\Exports\BcategotyExport;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BcategoryController extends Controller
 {
-
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $this->middleware('permission:bcategory-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:bcategory-add', ['only' => ['create', 'insert']]);
-        $this->middleware('permission:bcategory-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:bcategory-delete', ['only' => ['delete']]);
     }
 
     public function createSlug(Request $request)
     {
-        $slug = str_slug($request->bcategory_title);
+        $slug = Str::slug($request->bcategory_title);
         $allSlugs = $this->checkSlug($slug);
-        if (!$allSlugs->contains('bcategory_slug', $slug)) {
+
+        if (! $allSlugs->contains('bcategory_slug', $slug)) {
             return response()->json(['slug' => $slug]);
         }
+
         for ($i = 1; $i <= 10; $i++) {
             $newSlug = $slug . '-' . $i;
-            if (!$allSlugs->contains('bcategory_slug', $newSlug)) {
+            if (! $allSlugs->contains('bcategory_slug', $newSlug)) {
                 return response()->json(['slug' => $newSlug]);
             }
         }
-        throw new \Exception('Can not create a unique slug');
+        return response()->json(['error' => 'Unable to generate unique slug'], 422);
     }
 
     protected function checkSlug($slug)
     {
-        return Bcategory::select("bcategory_slug")->where("bcategory_slug", 'like', $slug . '%')->get();
+        return Bcategory::select('bcategory_slug')
+            ->where('bcategory_slug', 'like', $slug . '%')
+            ->get();
     }
 
     public function create()
@@ -51,16 +49,13 @@ class BcategoryController extends Controller
 
     public function insert(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $bcategory = new Bcategory();
         $this->saveUpdateData($bcategory, $request);
 
-        Session::flash('successMsg', 'Category details added successfully');
-        return ["redirect_url" => "bcategory-add"];
+        Session::flash('successMsg', 'Category added successfully');
+        return response()->json(['redirect_url' => route('bcategory-list')]);
     }
 
     public function edit($id)
@@ -71,16 +66,13 @@ class BcategoryController extends Controller
 
     public function update(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $bcategory = Bcategory::findOrFail($request->bcategory_id);
         $this->saveUpdateData($bcategory, $request, true);
 
-        Session::flash('successMsg', 'Category details updated successfully');
-        return ["redirect_url" => "bcategory-add", 'id' => $request->bcategory_id];
+        Session::flash('successMsg', 'Category updated successfully');
+        return response()->json(['redirect_url' => route('bcategory-list')]);
     }
 
     public function view()
@@ -92,8 +84,8 @@ class BcategoryController extends Controller
     {
         $bcategoryDetail = Bcategory::orderBy("bcategory_order")->get();
         return DataTables::of($bcategoryDetail)
-            ->editColumn("checkbox", function ($bcategory) {
-                return '<input type="checkbox" name="check[]" id="check[]" value="' . $bcategory->bcategory_id . '" class="custom-checkbox check_class" />';
+            ->editColumn("checkbox", function ($bcategory){
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $bcategory->bcategory_id . '"> </div>';
             })
             ->editColumn("title", function ($bcategory) {
                 return $bcategory->bcategory_title;
@@ -103,25 +95,29 @@ class BcategoryController extends Controller
             })
             ->editColumn("status", function ($bcategory) {
                 if ($bcategory->bcategory_status == '1') {
-                    return '<span id="td_status_' . $bcategory->bcategory_id . '"><a href="javascript:void(0)" onclick="change_status(' . $bcategory->bcategory_id . ', 0)" ><div class="label label-table label-success">Active</div></a></span>';
+                    return '<div id="td_status_' . $bcategory->bcategory_id . '"><a href="javascript:void(0)" onclick="change_status(' . $bcategory->bcategory_id . ',0)" ><span class="badge bg-success">Active</span></a></div>';
                 } else {
-                    return '<span id="td_status_' . $bcategory->bcategory_id . '"><a href="javascript:void(0)" onclick="change_status(' . $bcategory->bcategory_id . ', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
+                    return '<div id="td_status_' . $bcategory->bcategory_id . '"><a href="javascript:void(0)" onclick="change_status(' . $bcategory->bcategory_id . ',1)" ><span class="badge bg-danger">Inactive</span></a></div>';
                 }
             })
-            ->editColumn("action", function ($bcategory) {
-                $action = "";
-                if (auth()->user()->can('bcategory-edit')) {
-                    $action.= '<a href="' . route("bcategory-edit", ['id' => $bcategory->bcategory_id]) . '" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                }
+            ->editColumn("action", function ($bcategory){
+                $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('bcategory-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $bcategory->bcategory_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $bcategory->bcategory_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Category"> <i class="ri-delete-bin-line"></i> </button>';
                 }
+                if (auth()->user()->can('bcategory-edit')) {
+                    $action.= '<a href="'.route("bcategory-edit", ['id' => $bcategory->bcategory_id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Category"> <i class="ri-edit-box-line"></i> </a>';
+                }
+                $action.= '</div>';
                 return $action;
             })
             ->setRowClass(function () {
                 return 'row1';
             })
             ->setRowAttr([
+                "id" => function ($bcategory) {
+                    return 'row_' . $bcategory->bcategory_id;
+                },
                 "data-id" => function ($bcategory) {
                     return $bcategory->bcategory_id;
                 }
@@ -161,6 +157,11 @@ class BcategoryController extends Controller
 
     private function validateData(Request $request)
     {
+        return $request->validate([
+            "bcategory_title"           => 'required|string|max:255',
+            "bcategory_slug"            => 'required|string|max:255'
+        ]);
+
         return Validator::make($request->all(), [
             "bcategory_title" => 'required|string|max:255',
             "bcategory_slug" => 'required|string|max:255'
@@ -181,7 +182,7 @@ class BcategoryController extends Controller
             'bcategory_meta_title'      => $request->bcategory_meta_title,
             'bcategory_meta_keyword'    => $request->bcategory_meta_keyword,
             'bcategory_meta_desc'       => $request->bcategory_meta_desc,
-            'bcategory_status'          => $request->bcategory_status
+            'bcategory_status'          => '1' //$request->bcategory_status
         ]);
 
         $bcategory->save();

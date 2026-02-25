@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -18,40 +20,36 @@ class LoginController extends Controller
     | to conveniently provide its functionality to your applications.
     |
     */
-
-    use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
-
     public function showLoginForm()
     {
         return view("admin.auth.login");
     }
 
-    protected function authenticated(Request $request, $user)
+    public function login(Request $request)
     {
-        //echo '<pre>'; print_r($user) ; exit();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'User not found']);
+        }
+
+        // Manual hash check
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password does not match']);
+        }
+
+        // Login user manually
+        Auth::login($user);
         return redirect('/admin/dashboard');
     }
 
     public function logout()
     {
-        \Auth::logout();
+        Auth::logout();
         return redirect(url('/admin/login'));
     }
 }

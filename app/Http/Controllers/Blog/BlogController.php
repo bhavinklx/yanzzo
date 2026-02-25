@@ -6,40 +6,41 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bcategory;
 use App\Models\Blog;
-use Validator;
-use Session;
-use DataTables;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BlogController extends Controller
 {
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $this->middleware('permission:blog-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:blog-add', ['only' => ['create', 'insert']]);
-        $this->middleware('permission:blog-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:blog-delete', ['only' => ['delete']]);
     }
 
     public function createSlug(Request $request)
     {
-        $slug = str_slug($request->blog_title);
+        $slug = Str::slug($request->blog_title);
         $allSlugs = $this->checkSlug($slug);
-        if (! $allSlugs->contains('blog_slug', $slug)){
+
+        if (! $allSlugs->contains('blog_slug', $slug)) {
             return response()->json(['slug' => $slug]);
         }
+
         for ($i = 1; $i <= 10; $i++) {
-            $newSlug = $slug.'-'.$i;
+            $newSlug = $slug . '-' . $i;
             if (! $allSlugs->contains('blog_slug', $newSlug)) {
                 return response()->json(['slug' => $newSlug]);
             }
         }
-        throw new \Exception('Can not create a unique slug');
+        return response()->json(['error' => 'Unable to generate unique slug'], 422);
     }
 
     protected function checkSlug($slug)
     {
-        return Blog::select("blog_slug")->where("blog_slug", 'like', $slug.'%')->get();
+        return Blog::select('blog_slug')
+            ->where('blog_slug', 'like', $slug . '%')
+            ->get();
     }
 
     public function create()
@@ -50,18 +51,15 @@ class BlogController extends Controller
 
     public function insert(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $blog = new Blog();
         $this->saveUpdateData($blog, $request);
 
-        Session::flash('successMsg', 'Blog details added successfully');
-        return ["redirect_url" => "blog-add"];
+        Session::flash('successMsg', 'Blog added successfully');
+        return response()->json(['redirect_url' => route('blog-list')]);
     }
-
+    
     public function edit($id)
     {
         $blogDetail = Blog::find($id);
@@ -71,16 +69,13 @@ class BlogController extends Controller
 
     public function update(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $blog = Blog::findOrFail($request->blog_id);
         $this->saveUpdateData($blog, $request, true);
 
-        Session::flash('successMsg', 'Blog details updated successfully');
-        return ['redirect_url' => 'blog-edit', 'id' => $request->blog_id];
+        Session::flash('successMsg', 'Blog updated successfully');
+        return response()->json(['redirect_url' => route('blog-list')]);
     }
 
     public function view()
@@ -93,7 +88,7 @@ class BlogController extends Controller
         $blogDetail = Blog::orderBy("blog_order");
         return DataTables::of($blogDetail)
             ->editColumn("checkbox", function ($blog){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$blog->blog_id.'" class="custom-checkbox check_class" />';
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $blog->blog_id . '"> </div>';
             })
             ->editColumn("category", function ($blog){
                 $categoryDetail = Bcategory::get()->toArray();
@@ -116,27 +111,31 @@ class BlogController extends Controller
             ->editColumn("date", function ($blog){
                 return date('d-m-Y h:i:s A', strtotime($blog->created_at));
             })
-            ->editColumn("status", function ($blog){
+            ->editColumn("status", function ($blog) {
                 if ($blog->blog_status == '1') {
-                    return '<span id="td_status_'.$blog->blog_id.'"><a href="javascript:void(0)" onclick="change_status('.$blog->blog_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
+                    return '<div id="td_status_' . $blog->blog_id . '"><a href="javascript:void(0)" onclick="change_status(' . $blog->blog_id . ',0)" ><span class="badge bg-success">Active</span></a></div>';
                 } else {
-                    return '<span id="td_status_'.$blog->blog_id.'"><a href="javascript:void(0)" onclick="change_status('.$blog->blog_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
+                    return '<div id="td_status_' . $blog->blog_id . '"><a href="javascript:void(0)" onclick="change_status(' . $blog->blog_id . ',1)" ><span class="badge bg-danger">Inactive</span></a></div>';
                 }
             })
             ->editColumn("action", function ($blog){
-                $action = "";
-                if (auth()->user()->can('blog-edit')) {
-                    $action.= '<a href="'.route("blog-edit", ['id' => $blog->blog_id]).'" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                }
+                $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('blog-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $blog->blog_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $blog->blog_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Blog"> <i class="ri-delete-bin-line"></i> </button>';
                 }
+                if (auth()->user()->can('blog-edit')) {
+                    $action.= '<a href="'.route("blog-edit", ['id' => $blog->blog_id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Blog"> <i class="ri-edit-box-line"></i> </a>';
+                }
+                $action.= '</div>';
                 return $action;
             })
             ->setRowClass(function () {
                 return 'row1';
             })
             ->setRowAttr([
+                "id" => function ($blog) {
+                    return 'row_' . $blog->blog_id;
+                },
                 "data-id" => function ($blog) {
                     return $blog->blog_id;
                 }
@@ -182,7 +181,7 @@ class BlogController extends Controller
 
     private function validateData(Request $request)
     {
-        return Validator::make($request->all(), [
+        return $request->validate([
             "bcategory_id"              => "required|not_in:0",
             "blog_title"                => 'required|string|max:255',
             "blog_slug"                 => 'required|string|max:255',
@@ -199,6 +198,11 @@ class BlogController extends Controller
             $blog->blog_image           = $this->uploadFile($request->file('blog_image'));
         }
 
+        //Dropzone async upload
+        if ($request->blog_image) {
+            $blog->blog_image           = $request->blog_image; // filename string
+        }
+        
         if ($isUpdate) {
             $blog->updated_at           = date('Y-m-d H:i:s');
         } else {
@@ -208,7 +212,6 @@ class BlogController extends Controller
         }
 
         $blog->fill([
-            'bcategory_id'              => $request->bcategory_id,
             'blog_title'                => $request->blog_title,
             'blog_slug'                 => $request->blog_slug,
             'blog_date'                 => date('Y-m-d',strtotime($request->blog_date)),
@@ -224,7 +227,21 @@ class BlogController extends Controller
         $blog->save();
     }
 
-    private function uploadFile($file)
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        //Call protected method
+        $filename = $this->storeImage($request->file('file'));
+
+        return response()->json([
+            'filename' => $filename
+        ]);
+    }
+
+    protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/blog'), $filename);

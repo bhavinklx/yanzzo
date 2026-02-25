@@ -12,12 +12,16 @@ class Service extends Model
 
     protected $fillable = [
         "service_id",
-        "city_id",
         "service_title",
+        "service_slug",
         "service_image",
         "service_desc",
+        "service_meta_title",
+        "service_meta_keyword",
+        "service_meta_desc",
         "service_order",
         "service_status",
+        "service_type",
         "created_at"
     ];
 }

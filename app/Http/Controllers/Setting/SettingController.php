@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Setting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Setting;
-use Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class SettingController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:banner-edit', ['only' => ['edit', 'update']]);
+        date_default_timezone_set('Asia/Kolkata');
     }
 
     public function edit()
@@ -52,7 +55,8 @@ class SettingController extends Controller
                 Setting::where("setting_id", $key)->update(["setting_value" => $val]);
             }
         }
-        Session::flash('successMsg', 'Setting details updated successfully');
-        return ["redirect_url" => "/setting"];
+
+        Session::flash('successMsg', 'Setting updated successfully');
+        return response()->json(['redirect_url' => route('setting')]);
     }
 }

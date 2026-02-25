@@ -1,172 +1,232 @@
-@extends("admin.layouts.app")
+@extends('admin.layouts.app')
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Service</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Edit Service</li>
-                        </ol>
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route('dashboard') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Edit Service
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="serviceFrm" method="post" action="{{ route("service-update") }}">
-                <input type="hidden" name="service_id" value="{{ $serviceDetail->service_id }}">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <!--<h4 class="card-title m-b-40">Tab with dropdown</h4>-->
-                                <div class="tab-content p-20" id="myTabContent">
-                                    <div role="tabpanel" class="tab-pane fade show active" id="english" aria-labelledby="english-tab">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row m-t-20">
-                                                    <div class="col-md-6">
-                                                        @php
-                                                            $cityIdArray = [];
-                                                        @endphp
-                                                        @if(isset($serviceDetail->city_id) && $serviceDetail->city_id!='')
-                                                            @php
-                                                                $cityIdArray = explode(',', $serviceDetail->city_id);
-                                                            @endphp
-                                                        @endif
-                                                        <div class="form-group m-b-40 m-t-20">
-                                                            <label style="position: static !important; margin-top: 5px; margin-bottom: 0px;">Service City</label>
-                                                            <select class="select2 form-control p-0 select2-multiple" name="city_id[]" id="city_id" multiple="multiple">
-                                                                <option value="0">Select as City</option>
-                                                                @foreach($cityDetail as $city)
-                                                                    <option value="{{ $city->city_id }}" {{ ($cityIdArray && in_array($city->city_id, $cityIdArray)) ? 'selected' : '' }}>{{ $city->city_title }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                            <span class="help-block"><small id="msg_city_id" class="text-danger"></small></span>
-                                                        </div>
+    <!-- App body starts -->
+    <form id="serviceFrm" method="post" action="{{ route('service-update') }}">
+        <input type="hidden" name="service_id" value="{{ $serviceDetail->service_id }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Service</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <div class="col-xxl-6 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="service_title">Service Title</label>
+                                        <input type="text" class="form-control" id="service_title" name="service_title" placeholder="Enter Service Title" value="{{ $serviceDetail->service_title }}">
+                                        <div class="invalid-feedback" id="msg_service_title"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-6 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="service_slug">Service Slug</label>
+                                        <input type="text" class="form-control" id="service_slug" name="service_slug" placeholder="Enter Service Slug" value="{{ $serviceDetail->service_slug }}">
+                                        <div class="invalid-feedback" id="msg_service_slug"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                        <div class="form-group m-b-40" id="s_title">
-                                                            <input type="text" class="form-control" name="service_title" id="service_title" value="{{ $serviceDetail->service_title }}">
-                                                            <span class="bar"></span>
-                                                            <label for="service_title">Service Title</label>
-                                                            <span class="help-block"><small id="msg_service_title" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40">
-                                                            <select class="form-control p-0" name="service_status" id="service_status">
-                                                                <option value="1" {{ ($serviceDetail->service_status == '1') ? 'selected' : '' }}>Active</option>
-                                                                <option value="0" {{ ($serviceDetail->service_status == '0') ? 'selected' : '' }}>Inactive</option>
-                                                            </select><span class="bar"></span>
-                                                            <label for="service_status">Status</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <label>Service Image</label><br><br>
-                                                        @if($serviceDetail->service_id > 0)
-                                                            <input type="hidden" name="old_image" value="{{ $serviceDetail->service_image }}">
-                                                        @endif
-                                                        <input type="file" class="dropify" data-default-file="{{ ($serviceDetail->service_image!="" && file_exists(public_path('/uploads/service/'.$serviceDetail->service_image))) ? asset('/uploads/city/'.$serviceDetail->service_image) : "" }}" id="service_image" name="service_image" aria-describedby="fileHelp">
-                                                        <span style="color: red;font-size: 12px;">Best size: (Width:325px X Height:250px)</span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-12">
-                                                        <label for="service_desc" class="m-b-20" style="position: initial;">Description</label>
-                                                        <textarea id="service_desc" name="service_desc">{{ $serviceDetail->service_desc }}</textarea>
-                                                        <script>
-                                                            CKEDITOR.replace( 'service_desc',
-                                                                    {
-                                                                        toolbar :
-                                                                                [
-                                                                                    { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source'] },
-                                                                                    { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-                                                                                    { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-                                                                                    { name: 'insert', items: [ 'Image' ] },
-                                                                                    { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
-                                                                                    { name: 'paragraph', items : [ 'NumberedList','BulletedList' ] }
-                                                                                ],
-                                                                        height:200
-                                                                    });
-                                                        </script>
-                                                    </div>
-                                                </div>
+                            <div class="row g-3">
+                                <!-- Page Image -->
+                                <div class="col-lg-6">
+                                    <form class="dropzone" id="image-upload" method="POST" action="{{ route('service-image-upload') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <label class="form-label">Service Image</label>
+                                        <div class="dropzone dz-clickable" id="image-upload">
+                                            <div class="dz-message">
+                                                <button type="button" class="dz-button">
+                                                    Click here to upload your photo
+                                                </button>
                                             </div>
                                         </div>
+                                    </form>
+                                    <input type="hidden" name="service_image" id="service_image">
+                                </div>
+
+                                <!-- Page Fields -->
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="service_meta_title">Meta Title</label>
+                                                <input type="text" class="form-control" id="service_meta_title" name="service_meta_title" placeholder="Enter Meta Title" value="{{ $serviceDetail->service_meta_title }}">
+                                                <div class="invalid-feedback" id="msg_service_meta_title"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="service_meta_keyword">Meta Keyword</label>
+                                                <input type="text" class="form-control" id="service_meta_keyword" name="service_meta_keyword" placeholder="Meta Keyword" value="{{ $serviceDetail->service_meta_keyword }}">
+                                                <div class="invalid-feedback" id="msg_service_meta_keyword"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-12 col-lg-6 col-sm-6 mt-sm-2">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="service_meta_desc">Meta Description</label>
+                                                <textarea type="text" class="form-control" id="service_meta_desc" name="service_meta_desc" rows="2">{{ $serviceDetail->service_meta_desc }}</textarea>
+                                                <div class="invalid-feedback" id="msg_service_meta_desc"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label for="service_desc" class="form-label">Description</label>
+                                <textarea id="service_desc" name="service_desc">{{ $serviceDetail->service_desc }}</textarea>
+                                <script type="text/javascript">
+                                    CKEDITOR.replace( 'service_desc',
+                                            {
+                                                filebrowserBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html') }}',
+                                                filebrowserUploadUrl : '{{ url('assets/ckfinder/userfiles') }}',
+                                                filebrowserImageBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Images') }}',
+                                                filebrowserFlashBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Flash') }}',
+                                                filebrowserUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+                                                filebrowserImageUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+                                                filebrowserFlashUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
+                                                enterMode: CKEDITOR.ENTER_P,
+                                            }
+                                    );
+                                </script>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('service-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Update Service
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
-
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-            },100);
+        $('#service_title').keyup(function(e) {
+            $.ajax({
+                url: "{{ route('service-create-slug') }}",
+                type: "GET",
+                data: {
+                    'service_title': $(this).val()
+                },
+                success: function(response) {
+                    $('#service_slug').val(response.slug);
+                }
+            });
         });
 
-
-        $("#serviceFrm").on('submit', function (e)
-        {
+        $('#serviceFrm').submit(function(e) {
             e.preventDefault();
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
                 CKEDITOR.config.allowedContent=true;
             }
-            var form    = $('#serviceFrm')[0];
-            var formData= new FormData(form);
-            $("#serviceFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
-                cache : false,
+                method: 'POST',
+                data: formData,
                 enctype: 'multipart/form-data',
-                contentType: false,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    //alert(response.redirect_url)
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/service-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
+        });
+
+        Dropzone.autoDiscover = false;
+        let existingImage = "{{ $serviceDetail->service_image ?? '' }}";
+        let dz = new Dropzone("#image-upload", {
+            url: "{{ route('service-image-upload') }}",
+            maxFiles: 1,
+            acceptedFiles: ".jpg,.jpeg,.png,.webp",
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            init: function() {
+                let myDropzone = this;
+
+                //PRELOAD EXISTING IMAGE
+                if (existingImage) {
+                    let mockFile = {
+                        name: existingImage,
+                        size: 12345,
+                        accepted: true
+                    };
+
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit(
+                            "thumbnail",
+                            mockFile,
+                            "{{ asset('uploads/service') }}/" + existingImage
+                    );
+                    myDropzone.emit("complete", mockFile);
+
+                    myDropzone.files.push(mockFile);
+                    document.getElementById('service_image').value = existingImage;
+                }
+
+                // Upload new image
+                myDropzone.on("success", function(file, response) {
+                    document.getElementById('service_image').value = response.filename;
+                });
+
+                // Remove image
+                myDropzone.on("removedfile", function() {
+                    document.getElementById('service_image').value = "";
+                });
+            }
         });
     </script>
 @endsection

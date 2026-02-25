@@ -1,161 +1,187 @@
 @extends('admin.layouts.app')
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Testimonials</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Edit Testimonial</li>
-                        </ol>
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route('dashboard') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Add Testimonial
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="testimonialFrm" method="post" action="{{ route('testimonial-update') }}" >
-                <input type="hidden" name="testimonial_id" value="{{ $testimonialDetail->testimonial_id }}" >
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="tab-content">
+    <!-- App body starts -->
+    <form id="testimonialFrm" method="post" action="{{ route('testimonial-update') }}">
+        <input type="hidden" name="testimonial_id" value="{{ $testimonialDetail->testimonial_id }}" >
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Add Testimonial</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- Page Fields -->
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-6 col-lg-4 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="testimonial_title">Testimonial Title</label>
+                                                <input type="text" class="form-control" id="testimonial_title" name="testimonial_title" placeholder="Enter Testimonial Title" value="{{ $testimonialDetail->testimonial_title }}">
+                                                <div class="invalid-feedback" id="msg_testimonial_title"></div>
+                                            </div>
+                                        </div>
 
-                                    <div class="tab-pane active" role="tabpanel">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row card-body">
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="testimonial_designation">Testimonial Designation</label>
+                                                <input type="text" class="form-control" id="testimonial_designation" name="testimonial_designation" placeholder="Enter Testimonial Designation" value="{{ $testimonialDetail->testimonial_designation }}">
+                                                <div class="invalid-feedback" id="msg_testimonial_designation"></div>
+                                            </div>
+                                        </div>
 
-                                                    <div class="col-lg-6 m-t-20">
-                                                        <div class="form-group m-b-40" id="t_title">
-                                                            <input type="text" class="form-control" name="testimonial_title" id="testimonial_title" value="{{ $testimonialDetail->testimonial_title }}" >
-                                                            <span class="bar"></span>
-                                                            <label for="testimonial_title">Testimonial Title <span class="form-asterisk">*</span></label>
-                                                            <span class="help-block"><small id="msg_testimonial_title" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40">
-                                                            <input type="text" class="form-control" name="testimonial_designation" id="testimonial_designation" value="{{ $testimonialDetail->testimonial_designation }}" >
-                                                            <span class="bar"></span>
-                                                            <label for="testimonial_designation">Testimonial Designation</label>
-                                                            <span class="help-block"><small id="msg_testimonial_designation" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40">
-                                                            <select class="form-control p-0" name="testimonial_status" id="testimonial_status">
-                                                                <option value="1" {{ ($testimonialDetail->testimonial_status == 1) ? 'selected="selected"' : '' }}>Active</option>
-                                                                <option value="0" {{ ($testimonialDetail->testimonial_status == 0) ? 'selected="selected"' : '' }} >Inactive</option>
-                                                            </select><span class="bar"></span>
-                                                            <label for="testimonial_status">Status</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <label>Testimonial Image</label><br><br>
-                                                        @if($testimonialDetail->id!="0")
-                                                            <input type="hidden" name="old_image" value="{{ $testimonialDetail->testimonial_image }}">
-                                                        @endif
-                                                        <input type="file" class="dropify" data-default-file="{{ ($testimonialDetail->testimonial_image!="" && file_exists(public_path('/uploads/testimonial/'.$testimonialDetail->testimonial_image))) ? asset('/uploads/testimonial/'.$testimonialDetail->testimonial_image) : "" }}" id="testimonial_image" name="testimonial_image" aria-describedby="fileHelp">
-                                                    </div>
-
-                                                    <div class="form-group col-lg-12 m-b-40">
-                                                        <label for="testimonial_desc" class="m-b-20" style="position: initial;">Description</label>
-                                                        <textarea id="testimonial_desc" name="testimonial_desc">{{ $testimonialDetail->testimonial_desc }}</textarea>
-                                                        <script type="text/javascript">
-                                                            CKEDITOR.replace( 'testimonial_desc',
-                                                                    {
-                                                                        toolbar :
-                                                                                [
-                                                                                    { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source'] },
-                                                                                    { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-                                                                                    { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-                                                                                    { name: 'insert', items: [ 'Image' ] },
-                                                                                    { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
-                                                                                    { name: 'paragraph', items : [ 'NumberedList','BulletedList' ] }
-                                                                                ],
-                                                                        height:200
-                                                                    });
-                                                        </script>
-                                                    </div>
-
-                                                </div>
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="testimonial_status">Status</label>
+                                                <select class="form-select" id="testimonial_status" name="testimonial_status">
+                                                    <option value="1" {{ ($testimonialDetail->testimonial_status == "1") ? 'selected="selected"' : '' }} >Active</option>
+                                                    <option value="0" {{ ($testimonialDetail->testimonial_status == "0") ? 'selected="selected"' : '' }} >Inactive</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
+                                <!-- Page Image -->
+                                <div class="col-lg-6">
+                                    <form class="dropzone" id="image-upload" method="POST" action="{{ route('testimonial-image-upload') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <label class="form-label">Testimonial Image</label>
+                                        <div class="dropzone dz-clickable" id="image-upload">
+                                            <div class="dz-message">
+                                                <button type="button" class="dz-button">
+                                                    Click here to upload your photo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <input type="hidden" name="testimonial_image" id="testimonial_image"
+                                           value="{{ $testimonialDetail->testimonial_image ?? '' }}">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label">Description</label>
+                                <div id="fullEditor">
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('testimonial-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Add Testimonial
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
-
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-            },100);
-        });
-
-        $('#testimonialFrm').on('submit', function (e)
-        {
+        $('#testimonialFrm').submit(function(e) {
             e.preventDefault();
-            for (instance in CKEDITOR.instances) {
-                CKEDITOR.instances[instance].updateElement();
-                CKEDITOR.config.allowedContent=true;
-            }
-            var form    = $('#testimonialFrm')[0];
-            var formData= new FormData(form);
-            $("#testimonialFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                cache : false,
+                method: 'POST',
+                data: formData,
                 enctype: 'multipart/form-data',
-                contentType: false,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/testimonial-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
+        });
+
+        Dropzone.autoDiscover = false;
+        let existingImage = "{{ $testimonialDetail->testimonial_image ?? '' }}";
+        let dz = new Dropzone("#image-upload", {
+            url: "{{ route('testimonial-image-upload') }}",
+            maxFiles: 1,
+            acceptedFiles: ".jpg,.jpeg,.png,.webp",
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            init: function() {
+                let myDropzone = this;
+
+                //PRELOAD EXISTING IMAGE
+                if (existingImage) {
+                    let mockFile = {
+                        name: existingImage,
+                        size: 12345,
+                        accepted: true
+                    };
+
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit(
+                            "thumbnail",
+                            mockFile,
+                            "{{ asset('uploads/testimonial') }}/" + existingImage
+                    );
+                    myDropzone.emit("complete", mockFile);
+
+                    myDropzone.files.push(mockFile);
+                    document.getElementById('testimonial_image').value = existingImage;
+                }
+
+                // Upload new image
+                myDropzone.on("success", function(file, response) {
+                    document.getElementById('testimonial_image').value = response.filename;
+                });
+
+                // Remove image
+                myDropzone.on("removedfile", function() {
+                    document.getElementById('testimonial_image').value = "";
+                });
+            }
         });
     </script>
 @endsection

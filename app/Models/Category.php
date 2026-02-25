@@ -17,15 +17,17 @@ class Category extends Model
         "category_slug",
         "category_image",
         "category_icon",
-        "category_short_desc",
         "category_desc",
         "category_meta_title",
         "category_meta_keyword",
         "category_meta_desc",
         "category_order",
         "category_status",
-        "category_hstatus",
-        "category_status",
         "created_at"
     ];
+
+    public function subCategory()
+    {
+        return $this->hasMany(self::class, 'category_parent')->orderBy('category_order');
+    }
 }

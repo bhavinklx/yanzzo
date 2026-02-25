@@ -9,9 +9,14 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Banner;
 use App\Models\Blog;
+use App\Models\Cities;
 use App\Models\Testimonial;
 use App\Models\Pages;
+use App\Models\Membership;
+use App\Models\Lounge;
+use App\Models\Franchise;
 use App\Models\Contact;
+use App\Models\Inquiry;
 
 class DashboardController extends Controller
 {
@@ -20,10 +25,10 @@ class DashboardController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    /*public function __construct()
     {
         $this->middleware('auth');
-    }
+    }*/
     /**
      * Show the application dashboard.
      *
@@ -31,22 +36,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $totalUser = User::count();
-        $totalCustomer = Customer::count();
-        $totalBanner = Banner::count();
-        $totalBlog = Blog::count();
-        $totalTestimonial = Testimonial::count();
-        $totalPage = Pages::count();
-        $totalContact = Contact::count();
-        return view("admin.dashboard.dashboard")->with([
-            'totalUser' => $totalUser,
-            'totalCustomer' => $totalCustomer,
-            'totalBanner' => $totalBanner,
-            'totalBlog' => $totalBlog,
-            'totalTestimonial' => $totalTestimonial,
-            'totalPage' => $totalPage,
-            'totalContact' => $totalContact
-        ]);
+        return view("admin.dashboard.dashboard");
     }
 }

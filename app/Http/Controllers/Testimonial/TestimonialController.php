@@ -5,19 +5,16 @@ namespace App\Http\Controllers\Testimonial;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Testimonial;
-use Validator;
-use Session;
-use DataTables;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class TestimonialController extends Controller
 {
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $this->middleware('permission:testimonial-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:testimonial-add', ['only' => ['create', 'insert']]);
-        $this->middleware('permission:testimonial-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:testimonial-delete', ['only' => ['delete']]);
     }
 
     public function create(Request $request)
@@ -27,16 +24,13 @@ class TestimonialController extends Controller
 
     public function insert(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $testimonial = new Testimonial();
         $this->saveUpdateData($testimonial, $request);
 
-        Session::flash('successMsg', 'Testimonial details added successfully');
-        return ["redirect_url" => "testimonial-add"];
+        Session::flash('successMsg', 'Testimonial added successfully');
+        return response()->json(['redirect_url' => route('testimonial-list')]);
     }
 
     public function edit($id)
@@ -47,18 +41,15 @@ class TestimonialController extends Controller
 
     public function update(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $testimonial = Testimonial::findOrFail($request->testimonial_id);
         $this->saveUpdateData($testimonial, $request, true);
 
-        Session::flash('successMsg', 'Testimonial details updated successfully');
-        return ['redirect_url' => 'testimonial-edit', 'id' => $request->testimonial_id];
+        Session::flash('successMsg', 'Testimonial updated successfully');
+        return response()->json(['redirect_url' => route('testimonial-list')]);
     }
-
+    
     public function view()
     {
         return view("admin.testimonial.list");
@@ -69,7 +60,7 @@ class TestimonialController extends Controller
         $testimonialDetail = Testimonial::orderBy("testimonial_order");
         return DataTables::of($testimonialDetail)
             ->editColumn("checkbox", function ($testimonial){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$testimonial->testimonial_id.'" class="custom-checkbox check_class" />';
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $testimonial->testimonial_id . '"> </div>';
             })
             ->editColumn("title", function ($testimonial){
                 return $testimonial->testimonial_title;
@@ -84,21 +75,22 @@ class TestimonialController extends Controller
             ->editColumn("date", function ($testimonial){
                 return date('d-m-Y h:i A', strtotime($testimonial->created_at));
             })
-            ->editColumn("status", function ($testimonial){
+            ->editColumn("status", function ($testimonial) {
                 if ($testimonial->testimonial_status == '1') {
-                    return '<span id="td_status_'.$testimonial->testimonial_id.'"><a href="javascript:void(0)" onclick="change_status('.$testimonial->testimonial_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
+                    return '<div id="td_status_' . $testimonial->testimonial_id . '"><a href="javascript:void(0)" onclick="change_status(' . $testimonial->testimonial_id . ',0)" ><span class="badge bg-success">Active</span></a></div>';
                 } else {
-                    return '<span id="td_status_'.$testimonial->testimonial_id.'"><a href="javascript:void(0)" onclick="change_status('.$testimonial->testimonial_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
+                    return '<div id="td_status_' . $testimonial->testimonial_id . '"><a href="javascript:void(0)" onclick="change_status(' . $testimonial->testimonial_id . ',1)" ><span class="badge bg-danger">Inactive</span></a></div>';
                 }
             })
             ->editColumn("action", function ($testimonial){
-                $action = "";
-                if (auth()->user()->can('testimonial-edit')) {
-                    $action.= '<a href="'.route("testimonial-edit", ['id' => $testimonial->testimonial_id]).'" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                }
+                $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('testimonial-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $testimonial->testimonial_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $testimonial->testimonial_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Testimonial"> <i class="ri-delete-bin-line"></i> </button>';
                 }
+                if (auth()->user()->can('testimonial-edit')) {
+                    $action.= '<a href="'.route("testimonial-edit", ['id' => $testimonial->testimonial_id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Patient"> <i class="ri-edit-box-line"></i> </a>';
+                }
+                $action.= '</div>';
                 return $action;
             })
             //for add table row class
@@ -107,6 +99,9 @@ class TestimonialController extends Controller
             })
             //for add table row attr
             ->setRowAttr([
+                "id" => function ($testimonial) {
+                    return 'row_' . $testimonial->testimonial_id;
+                },
                 'data-id' => function($testimonial) {
                     return $testimonial->testimonial_id;
                 }
@@ -123,7 +118,7 @@ class TestimonialController extends Controller
         }
         if (!empty($request->all()))
         {
-            Testimonial::where('testimonial_id', $request->testimonial_id)->update(["testimonial_status" => $request->status]);
+            Testimonial::where("testimonial_id", $request->testimonial_id)->update(["testimonial_status" => $request->status]);
             if ($request->status == 1) {
                 echo 'Status Activate successfully';
             } else if ($request->status == 0){
@@ -135,8 +130,7 @@ class TestimonialController extends Controller
     public function update_order(Request $request)
     {
         //print_r($request->order); exit();
-        foreach ($request->order as $order)
-        {
+        foreach ($request->order as $order) {
             Testimonial::where("testimonial_id", $order["testimonial_id"])->update(["testimonial_order" => $order["position"]]);
         }
         echo 'Testimonial order changed successfully.';
@@ -167,6 +161,11 @@ class TestimonialController extends Controller
             $testimonial->testimonial_image = $this->uploadFile($request->file('testimonial_image'));
         }
 
+        //Dropzone async upload
+        if ($request->testimonial_image) {
+            $testimonial->testimonial_image = $request->testimonial_image; // filename string
+        }
+
         if ($isUpdate) {
             $testimonial->updated_at        = date('Y-m-d H:i:s');
         } else {
@@ -174,7 +173,7 @@ class TestimonialController extends Controller
             $testimonial->testimonial_order = (!empty($lastOrder)) ? $lastOrder->testimonial_order + 1 : 1;
             $testimonial->created_at        = date('Y-m-d H:i:s');
         }
-        
+
         $testimonial->fill([
             'testimonial_title'             => $request->testimonial_title,
             'testimonial_designation'       => $request->testimonial_designation,
@@ -185,7 +184,21 @@ class TestimonialController extends Controller
         $testimonial->save();
     }
 
-    private function uploadFile($file)
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        //Call protected method
+        $filename = $this->storeImage($request->file('file'));
+
+        return response()->json([
+            'filename' => $filename
+        ]);
+    }
+
+    protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/testimonial'), $filename);

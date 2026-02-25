@@ -1,217 +1,251 @@
-@extends("admin.layouts.app")
+@extends('admin.layouts.app')
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Blogs</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Edit Blog</li>
-                        </ol>
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route('dashboard') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Edit Blog
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="blogFrm" method="post" action="{{ route("blog-update") }}">
-                <input type="hidden" name="blog_id" value="{{ $blogDetail->blog_id }}">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <!--<h4 class="card-title m-b-40">Tab with dropdown</h4>-->
-                                <div class="tab-content p-20" id="myTabContent">
-                                    <div role="tabpanel" class="tab-pane fade show active" id="english" aria-labelledby="english-tab">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row m-t-20">
-                                                    <div class="form-group col-md-6 m-b-40 m-t-5">
-                                                        <select class="form-control p-0" name="bcategory_id" id="bcategory_id">
-                                                            <option value="0" >Select as Category</option>
-                                                            @foreach($bcategoryDetail as $bcategory)
-                                                                <option value="{{ $bcategory->bcategory_id }}" {{ ($bcategory->bcategory_id == $blogDetail->bcategory_id) ? 'selected="selected"' : '' }} >{{ $bcategory->bcategory_title }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <span class="bar"></span>
-                                                        <label>Blog Category <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_bcategory_id" class="text-danger"></small></span>
-                                                    </div>
+    <!-- App body starts -->
+    <form id="blogFrm" method="post" action="{{ route('blog-update') }}">
+        <input type="hidden" name="blog_id" value="{{ $blogDetail->blog_id }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Blog</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="roles">Category</label>
+                                        <select class="form-select" id="bcategory_id" name="bcategory_id">
+                                            <option value="0">Select as Parent</option>
+                                            @foreach($bcategoryDetail as $bcategory)
+                                                <option value="{{ $bcategory->bcategory_id }}" {{ ($bcategory->bcategory_id == $blogDetail->bcategory_id) ? 'selected="selected"' : '' }}>{{ $bcategory->bcategory_title }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback" id="msg_bcategory_id"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-6 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="blog_date">Blog Date</label>
+                                        <input type="text" class="form-control" id="blog_date" name="blog_date" placeholder="Select Blog Date" value="{{ date('d-m-Y', strtotime($blogDetail->blog_date)) }}">
+                                        <div class="invalid-feedback" id="msg_blog_date"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="blog_title">Blog Title</label>
+                                        <input type="text" class="form-control" id="blog_title" name="blog_title" placeholder="Enter Blog Title" value="{{ $blogDetail->blog_title }}">
+                                        <div class="invalid-feedback" id="msg_blog_title"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="blog_slug">Blog Slug</label>
+                                        <input type="text" class="form-control" id="blog_slug" name="blog_slug" placeholder="Enter Blog Slug" value="{{ $blogDetail->blog_slug }}">
+                                        <div class="invalid-feedback" id="msg_blog_slug"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                    <div class="form-group col-md-6 m-b-40 dob">
-                                                        <input type="text" class="form-control mdate" id="blog_date" name="blog_date" value="{{ date('d-m-Y', strtotime($blogDetail->blog_date)) }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="blog_date">Blog Date <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_blog_date" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6 m-b-40" id="b_title">
-                                                        <input type="text" class="form-control" name="blog_title" id="blog_title" value="{{ $blogDetail->blog_title }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="blog_title">Blog Title <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_blog_title" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6 m-b-40" id="b_slug">
-                                                        <input type="text" class="form-control" id="blog_slug" name="blog_slug" value="{{ $blogDetail->blog_slug }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="blog_slug">Blog Slug <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_blog_slug" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6 m-b-40">
-                                                        <textarea class="form-control" name="blog_short_desc" id="blog_short_desc">{{ $blogDetail->blog_short_desc }}</textarea>
-                                                        <span class="bar"></span>
-                                                        <label for="blog_short_desc">Short Description</label>
-                                                        <span class="help-block"><small id="msg_blog_short_desc" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6 m-b-40 m-t-20">
-                                                        <input class="form-control" name="blog_meta_title" id="blog_meta_title" value="{{ $blogDetail->blog_meta_title }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="blog_meta_title">Meta Title</label>
-                                                        <span class="help-block"><small id="msg_blog_meta_title" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <label>Blog Image</label><br><br>
-                                                        @if($blogDetail->blog_id > 0)
-                                                            <input type="hidden" name="old_image" value="{{ $blogDetail->blog_image }}">
-                                                        @endif
-                                                        <input type="file" class="dropify" data-default-file="{{ ($blogDetail->blog_image!="" && file_exists(public_path('/uploads/blog/'.$blogDetail->blog_image))) ? asset('/uploads/blog/'.$blogDetail->blog_image) : "" }}" id="blog_image" name="blog_image" aria-describedby="fileHelp">
-                                                        <span style="color: red;font-size: 12px;">Best size: (Width:1920px X Height:720px)</span>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group col-md-12 m-b-40">
-                                                            <textarea class="form-control" name="blog_meta_keyword" id="blog_meta_keyword">{{ $blogDetail->blog_meta_keyword }}</textarea>
-                                                            <span class="bar"></span>
-                                                            <label for="blog_meta_keyword">Meta Keyword</label>
-                                                            <span class="help-block"><small id="msg_blog_meta_keyword" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group col-md-12 m-b-40">
-                                                            <textarea class="form-control" name="blog_meta_desc" id="blog_meta_desc">{{ $blogDetail->blog_meta_desc }}</textarea>
-                                                            <span class="bar"></span>
-                                                            <label for="blog_meta_desc">Meta Description</label>
-                                                            <span class="help-block"><small id="msg_blog_meta_desc" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group col-md-12 m-b-40">
-                                                            <input class="form-control" name="blog_canonical" id="blog_canonical" value="{{ $blogDetail->blog_canonical }}">
-                                                            <span class="bar"></span>
-                                                            <label for="blog_canonical">Canonical Url</label>
-                                                            <span class="help-block"><small id="msg_blog_canonical" class="text-danger"></small></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-md-12">
-                                                        <label for="blog_desc" class="m-b-20" style="position: initial;">Description</label>
-                                                        <textarea id="blog_desc" name="blog_desc">{!! $blogDetail->blog_desc !!}</textarea>
-                                                        <script type="text/javascript">
-                                                            CKEDITOR.replace( 'blog_desc',
-                                                                {
-                                                                    filebrowserBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html') }}',
-                                                                    filebrowserUploadUrl : '{{ url('assets/ckfinder/userfiles') }}',
-                                                                    filebrowserImageBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Images') }}',
-                                                                    filebrowserFlashBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Flash') }}',
-                                                                    filebrowserUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
-                                                                    filebrowserImageUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
-                                                                    filebrowserFlashUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
-                                                                    enterMode: CKEDITOR.ENTER_P,
-                                                                }
-                                                            );
-                                                        </script>
-                                                    </div>
-                                                </div>
+                            <div class="row g-3">
+                                <!-- Page Image -->
+                                <div class="col-lg-6">
+                                    <form class="dropzone" id="image-upload" method="POST" action="{{ route('blog-image-upload') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <label class="form-label">Blog Image</label>
+                                        <div class="dropzone dz-clickable" id="image-upload">
+                                            <div class="dz-message">
+                                                <button type="button" class="dz-button">
+                                                    Click here to upload your photo
+                                                </button>
                                             </div>
                                         </div>
+                                    </form>
+                                    <input type="hidden" name="blog_image" id="blog_image">
+                                </div>
+
+                                <!-- Page Fields -->
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="blog_meta_title">Meta Title</label>
+                                                <input type="text" class="form-control" id="blog_meta_title" name="blog_meta_title" placeholder="Enter Meta Title" value="{{ $blogDetail->blog_meta_title }}">
+                                                <div class="invalid-feedback" id="msg_blog_meta_title"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-6 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="blog_meta_keyword">Meta Keyword</label>
+                                                <input type="text" class="form-control" id="blog_meta_keyword" name="blog_meta_keyword" placeholder="Meta Keyword" value="{{ $blogDetail->blog_meta_keyword }}">
+                                                <div class="invalid-feedback" id="msg_blog_meta_keyword"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xxl-12 col-lg-6 col-sm-6 mt-sm-2">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="blog_meta_desc">Meta Description</label>
+                                                <textarea type="text" class="form-control" id="blog_meta_desc" name="blog_meta_desc" rows="2">{{ $blogDetail->blog_meta_desc }}</textarea>
+                                                <div class="invalid-feedback" id="msg_blog_meta_desc"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label for="blog_desc" class="form-label">Description</label>
+                                <textarea id="blog_desc" name="blog_desc">{{ $blogDetail->blog_desc }}</textarea>
+                                <script type="text/javascript">
+                                    CKEDITOR.replace( 'blog_desc',
+                                            {
+                                                filebrowserBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html') }}',
+                                                filebrowserUploadUrl : '{{ url('assets/ckfinder/userfiles') }}',
+                                                filebrowserImageBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Images') }}',
+                                                filebrowserFlashBrowseUrl : '{{ url('assets/ckfinder/ckfinder.html?Type=Flash') }}',
+                                                filebrowserUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+                                                filebrowserImageUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+                                                filebrowserFlashUploadUrl : '{{ url('assets/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
+                                                enterMode: CKEDITOR.ENTER_P,
+                                            }
+                                    );
+                                </script>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('blog-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Update Blog
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
-
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-            },100);
-        });
-
         $('#blog_title').keyup(function(e) {
             $.ajax({
                 url: "{{ route('blog-create-slug') }}",
                 type: "GET",
-                data: {'blog_title' : $(this).val()},
-                success: function (response) {
-                    $('#b_slug').addClass('focused')
+                data: {
+                    'blog_title': $(this).val()
+                },
+                success: function(response) {
                     $('#blog_slug').val(response.slug);
                 }
             });
         });
 
-        $("#blogFrm").on('submit', function (e)
-        {
+        $('#blogFrm').submit(function(e) {
             e.preventDefault();
             for (instance in CKEDITOR.instances) {
                 CKEDITOR.instances[instance].updateElement();
                 CKEDITOR.config.allowedContent=true;
             }
-            var form    = $('#blogFrm')[0];
-            var formData= new FormData(form);
-            $("#blogFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
-            $(".text-danger").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
-                cache : false,
+                method: 'POST',
+                data: formData,
                 enctype: 'multipart/form-data',
-                contentType: false,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    //alert(response.redirect_url)
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/blog-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
+        });
+
+        Dropzone.autoDiscover = false;
+        let existingImage = "{{ $blogDetail->blog_image ?? '' }}";
+        let dz = new Dropzone("#image-upload", {
+            url: "{{ route('blog-image-upload') }}",
+            maxFiles: 1,
+            acceptedFiles: ".jpg,.jpeg,.png,.webp",
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            init: function() {
+                let myDropzone = this;
+
+                //PRELOAD EXISTING IMAGE
+                if (existingImage) {
+                    let mockFile = {
+                        name: existingImage,
+                        size: 12345,
+                        accepted: true
+                    };
+
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit(
+                            "thumbnail",
+                            mockFile,
+                            "{{ asset('uploads/blog') }}/" + existingImage
+                    );
+                    myDropzone.emit("complete", mockFile);
+
+                    myDropzone.files.push(mockFile);
+                    document.getElementById('blog_image').value = existingImage;
+                }
+
+                // Upload new image
+                myDropzone.on("success", function(file, response) {
+                    document.getElementById('blog_image').value = response.filename;
+                });
+
+                // Remove image
+                myDropzone.on("removedfile", function() {
+                    document.getElementById('blog_image').value = "";
+                });
+            }
         });
     </script>
 @endsection

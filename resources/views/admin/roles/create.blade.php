@@ -1,118 +1,125 @@
 @extends("admin.layouts.app")
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Role</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Add Role</li>
-                        </ol>
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route("dashboard") }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Add Role
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
+    <!-- App body starts -->
+    <form id="roleFrm" method="post" action="{{ route('role-insert') }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Add Role</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label" for="name">Role Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter Role Name">
+                                <div class="invalid-feedback" id="msg_name"></div>
+                            </div>
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="roleFrm" method="post" action="{{ route('role-insert') }}" >
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="tab-content">
-
-                                    <div class="tab-pane active" role="tabpanel">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row card-body m-t-20">
-
-                                                    <div class="form-group col-md-12 m-b-40" id="r_title">
-                                                        <input type="text" class="form-control" name="name" id="name" >
-                                                        <span class="bar"></span>
-                                                        <label for="name">Role Title</label>
-                                                        <span class="help-block"><small id="msg_name" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="row form-group col-md-12 m-b-40" id="r_permission">
-                                                        <label for="entry_papplication_id" class="p-l-10" style="top: -20px; font-weight: 500">Permission</label>
-                                                        @if ($permission && count($permission) > 0)
-                                                            @foreach ($permission as $key => $value)
-                                                                <div class="custom-control custom-checkbox col-lg-2 p-10 m-b-15 {{ ($key < 6) ? 'm-t-10' : '' }}">
-                                                                    <input type="checkbox" class="custom-control-input" id="permission{{ $value->id }}" name="permission[]" value="{{ $value->id }}" />
-                                                                    <label class="custom-control-label p-l-20" for="permission{{ $value->id }}">{{ $value->name }}</label>
-                                                                </div>
-                                                            @endforeach
-                                                        @endif
-                                                        <div class="col-md-12">
-                                                            <span class="help-block"><small id="msg_permission" class="text-danger"></small></span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <label class="form-label" for="name">Permission</label>
+                                <div class="row ps-lg-4">
+                                    <div class="col-lg-2 form-check ps-lg-4" style="margin: 3px 0 0 0; display: inline-block;">
+                                        <input class="form-check-input" type="checkbox" id="checkall" name="checkall">
+                                        <label class="form-check-label" for="checkall">Check All</label>
                                     </div>
-
+                                </div>
+                                <div class="col-12">
+                                    <hr class="my-2">
+                                </div>
+                                <div class="row ps-lg-4">
+                                    @if ($permission && count($permission) > 0)
+                                        @foreach ($permission as $key => $value)
+                                            <div class="col-lg-2 form-check" style="margin: 3px 0 0 0; display: inline-block;">
+                                                <input class="form-check-input check_class" type="checkbox" id="permission{{ $value->id }}" name="permission[]" value="{{ $value->name }}">
+                                                <label class="form-check-label" for="permission{{ $value->id }}">{{ $value->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                    <div class="invalid-feedback ps-lg-0" id="msg_permission"></div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route("role-list") }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Add Role
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- Row ends -->
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
 
 @section('page-js')
     <script type="text/javascript">
-        $('#roleFrm').on('submit', function (e)
-        {
+        $(document).ready(function(){
+            $("#checkall").click(function(){
+                if(this.checked){
+                    $(".check_class").attr("checked",true);
+                    $(".check_class").parent().addClass("checked");
+                }else{
+                    $(".check_class").attr("checked",false);
+                    $(".check_class").parent().removeClass("checked");
+                }
+            });
+            $("#status_msg").hide();
+            $("#alert_msg").hide();
+        });
+
+        $('#roleFrm').submit(function(e) {
             e.preventDefault();
-            var form    = $('#roleFrm')[0];
-            var formData= new FormData(form);
-            $("#roleFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                cache : false,
-                enctype: 'multipart/form-data',
-                contentType: false,
+                method: 'POST',
+                data: formData,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]).css('display', 'block');
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/role-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
         });

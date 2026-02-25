@@ -1,155 +1,122 @@
 @extends("admin.layouts.app")
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route("dashboard") }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Edit Administrator
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Administrators</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Add Administrator</li>
-                        </ol>
-
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-
-            <!-- Start Page Content -->
-            <form id="userFrm" class="floating-labels" method="post" action="{{ route("user-update") }}">
-                <input type="hidden" id="user_id" name="user_id" value="{{ $userDetail->id }}">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-
-                                <div class="tab-content p-20" id="myTabContent">
-                                    <div role="tabpanel" class="tab-pane fade show active" aria-labelledby="english-tab">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row">
-
-                                                    <div class="col-md-6">
-                                                        <h4 class="card-title m-b-30">Basic Details</h4>
-                                                        <div class="form-group m-b-40" id="a_name">
-                                                            <input type="text" class="form-control" name="name" id="name" value="{{ $userDetail->name }}">
-                                                            <span class="bar"></span>
-                                                            <label for="name">Name</label>
-                                                            <span class="help-block"><small id="msg_name" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40" id="a_email">
-                                                            <input type="text" class="form-control" name="email" id="email" value="{{ $userDetail->email }}">
-                                                            <span class="bar"></span>
-                                                            <label for="email">Email</label>
-                                                            <span class="help-block"><small id="msg_email" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40" id="a_mobile">
-                                                            <input type="text" class="form-control isNumber" name="phone" id="phone" value="{{ $userDetail->phone }}">
-                                                            <span class="bar"></span>
-                                                            <label for="phone">Mobile</label>
-                                                            <span class="help-block"><small id="msg_phone" class="text-danger"></small></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6 m-t-15">
-                                                        <div class="row m-b-40">
-                                                            <div class="col-md-12">
-                                                                <label>Profile Image</label><br><br>
-                                                                <input type="file" class="dropify" id="admin_image" data-default-file="" name="admin_image" aria-describedby="fileHelp">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-md-6" id="a_country">
-                                                        <select class="select2 form-control" id="roles" name="roles[]">
-                                                            <option value="0" >Select as Role</option>
-                                                            @if (is_array($roleDetail) && count($roleDetail) > 0)
-                                                                @foreach ($roleDetail as $role)
-                                                                    <option value="{{ $role }}" {{ (@in_array($role, $userRole)) ? 'selected="selected"' : '' }}>{{ $role }}</option>
-                                                                @endforeach
-                                                            @endif
-                                                        </select>
-                                                        {{--{!! Form::select('roles[]', $roleDetail, [], array('class' => 'select2 form-control','multiple')) !!}--}}
-                                                        <span class="bar"></span>
-                                                        <label for="admin_role">Role Type</label>
-                                                        <span class="help-block"><small id="msg_admin_role" class="text-danger"></small></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+    <!-- App body starts -->
+    <!-- Start Page Content -->
+    <form id="userFrm" method="post" action="{{ route("user-update") }}">
+        <input type="hidden" id="user_id" name="user_id" value="{{ $userDetail->id }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Administrator</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <div class="col-xxl-3 col-lg-6 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="name">Administrator Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="{{ $userDetail->name }}" placeholder="Enter Administrator Name">
+                                        <div class="invalid-feedback" id="msg_name"></div>
                                     </div>
                                 </div>
-
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="email">Administrator Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ $userDetail->email }}" placeholder="Enter email address">
+                                        <div class="invalid-feedback" id="msg_email"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="phone">Administrator Phone</label>
+                                        <input type="text" class="form-control" id="phone" name="phone" value="{{ $userDetail->phone }}" placeholder="Enter phone number" maxlength="10">
+                                        <div class="invalid-feedback" id="msg_phone"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="roles">Role Type</label>
+                                        <select class="form-select" id="roles" name="roles[]">
+                                            <option value="0" >Select as Role</option>
+                                            @if (is_array($roleDetail) && count($roleDetail) > 0)
+                                                @foreach ($roleDetail as $role)
+                                                    <option value="{{ $role }}" {{ (@in_array($role, $userRole)) ? 'selected="selected"' : '' }}>{{ $role }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route("user-list") }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Update Administrator
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            <!-- Row ends -->
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
 
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-
-            },100);
-        });
-
-        $('#userFrm').on('submit', function(e)
-        {
+        $('#userFrm').submit(function(e) {
             e.preventDefault();
-            var form    = $('#userFrm')[0];
-            var formData= new FormData(form);
-            $("#userFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
                 url: $(this).attr('action'),
-                cache : false,
-                enctype: 'multipart/form-data',
-                contentType: false,
+                method: 'POST',
+                data: formData,
                 processData: false,
-                data : formData,
-                success: function(response){
-                    //alert(response.redirect_url)
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/user-list') }}";
-                    }
-                },
+                    $('#loading-wrapper').fadeOut(200);
+                }
             });
         });
     </script>

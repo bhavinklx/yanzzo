@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\User;
 
+namespace App\Http\Controllers\User;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use DB;
-use Hash;
-use Validator;
-use Auth;
-use Session;
-use DataTables;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class RoleController extends Controller
 {
@@ -23,10 +24,6 @@ class RoleController extends Controller
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $this->middleware('permission:role-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:role-add', ['only' => ['create', 'store']]);
-        $this->middleware('permission:role-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -36,9 +33,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permission = Permission::get();
-        //echo '<pre>'; print_r($permissionDetail); exit();
-        return view("admin.roles.create", compact('permission'));
+        $permission = Permission::all();
+        return view('admin.roles.create', compact('permission'));
     }
 
     /**
@@ -47,18 +43,23 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function insert(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+        $request->validate([
+            'name'              => 'required|unique:roles,name',
+            'permission'        => 'required|array',
         ]);
 
-        $role = Role::create(['name' => $request->input('name'), 'created_at' => date("Y-m-d H:i:s")]);
-        $role->syncPermissions($request->input('permission'));
+        $role = Role::create([
+            'name'              => $request->name,
+            'created_at'        => Carbon::now(),
+        ]);
+        $role->syncPermissions($request->permission);
 
-        Session::flash('successMsg', 'Role details added successfully');
-        return ["redirect_url" => "role-add"];
+        Session::flash('successMsg', 'Role added successfully');
+
+        return response()->json(['redirect_url' => route('role-list')]);
     }
 
     /**
@@ -69,12 +70,13 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::find($id);
-        $permission = Permission::get();
-        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id", $id)
-            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-            ->all();
-        return view("admin.roles.edit", compact('role', 'permission', 'rolePermissions'));
+        $role = Role::findOrFail($id);
+        $permission = Permission::all();
+        $rolePermissions = DB::table('role_has_permissions')
+            ->where('role_id', $id)
+            ->pluck('permission_id')
+            ->toArray();
+        return view('admin.roles.edit', compact('role', 'permission', 'rolePermissions'));
     }
 
     /**
@@ -86,19 +88,17 @@ class RoleController extends Controller
      */
     public function update(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required',
+        $request->validate([
+            'name'              => 'required',
+            'permission'        => 'required|array',
         ]);
 
-        $role       = Role::find($request->role_id);
-        $role->name = $request->input('name');
-        $role->save();
+        $role                   = Role::findOrFail($request->role_id);
+        $role->update(['name' => $request->name]);
+        $role->syncPermissions($request->permission);
 
-        $role->syncPermissions($request->input('permission'));
-
-        Session::flash('successMsg', 'Role details updated successfully');
-        return ["redirect_url" => "bcategory-add"];
+        Session::flash('successMsg', 'Role updated successfully');
+        return response()->json(['redirect_url' => route('role-list')]);
     }
 
     /**
@@ -108,11 +108,7 @@ class RoleController extends Controller
      */
     public function view(Request $request)
     {
-        /*$roles = Role::orderBy('id', 'DESC')->paginate(5);
-        return view('admin.roles.index', compact('roles'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);*/
-        //$roleDetail = Role::get();
-        return view("admin.roles.list");
+        return view('admin.roles.list');
     }
 
     public function load_table(Request $request)
@@ -120,7 +116,7 @@ class RoleController extends Controller
         $roleDetail = Role::get();
         return DataTables::of($roleDetail)
             ->editColumn("checkbox", function ($role){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$role->id.'" class="custom-checkbox check_class" />';
+                return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="'.$role->id.'"> </div>';
             })
             ->editColumn("title", function ($role){
                 return $role->name;
@@ -129,13 +125,14 @@ class RoleController extends Controller
                 return date('d-m-Y h:i:s A', strtotime($role->created_at));
             })
             ->editColumn("action", function ($role){
-                $action = "";
-                if (Auth::user()->hasPermissionTo('role-edit')) {
-                    $action.= '<a href="'.route("role-edit", ['id' => $role->id]).'" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
+                $action = '<div class="d-inline-flex gap-1">';
+                if (auth()->user()->hasPermissionTo('user-delete', 'web')) {
+                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $role->id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Role"> <i class="ri-delete-bin-line"></i> </button>';
                 }
-                if (Auth::user()->hasPermissionTo('role-delete')) {
-                    $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $role->id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
+                if (auth()->user()->hasPermissionTo('user-edit', 'web')) {
+                    $action.= '<a href="'.route("role-edit", ['id' => $role->id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Role"> <i class="ri-edit-box-line"></i> </a>';
                 }
+                $action.= '</div>';
                 return $action;
             })
             //for add table row class
@@ -144,18 +141,21 @@ class RoleController extends Controller
             })
             //for add table row attr
             ->setRowAttr([
+                "id" => function ($role) {
+                    return 'row_' . $role->id;
+                },
                 'data-id' => function($role) {
                     return $role->id;
                 }
             ])
-            ->rawColumns(["checkbox", "image", "status", "action"])
+            ->rawColumns(["checkbox", "status", "action"])
             ->make(true);
     }
 
     public function delete(Request $request)
     {
-        Role::where('id', $request->id)
-            ->delete();
+        Role::findOrFail($request->role_id)->delete();
+        return response()->json(['status' => true]);
     }
 
     public function access_denied()

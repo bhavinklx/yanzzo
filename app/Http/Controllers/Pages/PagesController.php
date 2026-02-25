@@ -5,60 +5,58 @@ namespace App\Http\Controllers\Pages;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pages;
-use Validator;
-use Session;
-use DataTables;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class PagesController extends Controller
 {
     function __construct()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $this->middleware('permission:pages-list', ['only' => ['view', 'load_table']]);
-        $this->middleware('permission:pages-add', ['only' => ['create', 'insert']]);
-        $this->middleware('permission:pages-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:pages-delete', ['only' => ['delete']]);
     }
 
     public function createSlug(Request $request)
     {
-        $slug = str_slug($request->page_title);
+        $slug = Str::slug($request->page_title);
         $allSlugs = $this->checkSlug($slug);
-        if (! $allSlugs->contains('page_slug', $slug)){
+
+        if (! $allSlugs->contains('page_slug', $slug)) {
             return response()->json(['slug' => $slug]);
         }
+
         for ($i = 1; $i <= 10; $i++) {
-            $newSlug = $slug.'-'.$i;
+            $newSlug = $slug . '-' . $i;
             if (! $allSlugs->contains('page_slug', $newSlug)) {
                 return response()->json(['slug' => $newSlug]);
             }
         }
-        throw new \Exception('Can not create a unique slug');
+        return response()->json(['error' => 'Unable to generate unique slug'], 422);
     }
 
     protected function checkSlug($slug)
     {
-        return Pages::select("page_slug")->where("page_slug", 'like', $slug.'%')->get();
+        return Pages::select('page_slug')
+            ->where('page_slug', 'like', $slug . '%')
+            ->get();
     }
 
     public function create()
     {
         $parentPages = Pages::where(["page_status" => "1", "page_parent"=>"0"])->orderBy('page_order')->get();
-        return view("admin.pages.create", compact('parentPages'));
+        return view('admin.pages.create', compact('parentPages'));
     }
 
     public function insert(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $pages = new Pages();
         $this->saveUpdateData($pages, $request);
 
-        Session::flash('successMsg', 'Pages details added successfully');
-        return ["redirect_url" => "pages-add"];
+        Session::flash('successMsg', 'Page added successfully');
+        return response()->json(['redirect_url' => route('pages-list')]);
     }
 
     public function edit($id)
@@ -71,82 +69,19 @@ class PagesController extends Controller
 
     public function update(Request $request)
     {
-        $validator = $this->validateData($request);
-        if ($validator->fails()) {
-            return ['status' => 'validation-error', 'data' => $validator->errors()];
-        }
+        $this->validateData($request);
 
         $pages = Pages::findOrFail($request->page_id);
         $this->saveUpdateData($pages, $request, true);
 
-        Session::flash('successMsg', 'Pages details updated successfully');
-        return ['redirect_url' => 'pages-edit', 'id' => $request->page_id];
+        Session::flash('successMsg', 'Page updated successfully');
+        return response()->json(['redirect_url' => route('pages-list')]);
     }
 
     public function view()
     {
         $pagesDetail = Pages::with('subPages')->where('page_parent', '0')->orderBy('page_order')->get();
         return view("admin.pages.list")->with('pagesDetail',$pagesDetail);
-        //return view("admin.pages.list");
-    }
-
-    public function load_table(Request $request)
-    {
-        $pagesDetail = Pages::with('children');
-        //return $pagesDetail;
-        return DataTables::of($pagesDetail)
-            ->editColumn("checkbox", function ($pages){
-                return '<input type="checkbox" name="check[]" id="check[]" value="'.$pages->page_id.'" class="custom-checkbox check_class" />';
-            })
-            ->editColumn("title", function ($pages){
-                //print_r($parent); exit();
-                return $pages->page_title;
-                /*if(count($pages->children) > 0) { foreach ($pages->children as $subpages) {
-                    return $subpages->page_title;
-                } }*/
-            })
-            ->editColumn("date", function ($pages){
-                return date('d-m-Y h:i:s A', strtotime($pages->created_at));
-            })
-            ->editColumn("status", function ($pages){
-                if ($pages->page_status == '1') {
-                    return '<span id="td_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_status('.$pages->page_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
-                } else {
-                    return '<span id="td_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_status('.$pages->page_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
-                }
-            })
-            ->editColumn("header_status", function ($pages){
-                if ($pages->page_header_status == '1') {
-                    return '<span id="td_header_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_header_status('.$pages->page_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
-                } else {
-                    return '<span id="td_header_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_header_status('.$pages->page_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
-                }
-            })
-            ->editColumn("footer_status", function ($pages){
-                if ($pages->page_footer_status == '1') {
-                    return '<span id="td_footer_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_footer_status('.$pages->page_id.', 0)" ><div class="label label-table label-success">Active</div></a></span>';
-                } else {
-                    return '<span id="td_footer_status_'.$pages->page_id.'"><a href="javascript:void(0)" onclick="change_footer_status('.$pages->page_id.', 1)" ><div class="label label-table label-danger">Inactive</div></a></span>';
-                }
-            })
-            ->editColumn("action", function ($pages){
-                $action = "";
-                if ($pages->page_id == "1") {
-                    if (auth()->user()->can('pages-edit')) {
-                        $action.= '<a href="'.route("edit-pages", ['id' => $pages->page_id]).'" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                    }
-                } else {
-                    if (auth()->user()->can('pages-edit')) {
-                        $action.= '<a href="'.route("edit-pages", ['id' => $pages->page_id]).'" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>';
-                    }
-                    if (auth()->user()->can('pages-delete')) {
-                        $action.= '<a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal(' . $pages->page_id . ');" data-placement="top" title="Delete"> <i class="fa fa-trash text-danger"></i> </a>';
-                    }
-                }
-                return $action;
-            })
-            ->rawColumns(["checkbox", "status", "header_status", "footer_status", "action"])
-            ->make(true);
     }
 
     public function change_status(Request $request)
@@ -220,7 +155,7 @@ class PagesController extends Controller
 
     private function validateData(Request $request)
     {
-        return Validator::make($request->all(), [
+        return $request->validate([
             "page_title"                => 'required|string|max:255',
             "page_slug"                 => 'required|string|max:255'
         ]);
@@ -229,18 +164,23 @@ class PagesController extends Controller
     private function saveUpdateData(Pages $pages, Request $request, $isUpdate = false)
     {
         if ($request->hasFile('page_image')) {
-            if ($isUpdate) {
+            if ($isUpdate && $pages->page_image) {
                 $this->deleteFile($pages->page_image);
             }
-            $pages->page_image          = $this->uploadFile($request->file('page_image'));
+            $pages->page_image          = $this->uploadImage($request->file('page_image'));
         }
 
+        //Dropzone async upload
+        if ($request->page_image) {
+            $pages->page_image          = $request->page_image; // filename string
+        }
+   
         if ($isUpdate) {
-            $pages->updated_at          = date('Y-m-d H:i:s');
+            $pages->updated_at          = now();
         } else {
             $lastOrder                  = Pages::orderBy("page_order", "DESC")->first();
-            $pages->page_order          = (!empty($lastOrder)) ? $lastOrder->page_order + 1 : 1;
-            $pages->created_at          = date('Y-m-d H:i:s');
+            $pages->page_order          = $lastOrder ? $lastOrder->page_order + 1 : 1;
+            $pages->created_at          = now();
         }
         
         $pages->fill([
@@ -260,7 +200,21 @@ class PagesController extends Controller
         $pages->save();
     }
 
-    private function uploadFile($file)
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        //Call protected method
+        $filename = $this->storeImage($request->file('file'));
+
+        return response()->json([
+            'filename' => $filename
+        ]);
+    }
+
+    protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('uploads/pages'), $filename);

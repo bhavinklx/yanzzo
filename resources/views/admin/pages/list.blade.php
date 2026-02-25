@@ -1,183 +1,216 @@
 @extends("admin.layouts.app")
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Pages</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Page List</li>
-                        </ol>
-                        @can('pages-add')
-                            <a href="{{ route("pages-add") }}" class="btn-sm btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Create New</a>
-                        @endcan
-                        {{--<a href="javascript: void(0);" onclick="validate_all('activate_all')" class="btn-sm btn-success d-none d-lg-block m-l-15"><i class="fa fa-check-circle"></i> Active All</a>
-                        <a href="javascript: void(0);" onclick="validate_all('inactivate_all')" class="btn-sm btn-warning d-none d-lg-block m-l-15"><i class="fa fa-remove"></i> Inactive All</a>
-                        <a href="javascript: void(0);" onclick="validate_all('delete_all')" class="btn-sm btn-danger d-none d-lg-block m-l-15"><i class="fa fa-trash-o"></i> Delete All</a>--}}
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route("dashboard") }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Page List
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-            <!-- Start Page Content -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <form id="listFrm" name="listFrm" action="" method="post">
-                                <input type="hidden" id="action" name="action" value="">
-                                <div class="table-responsive ">
-                                    <table id="myTable" class="table table-bordered table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th><input type="checkbox" class="custom-checkbox" name="checkall" id="checkall"/></th>
-                                            <th>Title</th>
-                                            <th>Created Date</th>
-                                            <th>Status</th>
-                                            <th>Header Status</th>
-                                            <th>Footer Status</th>
-                                            <th>Action</th>
+    <!-- App body starts -->
+    <div class="app-body">
+        <!-- Row starts -->
+        <div class="row gx-3">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="card-title">Page List</h5>
+                        @if (auth()->user()->can('pages-add'))
+                            <a href="{{ route("pages-add") }}" class="btn btn-primary ms-auto">Add Page</a>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <!-- Table starts -->
+                        <div class="table-responsive">
+                            <table id="basicExample" class="table m-0 align-middle">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" value="" id="checkall" name="checkall">
+                                        </div>
+                                    </th>
+                                    <th>Title</th>
+                                    <th>Created Date</th>
+                                    <th>Status</th>
+                                    <th>Header Status</th>
+                                    <th>Footer Status</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tablecontents">
+                                @foreach($pagesDetail as $pages)
+                                    <tr class="row1" data-id="{{ $pages->page_id }}" id="row_{{ $pages->page_id }}">
+                                        <td>
+                                            <div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="{{ $pages->page_id }}"></div>
+                                        </td>
+                                        <td>{{ $pages->page_title }}</td>
+                                        <td>{{ date('d-m-Y h:i:s A', strtotime($pages->created_at)) }}</td>
+                                        <td>
+                                            @if($pages->page_status=='1')
+                                                <div id="td_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $pages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                            @else
+                                                <div id="td_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $pages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($pages->page_header_status=='1')
+                                                <div id="td_header_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $pages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                            @else
+                                                <div id="td_header_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $pages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($pages->page_footer_status=='1')
+                                                <div id="td_footer_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $pages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                            @else
+                                                <div id="td_footer_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $pages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="d-inline-flex gap-1">
+                                                @if($pages->page_id > 1)
+                                                    {{--@if(auth()->user()->can('pages-delete'))--}}
+                                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteSingal('{{ $pages->page_id }}');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Page"> <i class="ri-delete-bin-line"></i> </button>
+                                                    <a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal('{{ $pages->page_id }}');" data-placement="top" title="Delete" > <i class="fa fa-trash text-danger"></i> </a>
+                                                    {{--@endif--}}
+                                                    {{--@if(auth()->user()->can('pages-edit'))--}}
+                                                    <a href="{{ route("pages-edit", ['id' => $pages->page_id]) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Page"> <i class="ri-edit-box-line"></i> </a>
+                                                    {{--@endif--}}
+                                                @else
+                                                    {{--@if(auth()->user()->can('pages-delete'))--}}
+                                                    <a href="{{ route("pages-edit", ['id' => $pages->page_id]) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Page"> <i class="ri-edit-box-line"></i> </a>
+                                                    {{--@endif--}}
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @foreach($pages->subPages as $subPages)
+                                        <tr class="row1" data-id="{{ $subPages->page_id }}" id="row_{{ $subPages->page_id }}">
+                                            <td>
+                                                <div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="{{ $subPages->page_id }}"></div>
+                                            </td>
+                                            <td>&nbsp; <img src="{{ url("assets/img/arrow-01.gif") }}">&nbsp; {{ $subPages->page_title }}</td>
+                                            <td>{{ date('d-m-Y h:i:s A', strtotime($subPages->created_at)) }}</td>
+                                            <td>
+                                                @if($subPages->page_status=='1')
+                                                    <div id="td_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $subPages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                                @else
+                                                    <div id="td_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $subPages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($subPages->page_header_status=='1')
+                                                    <div id="td_header_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $subPages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                                @else
+                                                    <div id="td_header_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $subPages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($subPages->page_footer_status=='1')
+                                                    <div id="td_footer_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $subPages->page_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                                @else
+                                                    <div id="td_footer_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $subPages->page_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="d-inline-flex gap-1">
+                                                    {{--@if(auth()->user()->can('pages-delete'))--}}
+                                                    <a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal('{{ $subPages->page_id }}');" data-placement="top" title="Delete" > <i class="fa fa-trash text-danger"></i> </a>
+                                                    {{--@endif--}}
+                                                    {{--@if(auth()->user()->can('pages-edit'))--}}
+                                                    <a href="{{ route("pages-edit", ['id' => $subPages->page_id]) }}" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Page"> <i class="ri-edit-box-line"></i> </a>
+                                                    {{--@endif--}}
+                                                </div>
+                                            </td>
                                         </tr>
-                                        </thead>
-                                        <tbody id="tablecontents">
-                                        @foreach($pagesDetail as $pages)
-                                            <tr class="row1" data-id="{{ $pages->page_id }}">
-                                                <td><input type="checkbox" name="check[]" id="check[]" value="{{ $pages->page_id }}" class="custom-checkbox check_class" /></td>
-                                                <td>{{ $pages->page_title }}</td>
-                                                <td>{{ date('d-m-Y h:i:s A', strtotime($pages->created_at)) }}</td>
-                                                <td>
-                                                    @if($pages->page_status=='1')
-                                                        <span id="td_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $pages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                    @else
-                                                        <span id="td_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $pages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($pages->page_header_status=='1')
-                                                        <span id="td_header_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $pages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                    @else
-                                                        <span id="td_header_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $pages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($pages->page_footer_status=='1')
-                                                        <span id="td_footer_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $pages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                    @else
-                                                        <span id="td_footer_status_{{ $pages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $pages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($pages->page_id > 1)
-                                                        @if(auth()->user()->can('pages-edit'))
-                                                            <a href="{{ route("pages-edit", ['id' => $pages->page_id]) }}" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>
-                                                        @endif
-                                                        @if(auth()->user()->can('pages-delete'))
-                                                            <a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal('{{ $pages->page_id }}');" data-placement="top" title="Delete" > <i class="fa fa-trash text-danger"></i> </a>
-                                                        @endif
-                                                    @else
-                                                        @if(auth()->user()->can('pages-delete'))
-                                                            <a href="{{ route("pages-edit", ['id' => $pages->page_id]) }}" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>
-                                                        @endif
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @foreach($pages->subPages as $subPages)
-                                                <tr>
-                                                    <td><input type="checkbox" name="check[]" id="check[]" value="{{ $subPages->page_id }}" class="custom-checkbox check_class" /></td>
-                                                    <td>&nbsp; <img src="{{ url("assets/img/arrow-01.gif") }}">&nbsp; {{ $subPages->page_title }}</td>
-                                                    <td>{{ date('d-m-Y h:i:s A', strtotime($subPages->created_at)) }}</td>
-                                                    <td>
-                                                        @if($subPages->page_status=='1')
-                                                            <span id="td_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $subPages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                        @else
-                                                            <span id="td_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $subPages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($subPages->page_header_status=='1')
-                                                            <span id="td_header_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $subPages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                        @else
-                                                            <span id="td_header_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_header_status('{{ $subPages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($subPages->page_footer_status=='1')
-                                                            <span id="td_footer_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $subPages->page_id }}',0)" ><div class="label label-table label-success">Active</div></a></span>
-                                                        @else
-                                                            <span id="td_footer_status_{{ $subPages->page_id }}"><a href="javascript:void(0)" onclick="change_footer_status('{{ $subPages->page_id }}',1)" ><div class="label label-table label-danger">Inactive</div></a></span>
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if(auth()->user()->can('pages-edit'))
-                                                            <a href="{{ route("pages-edit", ['id' => $subPages->page_id]) }}" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil text-inverse"></i> </a>
-                                                        @endif
-                                                        @if(auth()->user()->can('pages-delete'))
-                                                            <a href="javascript:void(0)" data-toggle="tooltip" onclick="deleteSingal('{{ $subPages->page_id }}');" data-placement="top" title="Delete" > <i class="fa fa-trash text-danger"></i> </a>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endforeach
-                                        </tbody>
-                                    </table>
+                                    @endforeach
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Table ends -->
+
+                        <!-- Modal Delete Row -->
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="delRowLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="delRowLabel">
+                                            Confirm
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="page_id">
+                                        Are you sure you want to delete?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">No</button>
+                                            <button class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="deleteData()">Yes</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End PAge Content -->
         </div>
-        <!-- End Container fluid  -->
+        <!-- Row ends -->
     </div>
-    <!-- End Page wrapper  -->
+    <!-- App body ends -->
 @endsection
 
 @section('page-js')
     <script type="text/javascript">
         var page_length = 25;
-        /*$('#myTable-example').DataTable({
-            pageLength: page_length,
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            rowReorder: true,
-            ajax: '',
-            columns: [
-                { data: 'checkbox', name: 'checkbox' },
-                { data: 'title', name: 'title' },
-                { data: 'date', name: 'date', orderable: false, searchable: false },
-                { data: 'status', name: 'status', orderable: false, searchable: false },
-                { data: 'header_status', name: 'header_status', orderable: false, searchable: false },
-                { data: 'footer_status', name: 'footer_status', orderable: false, searchable: false },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });*/
+        var table = $("#basicExample").DataTable({
+            pageLength: 25,
+            language: {
+                lengthMenu: "Display _MENU_ Records Per Page",
+                info: "Showing Page _PAGE_ of _PAGES_",
+            },
+        });
 
-        $( "#tablecontents" ).sortable({
-            items: "tr",
-            cursor: 'move',
-            opacity: 0.8,
-            update: function() {
-                sendOrderToServer();
-            }
+        $(document).ready(function () {
+            $("#tablecontents").sortable({
+                items: "tr",
+                cursor: "move",
+                opacity: 0.8,
+                helper: function(e, tr) {
+                    var $originals = tr.children();
+                    var $helper = tr.clone();
+                    $helper.children().each(function(index) {
+                        $(this).width($originals.eq(index).width());
+                    });
+                    return $helper;
+                },
+                update: function () {
+                    sendOrderToServer();
+                }
+            });
         });
 
         function sendOrderToServer() {
             var order = [];
-            $('tr.row1').each(function(index, element) {
+            $('#tablecontents tr.row1').each(function(index) {
                 order.push({
-                    page_id: $(this).attr('data-id'),
+                    page_id: $(this).data('id'),
                     position: index + 1
                 });
             });
+
             //alert(order)
             $.ajax({
                 url: "{{ route('pages-update-order') }}",
@@ -188,17 +221,18 @@
                     _token: '{{csrf_token()}}'
                 },
                 success: function(response) {
-                    $.toast({
-                        heading: response
-                        , position: 'top-right'
-                        , loaderBg: '#ff6849'
-                        , icon: 'success'
-                        , hideAfter: 3500
-                        , stack: 6
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',      // top-right corner
+                        icon: 'success',          // success, error, warning, info
+                        title: response,          // message text
+                        showConfirmButton: false, // no OK button
+                        timer: 3500,              // auto close after 3.5 seconds
+                        timerProgressBar: true,
+                        padding: '0.5em 1em',      // smaller padding
                     });
                 }
             });
-
         }
 
         function change_status(page_id, status) {
@@ -211,18 +245,20 @@
                     _token:"{{ csrf_token() }}"
                 },
                 success: function (response) {
-                    $.toast({
-                        heading: response
-                        , position: 'top-right'
-                        , loaderBg: '#ff6849'
-                        , icon: 'success'
-                        , hideAfter: 3500
-                        , stack: 6
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',      // top-right corner
+                        icon: 'success',          // success, error, warning, info
+                        title: response,          // message text
+                        showConfirmButton: false, // no OK button
+                        timer: 3500,              // auto close after 3.5 seconds
+                        timerProgressBar: true,
+                        padding: '0.5em 1em',      // smaller padding
                     });
                     if (status == 1){
-                        $("#td_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+page_id+"', '0')\" ><div class=\"label label-table label-success\">Active</div></a>");
+                        $("#td_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+page_id+"', '0')\" ><span class=\"badge bg-success\">Active</span></a>");
                     } else {
-                        $("#td_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+page_id+"', '1')\" ><div class=\"label label-table label-danger\">Inactive</div></a>");
+                        $("#td_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+page_id+"', '1')\" ><span class=\"badge bg-danger\">Inactive</span></a>");
                     }
                 }
             });
@@ -238,18 +274,20 @@
                     _token:"{{ csrf_token() }}"
                 },
                 success: function (response) {
-                    $.toast({
-                        heading: response
-                        , position: 'top-right'
-                        , loaderBg: '#ff6849'
-                        , icon: 'success'
-                        , hideAfter: 3500
-                        , stack: 6
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',      // top-right corner
+                        icon: 'success',          // success, error, warning, info
+                        title: response,          // message text
+                        showConfirmButton: false, // no OK button
+                        timer: 3500,              // auto close after 3.5 seconds
+                        timerProgressBar: true,
+                        padding: '0.5em 1em',      // smaller padding
                     });
                     if (status == 1){
-                        $("#td_header_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_header_status('"+page_id+"', '0')\" ><div class=\"label label-table label-success\">Active</div></a>");
+                        $("#td_header_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_header_status('"+page_id+"', '0')\" ><span class=\"badge bg-success\">Active</span></a>");
                     } else {
-                        $("#td_header_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_header_status('"+page_id+"', '1')\" ><div class=\"label label-table label-danger\">Inactive</div></a>");
+                        $("#td_header_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_header_status('"+page_id+"', '1')\" ><span class=\"badge bg-danger\">Inactive</span></a>");
                     }
                 }
             });
@@ -265,24 +303,32 @@
                     _token:"{{ csrf_token() }}"
                 },
                 success: function (response) {
-                    $.toast({
-                          heading: response
-                        , position: 'top-right'
-                        , loaderBg: '#ff6849'
-                        , icon: 'success'
-                        , hideAfter: 3500
-                        , stack: 6
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',      // top-right corner
+                        icon: 'success',          // success, error, warning, info
+                        title: response,          // message text
+                        showConfirmButton: false, // no OK button
+                        timer: 3500,              // auto close after 3.5 seconds
+                        timerProgressBar: true,
+                        padding: '0.5em 1em',      // smaller padding
                     });
                     if (status == 1){
-                        $("#td_footer_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_footer_status('"+page_id+"', '0')\" ><div class=\"label label-table label-success\">Active</div></a>");
+                        $("#td_footer_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_footer_status('"+page_id+"', '0')\" ><span class=\"badge bg-success\">Active</span></a>");
                     } else {
-                        $("#td_footer_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_footer_status('"+page_id+"', '1')\" ><div class=\"label label-table label-danger\">Inactive</div></a>");
+                        $("#td_footer_status_"+page_id).html("<a href=\"javascript:void(0)\" onclick=\"change_footer_status('"+page_id+"', '1')\" ><span class=\"badge bg-danger\">Inactive</span></a>");
                     }
                 }
             });
         }
 
-        function deleteData(page_id) {
+        function openDeleteModal(page_id) {
+            $('#page_id').val(page_id);
+            $('#deleteModal').modal('show');
+        }
+
+        function deleteData() {
+            let page_id = $('#page_id').val();
             $.ajax({
                 url: "{{ route('pages-delete') }}",
                 type: "POST",
@@ -291,6 +337,15 @@
                     page_id:page_id,
                 },
                 success: function (response) {
+                    $('#deleteModal').modal('hide');
+                    /*$('#row_' + page_id).remove();
+                     setTimeout(function(){
+                     location.reload();
+                     },2000);*/
+                    table
+                            .row($('#row_' + page_id))
+                            .remove()
+                            .draw(false);
                 }
             });
         }

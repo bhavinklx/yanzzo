@@ -12,27 +12,12 @@ use App\Models\Banner;
 use App\Models\Pages;
 use App\Models\Bcategory;
 use App\Models\Blog;
-use App\Models\City;
-use App\Models\Faq;
 use App\Models\Category;
 use App\Models\Testimonial;
+use App\Models\Sponsor;
 use App\Models\Contact;
-use App\Models\Inquiry;
-use App\Models\Cities;
-use App\Models\Lounge;
-use App\Models\LoungeImage;
-use App\Models\Membership;
-use App\Models\MembershipOrder;
 use App\Models\Setting;
-
-use Illuminate\Mail\Mailable;
-use Illuminate\Support\Facades\Mail;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-use Razorpay\Api\Api;
-use Carbon\Carbon;
-use DateTime;
+use App\Models\Service;
 
 class HomeController extends Controller
 {
@@ -49,87 +34,98 @@ class HomeController extends Controller
 
     public function index()
     {
-        $pagesDetail = Pages::where('page_id', 1)->first();
-        if(!$pagesDetail){
+        try {
+            $pagesDetail = Pages::where('page_id', 1)->first();
+            if (!$pagesDetail) {
+                return redirect('/404');
+            }
+            $bannerDetail = Banner::where(['banner_status' => '1'])->orderBy('banner_order')->get()->toArray();
+            $testimonialDetail = Testimonial::where('testimonial_status', 1)->orderBy('testimonial_order')->get()->toArray();
+            $sponsorDetail = Sponsor::where('sponsor_status', 1)->orderBy('sponsor_order')->get()->toArray();
+            $ourFeatureDetail = Service::where(['service_status' => '1', 'service_type' => '0'])->orderBy('service_order')->get()->toArray();
+            $whyChooseDetail = Service::where(['service_status' => '1', 'service_type' => '1'])->orderBy('service_order')->get()->toArray();
+            $blogDetail = Blog::where(['blog_status' => '1'])->orderBy('blog_order', 'DESC')->take(6)->get()->toArray();
+
+            return view('home')->with([
+                'pagesDetail' => $pagesDetail,
+                'bannerDetail' => $bannerDetail,
+                'testimonialDetail' => $testimonialDetail,
+                'sponsorDetail' => $sponsorDetail,
+                'ourFeatureDetail' => $ourFeatureDetail,
+                'whyChooseDetail' => $whyChooseDetail,
+                'blogDetail' => $blogDetail
+            ]);
+        } catch (\Throwable $e) {
+            // Logging error
+            Log::error('HomeController@index error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
             return redirect('/404');
         }
-        $bannerDetail = Banner::where('banner_status', '1')->first();
-        $categoryDetail = Category::where(['category_status' => '1', 'category_hstatus' => '1'])->orderBy('category_order')->get()->toArray();
-        $testimonialDetail = Testimonial::where('testimonial_status', '1')->orderBy('testimonial_order')->get()->toArray();
-        $faqDetail = Faq::where(['faq_status' => '1', 'faq_hstatus' => '1'])->orderBy('faq_hstatus')->get()->toArray();
-        $blogDetail = Blog::where(['blog_status' => '1'])->orderBy('blog_order')->take(6)->get()->toArray();
-        $cityDetail = Cities::get()->toArray();
-        $cityNameArray = [];
-        for($c=0; $c < count($cityDetail); $c++) {
-            $cityNameArray[$cityDetail[$c]['cities_id']] = $cityDetail[$c]['cities_name'];
-        }
-        $loungeDetail = Lounge::where(['lounge_status' => '1'])->orderBy('lounge_order')->take(6)->get()->toArray();
-        return view('home')->with([
-            'pagesDetail' => $pagesDetail,
-            'bannerDetail' => $bannerDetail,
-            'faqDetail' => $faqDetail,
-            'categoryDetail' => $categoryDetail,
-            'testimonialDetail' => $testimonialDetail,
-            'blogDetail' => $blogDetail,
-            'cityNameArray' => $cityNameArray,
-            'loungeDetail' => $loungeDetail
-        ]);
     }
 
     public function page($slug)
     {
-        $pagesDetail = Pages::where('page_slug', trim($slug))->first();
-        if(!$pagesDetail){
+        try {
+            $pagesDetail = Pages::where('page_slug', trim($slug))->firstOrFail();
+            if (!$pagesDetail) {
+                return redirect('/404');
+            }
+            return view('page', compact('pagesDetail'));
+        } catch (\Exception $e) {
             return redirect('/404');
         }
-        return view('page')->with(['pagesDetail' => $pagesDetail]);
     }
 
     public function contact()
     {
-        $pagesDetail = Pages::where('page_id', 4)->first();
-        if(!$pagesDetail){
+        try {
+            $pagesDetail = Pages::findOrFail(3);
+            return view('contact', compact('pagesDetail'));
+        } catch (\Exception $e) {
             return redirect('/404');
         }
-        return view('contact')->with(['pagesDetail' => $pagesDetail]);
     }
 
     public function contact_insert(Request $request)
     {
-        $pagesDetail = Pages::where('page_id', 4)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        $lastOrder = Contact::orderBy('contact_order', 'DESC')->first();
-        Contact::create([
-            'contact_name' => ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])),
-            'contact_email' => strtolower($_POST['email']),
-            'contact_country' => $_POST['country'],
-            'contact_prefix' => $_POST['prefix'],
-            'contact_mobile' => $_POST['mobile'],
-            'contact_subject' => $_POST['subject'],
-            'contact_message' => $_POST['message'],
-            'contact_ip' => $request->ip(),
-            'contact_order' => (!empty($lastOrder)) ? $lastOrder->contact_order + 1 : 1,
-            'contact_status' => '1',
-            'created_at' => date('Y-m-d H:i:s'),
-        ]);
+        try {
+            $pagesDetail = Pages::where('page_id', 4)->first();
+            if(!$pagesDetail){
+                return redirect('/404');
+            }
+            $lastOrder = Contact::orderBy('contact_order', 'DESC')->first();
+            Contact::create([
+                'contact_name' => ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])),
+                'contact_email' => strtolower($_POST['email']),
+                'contact_country' => $_POST['country'],
+                'contact_prefix' => $_POST['prefix'],
+                'contact_mobile' => $_POST['mobile'],
+                'contact_subject' => $_POST['subject'],
+                'contact_message' => $_POST['message'],
+                'contact_ip' => $request->ip(),
+                'contact_order' => (!empty($lastOrder)) ? $lastOrder->contact_order + 1 : 1,
+                'contact_status' => '1',
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
 
-        $fromEmail          = FROM_EMAIL;
-        $fromName           = 'YAARIOKE';
-        $subjectUser        = "Thank You for reaching out: YAARIOKE is here to help !";
-        $subjectAdmin       = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname']));
+            //$fromEmail        = FROM_EMAIL;
+            $fromName           = 'YAARIOKE';
+            $subjectUser        = "Thank You for reaching out: YAARIOKE is here to help !";
+            $subjectAdmin       = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname']));
 
-        $messageHeaderUser  =
-                    "<tr>
+            $messageHeaderUser  =
+                "<tr>
                         <td style='font-size:15px'>Hello ".ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])).",</td>
                     </tr>
                     <tr>
                         <td style='font-size:15px'>Thank you for reaching out to us.<br>We appreciate your interest in YAARIOKE. Our team is currently reviewing your inquiry and we will get back to you shortly.<br>If you have any urgent questions or concerns, feel free to contact us directly at <a href='tel:919509914499'>+91 950 991 4499</a>.</td>
                     </tr><br>";
 
-        $messageHeaderAdmin =
-                    "<tr>
+            $messageHeaderAdmin =
+                "<tr>
                         <td style='font-size:15px'>Dear Administrator,</td>
                     </tr>
                     <tr>
@@ -139,8 +135,8 @@ class HomeController extends Controller
                         <td style='font-size:15px'>Details are below</td>
                     </tr><br>";
 
-        $message            =
-                    "<tr>
+            $message            =
+                "<tr>
                         <td style=\"font-size:15px; background:#dbeef4;\">
                             <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
                             <tr>
@@ -196,29 +192,39 @@ class HomeController extends Controller
                         </td>
                     </tr>";
 
-        $messageFooterUser  =
-            "<br><tr>
+            $messageFooterUser  =
+                "<br><tr>
                         <td style='font-size:15px'>Thank you,</td>
                     </tr>
                     <tr>
                         <td style='font-size:15px'>YAARIOKE Team.</td>
                     </tr>";
-        $messageFooterAdmin =
-            "<br><br><tr>
+            $messageFooterAdmin =
+                "<br><br><tr>
                         <td style='font-size:15px'>Thank you,</td>
                     </tr>
                     <tr>
                         <td style='font-size:15px'>YAARIOKE Team.</td>
                     </tr>";
 
-        //mail sent to user
-        $this->sendMail($fromEmail, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
+            //mail sent to user
+            //$this->sendMail($fromEmail, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
 
-        //mail sent to admin
-        if (ADMIN_EMAIL != "") {
-            //$this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
+            //mail sent to admin
+            //if (ADMIN_EMAIL != "") {
+                //$this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
+            //}
+            return 'success';
+        } catch (\Exception $e) {
+            // Log error for debugging
+            Log::error('Contact Form Error: ', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return redirect('/404');
         }
-        return 'success';
     }
 
     public function faqs() {
@@ -230,241 +236,88 @@ class HomeController extends Controller
         return view('faq')->with(['pagesDetail' => $pagesDetail, 'faqDetail' => $faqDetail]);
     }
 
-    public function becomePartner() {
-        $pagesDetail = Pages::where('page_id', 11)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        return view('becomepartner')->with(['pagesDetail' => $pagesDetail]);
-    }
-
-    public function becomePartner_insert(Request $request)
-    {
-        $pagesDetail = Pages::where('page_id', 11)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        $lastOrder = Inquiry::orderBy('inquiry_order', 'DESC')->first();
-        Inquiry::create([
-            'inquiry_name' => ucwords(strtolower($_POST['name'])),
-            'inquiry_email' => strtolower($_POST['email']),
-            'inquiry_country' => $_POST['country'],
-            'inquiry_prefix' => $_POST['prefix'],
-            'inquiry_mobile' => $_POST['mobile'],
-            'inquiry_city' => $_POST['city'],
-            'inquiry_state' => $_POST['state'],
-            'inquiry_zipcode' => $_POST['zipcode'],
-            'inquiry_ip' => $request->ip(),
-            'inquiry_order' => (!empty($lastOrder)) ? $lastOrder->inquiry_order + 1 : 1,
-            'inquiry_status' => '1',
-            'created_at' => date('Y-m-d H:i:s'),
-        ]);
-
-        $fromEmail          = FROM_EMAIL;
-        $fromName           = 'YAARIOKE';
-        $subjectUser        = "Thank You for reaching out: YAARIOKE is here to help !";
-        $subjectAdmin       = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['name']));
-
-        $messageHeaderUser  =
-            "<tr>
-                        <td style='font-size:15px'>Hello ".ucwords(strtolower($_POST['name'])).",</td>
-                    </tr>
-                    <tr>
-                        <td style='font-size:15px'>Thank you for reaching out to us.<br>We appreciate your interest in YAARIOKE. Our team is currently reviewing your inquiry and we will get back to you shortly.<br>If you have any urgent questions or concerns, feel free to contact us directly at <a href='tel:919509914499'>+91 950 991 4499</a>.</td>
-                    </tr><br>";
-
-        $messageHeaderAdmin =
-            "<tr>
-                        <td style='font-size:15px'>Dear Administrator,</td>
-                    </tr>
-                    <tr>
-                        <td style='font-size:15px'>".ucwords(strtolower($_POST['name']))." submitted contact form from website.</td>
-                    </tr>
-                    <tr>
-                        <td style='font-size:15px'>Details are below</td>
-                    </tr><br>";
-
-        $message            =
-            "<tr>
-                        <td style=\"font-size:15px; background:#dbeef4;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>Full Name: </strong></td>
-                                <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".ucwords(strtolower($_POST['name']))."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>Mobile: </strong></td>
-                               <!-- <td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['mobile']."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px; background:#dbeef4;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>Email: </strong></td>
-                               <!-- <td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['email']."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>City: </strong></td>
-                               <!-- <td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">" . $_POST['city'] . "</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px; background:#dbeef4;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>State: </strong></td>
-                                <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['state']."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>Country: </strong></td>
-                                <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['country']."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style=\"font-size:15px; background:#dbeef4;\">
-                            <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
-                            <tr>
-                                <td width=\"150\"><strong>Zip Code: </strong></td>
-                                <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['zipcode']."</td>
-                            </tr>
-                            </table>
-                        </td>
-                    </tr>";
-
-        $messageFooterUser  =
-            "<br><tr>
-                        <td style='font-size:15px'>Thank you,</td>
-                    </tr>
-                    <tr>
-                        <td style='font-size:15px'>YAARIOKE Team.</td>
-                    </tr>";
-        $messageFooterAdmin =
-            "<br><br><tr>
-                        <td style='font-size:15px'>Thank you,</td>
-                    </tr>
-                    <tr>
-                        <td style='font-size:15px'>YAARIOKE Team.</td>
-                    </tr>";
-
-        //mail sent to user
-        $this->sendMail($fromEmail, $_POST['email'], $fromName, ucwords(strtolower($_POST['name'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
-
-        //mail sent to admin
-        if (ADMIN_EMAIL != "") {
-            $this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
-        }
-        return 'success';
-    }
-
     public function blog(Request $request)
     {
-        //print_r($request->all()); die;
-        //Start Pagination
-        $pageno             = 1;
-        $limit              = 9;
-        $start              = 0;
-        if(isset($request['page']) && $request['page']!='') {
-            $pageno         = $request['page'];
-        }
-        $start              = ($pageno-1) * $limit;
-        $pagecount          = $limit * $pageno;
-        //End Pagination
+        try {
+            //print_r($request->all()); die;
+            //Start Pagination
+            $pageno = 1;
+            $limit = 9;
+            $start = 0;
+            if(isset($request['page']) && $request['page']!='') {
+                $pageno = $request['page'];
+            }
+            $start = ($pageno-1) * $limit;
+            $pagecount = $limit * $pageno;
+            //End Pagination
 
-        $bcategoryNameArray = [];
-        $pagesDetail        = Pages::where('page_id', 10)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        $bcategoryDetail    = Bcategory::get(['bcategory_id', 'bcategory_title'])->toArray();
-        for($b=0; $b < count($bcategoryDetail); $b++) {
-            $bcategoryNameArray[$bcategoryDetail[$b]['bcategory_id']] = $bcategoryDetail[$b]['bcategory_title'];
-        }
-        //get category wise blog
-        if (isset($request['act']) && $request['act']=='load_blog') {
-            //get all blog
-            $blogDetail     = Blog::where('blog_status', '1')->orderBy('blog_order', 'DESC')->skip($start)->take($limit)->get()->toArray();
-            if(is_array($blogDetail) && count($blogDetail) > 0) { for($b=0; $b < count($blogDetail); $b++) { ?>
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                    <!-- Blog -->
-                    <div class="featured-venues-item">
-                        <div class="listing-item">
-                            <div class="listing-img">
-                                <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">
-                                    <img src="<?= asset('/uploads/blog/'.$blogDetail[$b]['blog_image']); ?>" class="img-fluid" alt="<?= $blogDetail[$b]['blog_title']; ?>">
-                                </a>
-                            </div>
-                            <div class="listing-content news-content">
-                                <div class="listing-venue-owner">
-                                    <div class="navigation">
-                                        <i class="feather-calendar"></i> <?= date('d M, Y', strtotime($blogDetail[$b]['blog_date'])); ?>
-                                    </div>
+            $bcategoryNameArray = [];
+            $pagesDetail = Pages::where('page_id', 2)->first();
+            if(!$pagesDetail){
+                return redirect('/404');
+            }
+            $bcategoryDetail = Bcategory::get(['bcategory_id', 'bcategory_title'])->toArray();
+            for($b=0; $b < count($bcategoryDetail); $b++) {
+                $bcategoryNameArray[$bcategoryDetail[$b]['bcategory_id']] = $bcategoryDetail[$b]['bcategory_title'];
+            }
+            //get category wise blog
+            if (isset($request['act']) && $request['act']=='load_blog') {
+                //get all blog
+                $blogDetail = Blog::where('blog_status', '1')->orderBy('blog_order', 'DESC')->skip($start)->take($limit)->get()->toArray();
+                if(is_array($blogDetail) && count($blogDetail) > 0) { for($b=0; $b < count($blogDetail); $b++) { ?>
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                        <!-- Blog -->
+                        <div class="featured-venues-item">
+                            <div class="listing-item">
+                                <div class="listing-img">
+                                    <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">
+                                        <img src="<?= asset('/uploads/blog/'.$blogDetail[$b]['blog_image']); ?>" class="img-fluid" alt="<?= $blogDetail[$b]['blog_title']; ?>">
+                                    </a>
                                 </div>
-                                <h3 class="listing-title blog-title">
-                                    <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>"><?= $blogDetail[$b]['blog_title']; ?></a>
-                                </h3>
-                                <div class="listing-button read-new text-center">
-                                    <span><a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">5 Min To Read</a></span>
+                                <div class="listing-content news-content">
+                                    <div class="listing-venue-owner">
+                                        <div class="navigation">
+                                            <i class="feather-calendar"></i> <?= date('d M, Y', strtotime($blogDetail[$b]['blog_date'])); ?>
+                                        </div>
+                                    </div>
+                                    <h3 class="listing-title blog-title">
+                                        <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>"><?= $blogDetail[$b]['blog_title']; ?></a>
+                                    </h3>
+                                    <div class="listing-button read-new text-center">
+                                        <span><a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">5 Min To Read</a></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- /Blog -->
                     </div>
-                    <!-- /Blog -->
-                </div>
-            <?php } }
-            exit;
-        } else {
-            $bcategoryName = '';
-            //get all blog
-            $blogDetail = Blog::where('blog_status', '1')->orderBy('blog_order', 'DESC')->skip($start)->take($limit)->get()->toArray();
-            $rows = Blog::where('blog_status', '1')->count();
+                <?php } }
+                exit;
+            } else {
+                $bcategoryName = '';
+                //get all blog
+                $blogDetail = Blog::where('blog_status', '1')->orderBy('blog_order', 'DESC')->skip($start)->take($limit)->get()->toArray();
+                $rows = Blog::where('blog_status', '1')->count();
 
-            return view('blog')->with([
-                'pagesDetail' => $pagesDetail,
-                'bcategoryName' => $bcategoryName,
-                'bcategoryNameArray' => $bcategoryNameArray,
-                'blogDetail' => $blogDetail,
-                'pagecount' => $pagecount,
-                'rows' => $rows,
-            ]);
+                return view('blog')->with([
+                    'pagesDetail' => $pagesDetail,
+                    'bcategoryName' => $bcategoryName,
+                    'bcategoryNameArray' => $bcategoryNameArray,
+                    'blogDetail' => $blogDetail,
+                    'pagecount' => $pagecount,
+                    'rows' => $rows,
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Blog page error: '.$e->getMessage());
+            return redirect('/404');
         }
     }
 
     public function blogDetail($slug)
     {
         $bcategoryNameArray = $totalBlogArray = [];
-        $pagesDetail = Pages::where('page_id', 10)->first();
+        $pagesDetail = Pages::where('page_id', 2)->first();
         if(!$pagesDetail){
             return redirect('/404');
         }
@@ -500,7 +353,7 @@ class HomeController extends Controller
             Session::forget('discount_text');
             Session::forget('discount_code');
             Session::forget('discount_id');
-            
+
             $pagesDetail = Pages::where('page_id', 3)->first();
             if(!$pagesDetail){
                 return redirect('/404');

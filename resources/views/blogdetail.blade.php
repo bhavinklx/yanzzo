@@ -1,27 +1,36 @@
 @extends("layouts.app")
-@section('title', $blogDetail->blog_meta_title ?? DEFAULT_META_TITLE)
-@section('keywords', $blogDetail->blog_meta_keyword ?? DEFAULT_META_KEYWORD)
-@section('description', $blogDetail->blog_meta_desc ?? DEFAULT_META_DESCRIPTION)
-@section('canonical', $blogDetail->blog_canonical ?? 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'])
+{{--@section('title', $pagesDetail->page_meta_title ?? DEFAULT_META_TITLE)
+@section('keywords', $pagesDetail->page_meta_keyword ?? DEFAULT_META_KEYWORD)
+@section('description', $pagesDetail->page_meta_desc ?? DEFAULT_META_DESCRIPTION)
+@section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')--}}
 @section("content")
     <!-- Breadcrumb -->
-    <div class="breadcrumb breadcrumb-list mb-0">
+    @if($pagesDetail->page_image!='' && file_exists(public_path('/uploads/pages/'.$pagesDetail->page_image)))
+        @php
+            $pageBanner = asset('/uploads/pages/'.$pagesDetail->page_image);
+        @endphp
+    @else
+        @php
+            $pageBanner = 'image/innerbanner.jpg';
+        @endphp
+    @endif
+    <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});">
         <div class="container">
-            <h1 class="text-white">{{ $blogDetail->blog_title ?? '' }}</h1>
+            <h1 class="text-white">{{ $pagesDetail->page_title ?? '' }}</h1>
             <ul>
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ url('/'.$pagesDetail->page_slug) }}">{{ $pagesDetail->page_title ?? '' }}</a></li>
                 <li>{{ $blogDetail->blog_title ?? '' }}</li>
             </ul>
         </div>
-    </div>
+    </section>
     <!-- /Breadcrumb -->
 
     <!-- Page Content -->
     <div class="content blog-details">
         <div class="container">
             <div class="row">
-                <div class="col-sm-12 col-md-10 col-lg-8 mx-auto">
+                <div class="col-sm-12 col-md-12 col-lg-12 mx-auto">
                     <!-- Blog -->
                     <div class="featured-venues-item">
                         <div class="listing-item blog-info">
@@ -30,7 +39,7 @@
                                     <img src="{{ asset('/uploads/blog/'.$blogDetail->blog_image) }}" class="img-fluid" alt="{{ $blogDetail->blog_title }}">
                                 </div>
                             @endif
-                            <div class="listing-content news-content">
+                            <div class="listing-content news-content" style="padding: 24px 0px 24px 0px">
                                 <div class="listing-venue-owner blog-detail-owner d-lg-flex justify-content-between align-items-center">
                                     <div class="navigation">
                                         <i class="feather-calendar"></i>{{ date('d M, Y', strtotime($blogDetail->blog_date)) }}
@@ -46,7 +55,7 @@
                             </div>
                             <!-- <hr> -->
                         </div>
-                        <div class="row align-items-center mb-60">
+                        <div class="row align-items-center">
                             <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                                 <div class="d-flex align-items-center social-medias-wrapper">
                                     <h6>Share on :</h6>
@@ -75,4 +84,14 @@
         </div>
     </div>
     <!-- /Page Content -->
+@endsection
+@section('page-js')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            AOS.init({
+                duration:1200,
+                once:true
+            });
+        });
+    </script>
 @endsection

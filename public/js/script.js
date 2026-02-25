@@ -110,7 +110,7 @@ Version      : 1.0
 			margin:24,
 			nav:true,
 			dots: false,
-			autoplay:false,
+			autoplay:true,
 			smartSpeed: 2000,
 			navText : ["<i class='feather-chevron-left'></i>","<i class='feather-chevron-right'></i>"],
 			responsive:{

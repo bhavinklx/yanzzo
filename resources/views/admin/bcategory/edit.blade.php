@@ -1,153 +1,134 @@
 @extends("admin.layouts.app")
 @section('content')
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Blog Category</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Edit Blog Category</li>
-                        </ol>
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route("dashboard") }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Edit Blog Category
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="bcategoryFrm" method="post" action="{{ route("bcategory-update") }}">
-                {{ csrf_field() }}
-                <input type="hidden" name="bcategory_id" value="{{ $bcategoryDetail->bcategory_id }}">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="tab-content">
-
-                                    <div class="tab-pane active" role="tabpanel">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row card-body m-t-20">
-
-                                                    <div class="form-group col-lg-6 m-b-40" id="b_title">
-                                                        <input type="text" class="form-control" name="bcategory_title" id="bcategory_title" value="{{ $bcategoryDetail->bcategory_title }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_title">Category Title <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_bcategory_title" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-lg-6 m-b-40" id="b_slug">
-                                                        <input type="text" class="form-control" id="bcategory_slug" name="bcategory_slug" value="{{ $bcategoryDetail->bcategory_slug }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_slug">Category Slug <span class="form-asterisk">*</span></label>
-                                                        <span class="help-block"><small id="msg_bcategory_slug" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-lg-6 m-b-40">
-                                                        <input type="text" class="form-control" name="bcategory_meta_title" id="bcategory_meta_title" value="{{ $bcategoryDetail->bcategory_meta_title }}" >
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_meta_title">Meta Title</label>
-                                                        <span class="help-block"><small id="msg_bcategory_meta_title" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-lg-6 m-b-40">
-                                                        <input type="text" class="form-control" name="bcategory_meta_keyword" id="bcategory_meta_keyword" value="{{ $bcategoryDetail->bcategory_meta_keyword }}">
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_meta_keyword">Meta Keyword</label>
-                                                        <span class="help-block"><small id="msg_bcategory_meta_keyword" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-lg-6">
-                                                        <textarea class="form-control" name="bcategory_meta_desc" id="bcategory_meta_desc">{{ $bcategoryDetail->bcategory_meta_desc }}</textarea>
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_meta_desc">Meta Description</label>
-                                                        <span class="help-block"><small id="msg_bcategory_meta_desc" class="text-danger"></small></span>
-                                                    </div>
-
-                                                    <div class="form-group col-lg-6 m-t-20">
-                                                        <select class="form-control p-0" name="bcategory_status" id="bcategory_status">
-                                                            <option value="1" {{ ($bcategoryDetail->bcategory_status == 1) ? 'selected="selected"' : '' }}>Active</option>
-                                                            <option value="0" {{ ($bcategoryDetail->bcategory_status == 0) ? 'selected="selected"' : '' }} >Inactive</option>
-                                                        </select>
-                                                        <span class="bar"></span>
-                                                        <label for="bcategory_status">Status</label>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
+    <!-- App body starts -->
+    <form id="bcategoryFrm" method="post" action="{{ route("bcategory-update") }}">
+        <input type="hidden" name="bcategory_id" value="{{ $bcategoryDetail->bcategory_id }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Blog Category</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3">
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="email">Category Title</label>
+                                        <input type="text" class="form-control" id="bcategory_title" name="bcategory_title" placeholder="Enter Category Title" value="{{ $bcategoryDetail->bcategory_title }}">
+                                        <div class="invalid-feedback" id="msg_bcategory_title"></div>
                                     </div>
-
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="phone">Category Slug</label>
+                                        <input type="text" class="form-control" id="bcategory_slug" name="bcategory_slug" placeholder="Enter Category Slug" value="{{ $bcategoryDetail->bcategory_slug }}">
+                                        <div class="invalid-feedback" id="msg_bcategory_slug"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="bcategory_meta_title">Meta Title</label>
+                                        <input type="text" class="form-control" id="bcategory_meta_title" name="bcategory_meta_title" placeholder="Enter Meta Title" value="{{ $bcategoryDetail->bcategory_meta_title }}">
+                                        <div class="invalid-feedback" id="msg_bcategory_meta_title"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-3 col-lg-4 col-sm-6">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="bcategory_meta_keyword">Meta Keyword</label>
+                                        <input type="text" class="form-control" id="bcategory_meta_keyword" name="bcategory_meta_keyword" placeholder="Meta Keyword" value="{{ $bcategoryDetail->bcategory_meta_keyword }}">
+                                        <div class="invalid-feedback" id="msg_bcategory_meta_keyword"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-12 col-lg-12 col-sm-6 mt-sm-2">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="bcategory_meta_desc">Meta Description</label>
+                                        <textarea type="text" class="form-control" id="bcategory_meta_desc" name="bcategory_meta_desc" rows="2">{{ $bcategoryDetail->bcategory_meta_desc }}</textarea>
+                                        <div class="invalid-feedback" id="msg_bcategory_meta_desc"></div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('bcategory-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Update Category
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- Row ends -->
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
 
 @section('page-js')
-    <script type="application/javascript">
-        $('#bcategory_title').keyup(function (e) {
+    <script type="text/javascript">
+        $('#bcategory_title').keyup(function(e) {
             $.ajax({
                 url: "{{ route('bcategory-create-slug') }}",
                 type: "GET",
-                data: {'bcategory_title' : $(this).val()},
-                success: function (response) {
-                    $('#b_slug').addClass('focused')
+                data: {
+                    'bcategory_title': $(this).val()
+                },
+                success: function(response) {
                     $('#bcategory_slug').val(response.slug);
                 }
             });
         });
-
-        $('#bcategoryFrm').on('submit',function (e)
-        {
+        
+        $('#bcategoryFrm').submit(function(e) {
             e.preventDefault();
-            var form    = $('#bcategoryFrm')[0];
-            var formData= new FormData(form);
-            $("#bcategoryFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
                 url: $(this).attr('action'),
-                cache : false,
-                enctype: 'multipart/form-data',
-                contentType: false,
+                method: 'POST',
+                data: formData,
                 processData: false,
-                data : formData,
-                success: function (response) {
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/bcategory-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
         });

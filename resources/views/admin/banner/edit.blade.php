@@ -1,179 +1,178 @@
-@extends("admin.layouts.app")
-@section("content")
-    <!-- Page wrapper  -->
-    <div class="page-wrapper">
-        <!-- Container fluid  -->
-        <div class="container-fluid">
-            <!-- Bread crumb and right sidebar toggle -->
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h4 class="text-themecolor">Banners</h4>
-                </div>
-                <div class="col-md-7 align-self-center text-right">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
-                            <li class="breadcrumb-item active">Edit Banner</li>
-                        </ol>
+@extends('admin.layouts.app')
+@section('content')
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+        <!-- Breadcrumb starts -->
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+                <a href="{{ route('dashboard') }}">Home</a>
+            </li>
+            <li class="breadcrumb-item text-primary" aria-current="page">
+                Edit Banner
+            </li>
+        </ol>
+        <!-- Breadcrumb ends -->
+    </div>
+    <!-- App Hero header ends -->
 
-                    </div>
-                </div>
-            </div>
-            <!-- End Bread crumb and right sidebar toggle -->
-            <!-- Start Page Content -->
-            <form class="floating-labels" id="bannerFrm" action="{{ route("banner-update") }}" method="post">
-                <input type="hidden" name="banner_id" value="{{ $bannerDetail->banner_id }}">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
+    <!-- App body starts -->
+    <form id="bannerFrm" method="post" action="{{ route('banner-update') }}">
+        <input type="hidden" name="banner_id" value="{{ $bannerDetail->banner_id }}">
+        {{ csrf_field() }}
+        <div class="app-body">
+            <!-- Row starts -->
+            <div class="row gx-3">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Edit Banner</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Row starts -->
+                            <div class="row gx-3 mb-3">
+                                <!-- Page Fields -->
+                                <div class="col-lg-6">
+                                    <div class="row g-3">
+                                        <div class="col-xxl-6 col-lg-4 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="banner_title">Banner Title</label>
+                                                <input type="text" class="form-control" id="banner_title" name="banner_title" placeholder="Enter Banner Title" value="{{ $bannerDetail->banner_title }}">
+                                                <div class="invalid-feedback" id="msg_banner_title"></div>
+                                            </div>
+                                        </div>
 
-                                <div class="tab-content p-20" id="myTabContent">
-                                    <div role="tabpanel" class="tab-pane fade show active" id="english" aria-labelledby="english-tab">
-                                        <div class="col-lg-12">
-                                            <div class="card">
-                                                <div class="row">
-                                                    <div class="col-md-6 m-t-25">
-                                                        <div class="form-group m-b-40 m-t-25" id="b_title">
-                                                            <input type="text" class="form-control" name="banner_title" id="banner_title" value="{{ $bannerDetail->banner_title }}">
-                                                            <span class="bar"></span>
-                                                            <label for="banner_title">Banner Title</label>
-                                                            <span class="help-block"><small id="msg_banner_title" class="text-danger"></small></span>
-                                                        </div>
+                                        <div class="col-xxl-6 col-lg-4 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="banner_text">Banner Text (Top Text)</label>
+                                                <input type="text" class="form-control" id="banner_text" name="banner_text" placeholder="Enter Banner Text (Top Text)" value="{{ $bannerDetail->banner_text }}">
+                                                <div class="invalid-feedback" id="msg_banner_text"></div>
+                                            </div>
+                                        </div>
 
-                                                        <div class="form-group m-b-40" id="b_link">
-                                                            <input type="text" class="form-control" name="banner_text" id="banner_text" value="{{ $bannerDetail->banner_text }}">
-                                                            <span class="bar"></span>
-                                                            <label for="banner_text">Banner Text (Top Text)</label>
-                                                            <span class="help-block"><small id="msg_banner_text" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        <div class="form-group m-b-40" id="b_link">
-                                                            <input type="text" class="form-control" name="banner_text1" id="banner_text1" value="{{ $bannerDetail->banner_text1 }}">
-                                                            <span class="bar"></span>
-                                                            <label for="banner_text">Banner Text (Bottom Text)</label>
-                                                            <span class="help-block"><small id="msg_banner_text" class="text-danger"></small></span>
-                                                        </div>
-
-                                                        {{--<div class="form-group">
-                                                            <select class="form-control p-0" name="banner_status" id="banner_status">
-                                                                <option value="1" {{ ($bannerDetail->banner_status == 1) ? 'selected="selected"' : '' }}>Active</option>
-                                                                <option value="0" {{ ($bannerDetail->banner_status == 0) ? 'selected="selected"' : '' }} >Inactive</option>
-                                                            </select><span class="bar"></span>
-                                                            <label for="banner_status">Status</label>
-                                                        </div>--}}
-                                                    </div>
-
-                                                    <div class="col-md-6 m-t-15">
-                                                        <div class="row m-b-40">
-                                                            <div class="col-md-6">
-                                                                <label>Banner Image</label><br><br>
-                                                                @if ($bannerDetail->id!="0")
-                                                                    <input type="hidden" name="old_image" value="{{ $bannerDetail->banner_image }}">
-                                                                @endif
-                                                                <input type="file" class="dropify" data-default-file="{{ ($bannerDetail->banner_image!="" && file_exists(public_path('/uploads/banner/'.$bannerDetail->banner_image))) ? asset('/uploads/banner/'.$bannerDetail->banner_image) : "" }}" id="banner_image" name="banner_image" aria-describedby="fileHelp">
-                                                                <span style="color: red;font-size: 12px;">Best size: (Width:1920px X Height:800px)</span>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label>Banner Image</label><br><br>
-                                                                @if ($bannerDetail->id!="0")
-                                                                    <input type="hidden" name="old_image1" value="{{ $bannerDetail->banner_icon }}">
-                                                                @endif
-                                                                <input type="file" class="dropify" data-default-file="{{ ($bannerDetail->banner_icon!="" && file_exists(public_path('/uploads/banner/'.$bannerDetail->banner_icon))) ? asset('/uploads/banner/'.$bannerDetail->banner_icon) : "" }}" id="banner_icon" name="banner_icon" aria-describedby="fileHelp">
-                                                                <span style="color: red;font-size: 12px;">Best size: (Width:480px X Height:640px)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-md-12">
-                                                        <label for="banner_desc" class="m-b-20" style="position: initial;">Description</label>
-                                                        <textarea id="banner_desc" name="banner_desc">{{ $bannerDetail->banner_desc }}</textarea>
-                                                        <script>
-                                                            CKEDITOR.replace( 'banner_desc',
-                                                                {
-                                                                    toolbar :
-                                                                        [
-                                                                            { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source'] },
-                                                                            { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-                                                                            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-                                                                            { name: 'insert', items: [ 'Image' ] },
-                                                                            { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
-                                                                            { name: 'paragraph', items : [ 'NumberedList','BulletedList' ] }
-                                                                        ],
-                                                                    height:200
-                                                                    });
-                                                        </script>
-                                                    </div>
-                                                </div>
+                                        <div class="col-xxl-12 col-lg-6 col-sm-6">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="banner_text1">Banner Text (Bottom Text)</label>
+                                                <textarea type="text" class="form-control" id="banner_text1" name="banner_text1" rows="2">{{ $bannerDetail->banner_text1 }}</textarea>
+                                                <div class="invalid-feedback" id="msg_banner_text1"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <div class="col-lg-6">
+                                    <form class="dropzone" id="image-upload" method="POST" action="{{ route('banner-image-upload') }}" enctype="multipart/form-data">
+                                        @csrf
+                                        <label class="form-label">Banner Image</label>
+                                        <div class="dropzone dz-clickable" id="image-upload">
+                                            <div class="dz-message">
+                                                <button type="button" class="dz-button">
+                                                    Click here to upload your photo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <input type="hidden" name="banner_image" id="banner_image">
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-12">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ route('banner-list') }}" class="btn btn-outline-secondary">
+                                            Cancel
+                                        </a>
+                                        <button type="submit" name="submit" class="btn btn-primary">
+                                            Update Banner
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="form-actions p-b-10 text-center">
-                    <button type="submit" name="submit" class="btn btn-success"> <i class="fa fa-check"></i> Save</button>
-                </div>
-            </form>
-            <!-- End PAge Content -->
+            </div>
+            <!-- Row ends -->
         </div>
-        <!-- End Container fluid  -->
-    </div>
-    <!-- End Page wrapper  -->
+    </form>
+    <!-- App body ends -->
 @endsection
-
 @section('page-js')
     <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function(){
-                $(".dropify-wrapper").css("width","100%");
-            },100);
-        });
-
-        $('#bannerFrm').on('submit', function(e)
-        {
+        $('#bannerFrm').submit(function(e) {
             e.preventDefault();
-            for (instance in CKEDITOR.instances) {
-                CKEDITOR.instances[instance].updateElement();
-                CKEDITOR.config.allowedContent=true;
-            }
-            var form    = $('#bannerFrm')[0];
-            var formData= new FormData(form);
-            $("#bannerFrm").find(".has-error").removeClass("has-error");
-            $(".bar").html("");
+
+            $('#loading-wrapper').fadeIn(200);
+            let formData = new FormData(this);
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').html('');
+
             $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                },
                 url: $(this).attr('action'),
-                cache : false,
+                method: 'POST',
+                data: formData,
                 enctype: 'multipart/form-data',
-                contentType: false,
                 processData: false,
-                data : formData,
-                success: function(response){
-                    //alert(response.redirect_url)
-                    if(response.status == "validation-error")
-                    {
-                        $.each(response.data, function (key, value)
-                        {
-                            $("#"+key).parent("div").addClass("has-error");
-                            //$("#"+key).next().html("<small class='text-danger'>" + value + "</small>");
-                            $("#msg_"+key).html(value);
+                contentType: false,
+                success: function(res) {
+                    $('#loading-wrapper').fadeOut(200);
+                    window.location.href = res.redirect_url;
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        $.each(xhr.responseJSON.errors, function(key, val) {
+                            $('#' + key).addClass('is-invalid');
+                            $('#msg_' + key).html(val[0]);
                         });
                     }
-                    else if (response.redirect_url !== undefined)
-                    {
-                        window.location = "{{ url('admin/banner-list') }}";
-                    }
+                    $('#loading-wrapper').fadeOut(200);
                 }
             });
+        });
+
+        Dropzone.autoDiscover = false;
+        let existingImage = "{{ $bannerDetail->banner_image ?? '' }}";
+        let dz = new Dropzone("#image-upload", {
+            url: "{{ route('banner-image-upload') }}",
+            maxFiles: 1,
+            acceptedFiles: ".jpg,.jpeg,.png,.webp",
+            addRemoveLinks: true,
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            init: function() {
+                let myDropzone = this;
+
+                //PRELOAD EXISTING IMAGE
+                if (existingImage) {
+                    let mockFile = {
+                        name: existingImage,
+                        size: 12345,
+                        accepted: true
+                    };
+
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit(
+                            "thumbnail",
+                            mockFile,
+                            "{{ asset('uploads/banner') }}/" + existingImage
+                    );
+                    myDropzone.emit("complete", mockFile);
+
+                    myDropzone.files.push(mockFile);
+                    document.getElementById('banner_image').value = existingImage;
+                }
+
+                // Upload new image
+                myDropzone.on("success", function(file, response) {
+                    document.getElementById('banner_image').value = response.filename;
+                });
+
+                // Remove image
+                myDropzone.on("removedfile", function() {
+                    document.getElementById('banner_image').value = "";
+                });
+            }
         });
     </script>
 @endsection

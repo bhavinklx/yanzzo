@@ -1,206 +1,286 @@
 @php
     $fileName = request()->route()->getName();
 @endphp
-<!-- Left Sidebar - style you can find in sidebar.scss  -->
-<aside class="left-sidebar">
-    <!-- Sidebar scroll-->
-    <div class="scroll-sidebar">
-        <!-- Sidebar navigation-->
-        <nav class="sidebar-nav">
-            <ul id="sidebarnav">
-                <li> <a href="{{ route("dashboard") }}" class="waves-effect waves-dark" aria-expanded="false"><i class="ti-home"></i><span class="hide-menu">Dashboard</span></a></li>
 
-                @if(auth()->user()->can('user-list') || auth()->user()->can('role-list'))
-                    <li class="{{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit' || $fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit' || $fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Administrators</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit' || $fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'in' : '' }}">
-                            @can('user-list')
-                                <li class="{{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit') ? 'active' : '' }}"><a href="{{ route("user-list") }}" class="{{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit') ? 'active' : '' }}">Administrator List</a></li>
-                            @endcan
-                            @can('role-list')
-                                <li class="{{ ($fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'active' : '' }}"><a href="{{ route("role-list") }}" class="{{ ($fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'active' : '' }}">Role List</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                {{--@if(auth()->user()->can('customer-list'))
-                    <li class="{{ ($fileName == 'customer-list') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'customer-list') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-user-o"></i><span class="hide-menu">Yaarioke User</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'customer-list') ? 'in' : '' }}">
-                            @can('customer-list')
-                                <li class="{{ ($fileName == 'customer-list') ? 'active' : '' }}"><a href="{{ route("customer-list") }}" class="{{ ($fileName == 'customer-list') ? 'active' : '' }}">User List</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif--}}
-
-                {{--@if(auth()->user()->can('order-list'))
-                    <li class="{{ ($fileName == 'order-list') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'order-list') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-shopping-cart-full"></i><span class="hide-menu">Booking Order</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'order-list') ? 'in' : '' }}">
-                            --}}{{--@can('order-list')--}}{{--
-                            <li class="{{ ($fileName == 'order-list' && request('status') === 'pending') ? 'active' : '' }}"><a href="{{ route("order-list", ['status' => 'pending']) }}" class="{{ ($fileName == 'order-list' && request('status') === 'pending') ? 'active' : '' }}">All Booking</a></li>
-                            --}}{{--@endcan--}}{{--
-                            --}}{{--@can('order-list')--}}{{--
-                            <li class="{{ ($fileName == 'order-list' && request('status') === 'completed') ? 'active' : '' }}"><a href="{{ route("order-list", ['status' => 'completed']) }}" class="{{ ($fileName == 'order-list' && request('status') === 'completed') ? 'active' : '' }}">Completed Booking</a></li>
-                            --}}{{--@endcan--}}{{--
-                            --}}{{--@can('order-list')--}}{{--
-                            <li class="{{ ($fileName == 'order-list' && request('status') === 'cancel') ? 'active' : '' }}"><a href="{{ route("order-list", ['status' => 'cancel']) }}" class="{{ ($fileName == 'order-list' && request('status') === 'cancel') ? 'active' : '' }}">Cancel Booking</a></li>
-                            --}}{{--@endcan--}}{{--
-                            --}}{{--@can('order-list')--}}{{--
-                            <li class="{{ ($fileName == 'customer-add') ? 'active' : '' }}"><a href="{{ route("customer-add") }}" class="{{ ($fileName == 'customer-add') ? 'active' : '' }}">Add Booking</a></li>
-                            --}}{{--@endcan--}}{{--
-                        </ul>
-                    </li>
-                @endif--}}
-
-                {{--@if(auth()->user()->can('membership-order-list'))
-                    <li class="{{ ($fileName == 'membership-order-list') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'membership-order-list') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-harddrives"></i><span class="hide-menu">Membership Order</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'membership-order-list') ? 'in' : '' }}">
-                            --}}{{--@can('membership-order-list')--}}{{--
-                            <li class="{{ ($fileName == 'membership-order-list' && request('status') === 'pending') ? 'active' : '' }}"><a href="{{ route("membership-order-list", ['status' => 'pending']) }}" class="{{ ($fileName == 'membership-order-list' && request('status') === 'pending') ? 'active' : '' }}">Pending Membership</a></li>
-                            --}}{{--@endcan--}}{{--
-                            --}}{{--@can('membership-order-list')--}}{{--
-                            <li class="{{ ($fileName == 'membership-order-list' && request('status') === 'completed') ? 'active' : '' }}"><a href="{{ route("membership-order-list", ['status' => 'completed']) }}" class="{{ ($fileName == 'membership-order-list' && request('status') === 'completed') ? 'active' : '' }}">Completed Membership</a></li>
-                            --}}{{--@endcan--}}{{--
-                            --}}{{--@can('membership-order-list')--}}{{--
-                            <li class="{{ ($fileName == 'membership-order-list' && request('status') === 'cancel') ? 'active' : '' }}"><a href="{{ route("membership-order-list", ['status' => 'cancel']) }}" class="{{ ($fileName == 'membership-order-list' && request('status') === 'cancel') ? 'active' : '' }}">Cancel Membership</a></li>
-                            --}}{{--@endcan--}}{{--
-                        </ul>
-                    </li>
-                @endif--}}
-
-                {{--@if(auth()->user()->can('discount-list') || auth()->user()->can('discount-add'))
-                    <li class="{{ ($fileName == 'discount-list' || $fileName == 'discount-add' || $fileName == 'discount-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'discount-list' || $fileName == 'discount-add' || $fileName == 'discount-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-ticket"></i><span class="hide-menu">Discount</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'discount-list' || $fileName == 'discount-add' || $fileName == 'discount-edit') ? 'in' : '' }}">
-                            @can('discount-list')
-                                <li class="{{ ($fileName == 'discount-list') ? 'active' : '' }}"><a href="{{ route("discount-list") }}" class="{{ ($fileName == 'discount-list') ? 'active' : '' }}">Discount List</a></li>
-                            @endcan
-                            @can('discount-add')
-                                <li class="{{ ($fileName == 'discount-add' || $fileName == 'discount-edit') ? 'active' : '' }}"><a href="{{ route("discount-add") }}" class="{{ ($fileName == 'discount-add' || $fileName == 'discount-edit') ? 'active' : '' }}">Add Discount</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif--}}
-
-                @if(auth()->user()->can('banner-list') || auth()->user()->can('banner-add'))
-                    <li class="{{ ($fileName == 'banner-list' || $fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'banner-list' || $fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-gallery"></i><span class="hide-menu">Banners</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'banner-list' || $fileName == 'banner-add' || $fileName == 'banner-edit') ? 'in' : '' }}">
-                            @can('banner-list')
-                                <li class="{{ ($fileName == 'banner-list') ? 'active' : '' }}"><a href="{{ route("banner-list") }}" class="{{ ($fileName == 'banner-list') ? 'active' : '' }}">Banner List</a></li>
-                            @endcan
-                            @can('banner-add')
-                                <li class="{{ ($fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active' : '' }}"><a href="{{ route("banner-add") }}" class="{{ ($fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active' : '' }}">Add Banner</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                @if(auth()->user()->can('bcategory-list') || auth()->user()->can('blog-list'))
-                    <li class="{{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit' || $fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit' || $fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-gift"></i><span class="hide-menu">Blogs</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit' || $fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'in' : '' }}">
-                            @can('bcategory-list')
-                                <li class="{{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit') ? 'active' : '' }}"><a href="{{ route("bcategory-list") }}" class="{{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit') ? 'active' : '' }}">Category List</a></li>
-                            @endcan
-                            @can('blog-list')
-                                <li class="{{ ($fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active' : '' }}"><a href="{{ route("blog-list") }}" class="{{ ($fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active' : '' }}">Blog List</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                @if(auth()->user()->can('city-list') || auth()->user()->can('faq-list'))
-                    <li class="{{ ($fileName == 'city-list' || $fileName == 'city-add' || $fileName == 'city-edit' || $fileName == 'faq-list' || $fileName == 'faq-add' || $fileName == 'faq-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'city-list' || $fileName == 'city-add' || $fileName == 'city-edit' || $fileName == 'faq-list' || $fileName == 'faq-add' || $fileName == 'faq-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-world"></i><span class="hide-menu">Cities</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'city-list' || $fileName == 'city-add' || $fileName == 'city-edit' || $fileName == 'faq-list' || $fileName == 'faq-add' || $fileName == 'faq-edit') ? 'in' : '' }}">
-                            @can('city-list')
-                                <li class="{{ ($fileName == 'city-list' || $fileName == 'city-add' || $fileName == 'city-edit') ? 'active' : '' }}"><a href="{{ route("city-list") }}" class="{{ ($fileName == 'city-list' || $fileName == 'city-add' || $fileName == 'city-edit') ? 'active' : '' }}">City List</a></li>
-                            @endcan
-                            @can('faq-list')
-                                <li class="{{ ($fileName == 'faq-list' || $fileName == 'faq-add' || $fileName == 'faq-edit') ? 'active' : '' }}"><a href="{{ route("faq-list") }}" class="{{ ($fileName == 'faq-list' || $fileName == 'faq-add' || $fileName == 'faq-edit') ? 'active' : '' }}">FAQ List</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                @if(auth()->user()->can('testimonial-list') || auth()->user()->can('testimonial-add'))
-                    <li class="{{ ($fileName == 'testimonial-list' || $fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'testimonial-list' || $fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-text-width"></i><span class="hide-menu">Testimonials</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'testimonial-list' || $fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'in' : '' }}">
-                            @can('testimonial-list')
-                                <li class="{{ ($fileName == 'testimonial-list') ? 'active' : '' }}"><a href="{{ route("testimonial-list") }}" class="{{ ($fileName == 'testimonial-list') ? 'active' : '' }}">Testimonial List</a></li>
-                            @endcan
-                            @can('testimonial-add')
-                                <li class="{{ ($fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active' : '' }}"><a href="{{ route("testimonial-add") }}" class="{{ ($fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active' : '' }}">Add Testimonial</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                @if(auth()->user()->can('pages-list') || auth()->user()->can('pages-add'))
-                    <li class="{{ ($fileName == 'pages-list' || $fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'pages-list' || $fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="ti-layers"></i><span class="hide-menu">Pages</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'pages-list' || $fileName == 'pages-add' || $fileName == 'pages-edit') ? 'in' : '' }}">
-                            @can('pages-list')
-                                <li class="{{ ($fileName == 'pages-list') ? 'active' : '' }}"><a href="{{ route("pages-list") }}" class="{{ ($fileName == 'pages-list') ? 'active' : '' }}">Page List</a></li>
-                            @endcan
-                            @can('pages-add')
-                                <li class="{{ ($fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active' : '' }}"><a href="{{ route("pages-add") }}" class="{{ ($fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active' : '' }}">Add Page</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                {{--@if(auth()->user()->can('lounge-list') || auth()->user()->can('lounge-add'))
-                    <li class="{{ ($fileName == 'lounge-list' || $fileName == 'lounge-add' || $fileName == 'lounge-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'lounge-list' || $fileName == 'lounge-add' || $fileName == 'lounge-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-university"></i><span class="hide-menu">Lounge</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'lounge-list' || $fileName == 'lounge-add' || $fileName == 'lounge-edit') ? 'in' : '' }}">
-                            @can('lounge-list')
-                                <li class="{{ ($fileName == 'lounge-list') ? 'active' : '' }}"><a href="{{ route("lounge-list") }}" class="{{ ($fileName == 'lounge-list') ? 'active' : '' }}">Lounge List</a></li>
-                            @endcan
-                            @can('lounge-add')
-                                <li class="{{ ($fileName == 'lounge-add' || $fileName == 'lounge-edit') ? 'active' : '' }}"><a href="{{ route("lounge-add") }}" class="{{ ($fileName == 'lounge-add' || $fileName == 'lounge-edit') ? 'active' : '' }}">Add Lounge</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif--}}
-
-                {{--@if(auth()->user()->can('franchise-list') || auth()->user()->can('franchise-add'))
-                    <li class="{{ ($fileName == 'franchise-list' || $fileName == 'franchise-add' || $fileName == 'franchise-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'franchise-list' || $fileName == 'franchise-add' || $fileName == 'franchise-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-cubes"></i><span class="hide-menu">Franchise</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'franchise-list' || $fileName == 'franchise-add' || $fileName == 'franchise-edit') ? 'in' : '' }}">
-                            @can('franchise-list')
-                                <li class="{{ ($fileName == 'franchise-list') ? 'active' : '' }}"><a href="{{ route("franchise-list") }}" class="{{ ($fileName == 'franchise-list') ? 'active' : '' }}">Franchise List</a></li>
-                            @endcan
-                            @can('franchise-add')
-                                <li class="{{ ($fileName == 'franchise-add' || $fileName == 'franchise-edit') ? 'active' : '' }}"><a href="{{ route("franchise-add") }}" class="{{ ($fileName == 'franchise-add' || $fileName == 'franchise-edit') ? 'active' : '' }}">Add Franchise</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif--}}
-
-                @if(auth()->user()->can('membership-list') || auth()->user()->can('membership-add'))
-                    <li class="{{ ($fileName == 'membership-list' || $fileName == 'membership-add' || $fileName == 'membership-edit') ? 'active' : '' }}"> <a class="has-arrow waves-effect waves-dark {{ ($fileName == 'membership-list' || $fileName == 'membership-add' || $fileName == 'membership-edit') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-shopping-bag"></i><span class="hide-menu">Membership</span></a>
-                        <ul aria-expanded="false" class="collapse {{ ($fileName == 'membership-list' || $fileName == 'membership-add' || $fileName == 'membership-edit') ? 'in' : '' }}">
-                            @can('membership-list')
-                                <li class="{{ ($fileName == 'membership-list') ? 'active' : '' }}"><a href="{{ route("membership-list") }}" class="{{ ($fileName == 'membership-list') ? 'active' : '' }}">Membership List</a></li>
-                            @endcan
-                            @can('membership-add')
-                                <li class="{{ ($fileName == 'membership-add' || $fileName == 'membership-edit') ? 'active' : '' }}"><a href="{{ route("membership-add") }}" class="{{ ($fileName == 'membership-add' || $fileName == 'membership-edit') ? 'active' : '' }}">Add Membership</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-
-                @if(auth()->user()->can('contact-list') || auth()->user()->can('inquiry-list'))
-                    <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fa fa-envelope-o"></i><span class="hide-menu">Inquiries</span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            @can('contact-list')
-                                <li><a href="{{ route("contact-list") }}">Contact Inquiry</a></li>
-                            @endcan
-                            @can('inquiry-list')
-                                <li><a href="{{ route("inquiry-list") }}">Partner Inquiry</a></li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endif
-            </ul>
-        </nav>
-        <!-- End Sidebar navigation -->
+<!-- Sidebar wrapper starts -->
+<nav id="sidebar" class="sidebar-wrapper">
+    <!-- Sidebar profile starts -->
+    <div class="sidebar-profile">
+        <img src="{{ url('assets/images/user6.png') }}" class="img-shadow img-3x me-3 rounded-5" alt="Hospital Admin Templates">
+        <div class="m-0">
+            <h5 class="mb-1 profile-name text-nowrap text-truncate">{{ Auth::user()->name }}</h5>
+            <p class="m-0 small profile-name text-nowrap text-truncate">{{ Auth::user()->getRoleNames()->first() ?? 'No Role' }}</p>
+        </div>
     </div>
-    <!-- End Sidebar scroll-->
-</aside>
-<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+    <!-- Sidebar profile ends -->
+
+    <!-- Sidebar menu starts -->
+    <div class="sidebarMenuScroll">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{{ route("dashboard") }}">
+                    <i class="ri-home-6-line"></i>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+
+            @if(auth()->user()->hasPermissionTo('user-list', 'web') || auth()->user()->hasPermissionTo('role-list', 'web'))
+                <li class="treeview {{ ($fileName == 'user-list' || $fileName == 'user-add' || $fileName == 'user-edit' || $fileName == 'role-list' || $fileName == 'role-add' || $fileName == 'role-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-nurse-line"></i>
+                        <span class="menu-text">Administrators</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('user-list')
+                            <li>
+                                <a href="{{ route("user-list") }}" class="{{ ($fileName == 'user-list') ? 'active-sub' : '' }}">Administrator List</a>
+                            </li>
+                        @endcan
+                        @can('user-add')
+                            <li>
+                                <a href="{{ route("user-add") }}" class="{{ ($fileName == 'user-add' || $fileName == 'user-edit') ? 'active-sub' : '' }}">Add Administrator</a>
+                            </li>
+                        @endcan
+                        @can('role-list')
+                            <li>
+                                <a href="{{ route("role-list") }}" class="{{ ($fileName == 'role-list') ? 'active-sub' : '' }}">Role List</a>
+                            </li>
+                        @endcan
+                        @can('role-add')
+                            <li>
+                                <a href="{{ route("role-add") }}" class="{{ ($fileName == 'role-add' || $fileName == 'role-edit') ? 'active-sub' : '' }}">Add Role</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('patient-list') || auth()->user()->can('patient-add'))
+                <li class="treeview {{ ($fileName == 'patient-list' || $fileName == 'patient-add' || $fileName == 'patient-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-heart-pulse-line"></i>
+                        <span class="menu-text">Patients</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('patient-list')
+                            <li>
+                                <a href="{{ route("patient-list") }}" class="{{ ($fileName == 'patient-list') ? 'active-sub' : '' }}">Patient List</a>
+                            </li>
+                        @endcan
+                        {{--@can('patient-add')
+                            <li>
+                                <a href="{{ route("patient-add") }}" class="{{ ($fileName == 'patient-add' || $fileName == 'patient-edit') ? 'active-sub' : '' }}">Add Patient</a>
+                            </li>
+                        @endcan--}}
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('doctor-list') || auth()->user()->can('doctor-add'))
+                <li class="treeview {{ ($fileName == 'doctor-list' || $fileName == 'doctor-add' || $fileName == 'doctor-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-stethoscope-line"></i>
+                        <span class="menu-text">Doctors</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('doctor-list')
+                            <li>
+                                <a href="{{ route("doctor-list") }}" class="{{ ($fileName == 'doctor-list') ? 'active-sub' : '' }}">Doctor List</a>
+                            </li>
+                        @endcan
+                        {{--@can('doctor-add')
+                            <li>
+                                <a href="{{ route("doctor-add") }}" class="{{ ($fileName == 'doctor-add' || $fileName == 'doctor-edit') ? 'active-sub' : '' }}">Add Doctor</a>
+                            </li>
+                        @endcan--}}
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('banner-list') || auth()->user()->can('banner-add'))
+                <li class="treeview {{ ($fileName == 'banner-list' || $fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-file-image-line"></i>
+                        <span class="menu-text">Banners</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('banner-list')
+                            <li>
+                                <a href="{{ route("banner-list") }}" class="{{ ($fileName == 'banner-list') ? 'active-sub' : '' }}">Banner List</a>
+                            </li>
+                        @endcan
+                        @can('banner-add')
+                            <li>
+                                <a href="{{ route("banner-add") }}" class="{{ ($fileName == 'banner-add' || $fileName == 'banner-edit') ? 'active-sub' : '' }}">Add Banner</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('pages-list') || auth()->user()->can('pages-add'))
+                <li class="treeview {{ ($fileName == 'pages-list' || $fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-pantone-line"></i>
+                        <span class="menu-text">Pages</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('pages-list')
+                            <li>
+                                <a href="{{ route("pages-list") }}" class="{{ ($fileName == 'pages-list') ? 'active-sub' : '' }}">Page List</a>
+                            </li>
+                        @endcan
+                        @can('pages-add')
+                            <li>
+                                <a href="{{ route("pages-add") }}" class="{{ ($fileName == 'pages-add' || $fileName == 'pages-edit') ? 'active-sub' : '' }}">Add Page</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('bcategory-list', 'web') || auth()->user()->can('blog-list', 'web'))
+                <li class="treeview {{ ($fileName == 'bcategory-list' || $fileName == 'bcategory-add' || $fileName == 'bcategory-edit' || $fileName == 'blog-list' || $fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-news-line"></i>
+                        <span class="menu-text">Blogs</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('bcategory-list')
+                            <li>
+                                <a href="{{ route("bcategory-list") }}" class="{{ ($fileName == 'bcategory-list') ? 'active-sub' : '' }}">Category List</a>
+                            </li>
+                        @endcan
+                        @can('bcategory-add')
+                            <li>
+                                <a href="{{ route("bcategory-add") }}" class="{{ ($fileName == 'bcategory-add' || $fileName == 'bcategory-edit') ? 'active-sub' : '' }}">Add Category</a>
+                            </li>
+                        @endcan
+                        @can('blog-list')
+                            <li>
+                                <a href="{{ route("blog-list") }}" class="{{ ($fileName == 'blog-list') ? 'active-sub' : '' }}">Blog List</a>
+                            </li>
+                        @endcan
+                        @can('blog-add')
+                            <li>
+                                <a href="{{ route("blog-add") }}" class="{{ ($fileName == 'blog-add' || $fileName == 'blog-edit') ? 'active-sub' : '' }}">Add Blog</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('testimonial-list') || auth()->user()->can('testimonial-add'))
+                <li class="treeview {{ ($fileName == 'testimonial-list' || $fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-text-snippet"></i>
+                        <span class="menu-text">Testimonials</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('testimonial-list')
+                            <li>
+                                <a href="{{ route("testimonial-list") }}" class="{{ ($fileName == 'testimonial-list') ? 'active-sub' : '' }}">Testimonial List</a>
+                            </li>
+                        @endcan
+                        @can('testimonial-add')
+                            <li>
+                                <a href="{{ route("testimonial-add") }}" class="{{ ($fileName == 'testimonial-add' || $fileName == 'testimonial-edit') ? 'active-sub' : '' }}">Add Testimonial</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('category-list') || auth()->user()->can('category-add'))
+                <li class="treeview {{ ($fileName == 'category-list' || $fileName == 'category-add' || $fileName == 'category-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-gallery-view-2"></i>
+                        <span class="menu-text">Categories</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('category-list')
+                            <li>
+                                <a href="{{ route("category-list") }}" class="{{ ($fileName == 'category-list') ? 'active-sub' : '' }}">Category List</a>
+                            </li>
+                        @endcan
+                        @can('category-add')
+                            <li>
+                                <a href="{{ route("category-add") }}" class="{{ ($fileName == 'category-add' || $fileName == 'category-edit') ? 'active-sub' : '' }}">Add Category</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('service-list') || auth()->user()->can('service-add'))
+                <li class="treeview {{ ($fileName == 'service-list' || $fileName == 'service-add' || $fileName == 'service-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-customer-service-2-line"></i>
+                        <span class="menu-text">Services</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('service-list')
+                            <li>
+                                <a href="{{ route("service-list") }}" class="{{ ($fileName == 'service-list') ? 'active-sub' : '' }}">Service List</a>
+                            </li>
+                        @endcan
+                        @can('service-add')
+                            <li>
+                                <a href="{{ route("service-add") }}" class="{{ ($fileName == 'service-add' || $fileName == 'service-edit') ? 'active-sub' : '' }}">Add Service</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('sponsor-list') || auth()->user()->can('sponsor-add'))
+                <li class="treeview {{ ($fileName == 'sponsor-list' || $fileName == 'sponsor-add' || $fileName == 'sponsor-edit') ? 'active current-page' : '' }}">
+                    <a href="javascript: void (0)">
+                        <i class="ri-color-filter-line"></i>
+                        <span class="menu-text">Sponsors</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @can('sponsor-list')
+                            <li>
+                                <a href="{{ route("sponsor-list") }}" class="{{ ($fileName == 'sponsor-list') ? 'active-sub' : '' }}">Sponsor List</a>
+                            </li>
+                        @endcan
+                        @can('sponsor-add')
+                            <li>
+                                <a href="{{ route("sponsor-add") }}" class="{{ ($fileName == 'sponsor-add' || $fileName == 'sponsor-edit') ? 'active-sub' : '' }}">Add Sponsor</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('contact-list'))
+                <li class="{{ ($fileName == 'contact-list') ? 'active current-page' : '' }}">
+                    <a href="{{ route("contact-list") }}">
+                        <i class="ri-mail-send-line"></i>
+                        <span class="menu-text">Contact Inquiry</span>
+                    </a>
+                </li>
+            @endif
+
+            @if(auth()->user()->can('setting-edit'))
+                <li class="{{ ($fileName == 'setting') ? 'active current-page' : '' }}">
+                    <a href="{{ route("setting") }}">
+                        <i class="ri-settings-5-line"></i>
+                        <span class="menu-text">Settings</span>
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </div>
+    <!-- Sidebar menu ends -->
+
+    <!-- Sidebar contact starts -->
+    <div class="sidebar-contact">
+        <p class="fw-light mb-1 text-nowrap text-truncate">Emergency Contact</p>
+        <h5 class="m-0 lh-1 text-nowrap text-truncate">09173905270</h5>
+        <i class="ri-phone-line"></i>
+    </div>
+    <!-- Sidebar contact ends -->
+</nav>
+<!-- Sidebar wrapper ends -->
