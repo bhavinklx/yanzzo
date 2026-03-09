@@ -3,8 +3,8 @@
     <div class="container">
         <!-- Footer Join -->
         <div class="footer-join aos" data-aos="fade-up">
-            <h2>We Welcome Your Passion And Expertise</h2>
-            <p class="sub-title">Join our empowering sports community today and grow with us.</p>
+            <h2>We Welcome Your Passion and Expertise</h2>
+            <p class="sub-title">Join our innovative machinery marketplace and grow together with us.</p>
         </div>
         <!-- /Footer Join -->
 
@@ -67,7 +67,7 @@
                         <h4 class="footer-title">Quick Links</h4>
                         <ul>
                             @php
-                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [1, 6, 3])->orderBy('page_order')->get();
+                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [1, 2, 3, 5])->orderBy('page_order')->get();
                             @endphp
                             @if(isset($footerPages) && count($footerPages) > 0)
                                 @foreach($footerPages as $key => $pages)
@@ -91,7 +91,7 @@
                         <h4 class="footer-title">Support</h4>
                         <ul>
                             @php
-                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [4, 5, 8])->orderBy('page_order')->get();
+                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [7, 8, 9, 12])->orderBy('page_order')->get();
                             @endphp
                             @if(isset($footerPages) && count($footerPages) > 0)
                                 @foreach($footerPages as $key => $pages)
@@ -115,7 +115,7 @@
                         <h4 class="footer-title">Other Links</h4>
                         <ul>
                             @php
-                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [2, 7])->orderBy('page_order')->get();
+                                $footerPages = App\Models\Pages::where(['page_parent' => 0, 'page_status' => '1', 'page_footer_status' => '1'])->whereIn('page_id', [4, 6])->orderBy('page_order')->get();
                             @endphp
                             @if(isset($footerPages) && count($footerPages) > 0)
                                 @foreach($footerPages as $key => $pages)
@@ -158,3 +158,138 @@
     <!-- /Footer Bottom -->
 </footer>
 <!-- /Footer -->
+
+<!-- signup-modal -->
+<div class="modal fade" id="signup-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content" id="form-area-signup">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="feather-user-plus me-2 text-primary"></i>Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="signup_form" name="signup_form" enctype="multipart/form-data">
+                    <input type="hidden" id="URI" name="URI" value="<?= base64_encode("https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"); ?>">
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Your Name</label>
+                            <input class="form-control mb-0" type="text" id="user_name" name="user_name" placeholder="Enter your name">
+                        </div>
+                        <span class="help-block" id="uname_msg"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Email Address</label>
+                            <input class="form-control mb-0 " type="text" id="user_email" name="user_email" placeholder="Enter your email">
+                        </div>
+                        <span class="help-block" id="uemail_msg"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Mobile Number</label>
+                            <input class="form-control mb-0 mobile1" type="text" id="user_mobile" name="user_mobile" autocomplete="new-password" minlength="10" maxlength="10" onkeypress="return isNumberKey(event);" placeholder="Enter your mobile number">
+                        </div>
+                        <span class="help-block" id="umobile_msg"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Password</label>
+                            <input class="form-control mb-0" type="password" id="user_password" name="user_password" autocomplete="new-password" placeholder="Enter your password">
+                        </div>
+                        <span class="help-block" id="upass_msg"></span>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-check-input" type="checkbox" id="user_is_whatsapp" name="user_is_whatsapp" value="1">
+                        <label for="user_is_whatsapp">Is this your WhatsApp number?</label>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-check-input" type="checkbox" id="user_tc" name="user_tc" value="yes" checked>
+                        <label for="user_tc">I Agree With <a href="{{ url('/terms-conditions') }}" target="_blank">Terms & Conditions</a> And <a href="{{ url('/privacy-policy') }}" target="_blank">Privacy Policy</a></label>
+                        <br>
+                        <span class="help-block" id="user_tc_msg"></span>
+                    </div>
+                    <button class="btn btn-primary w-100" type="button" id="signupBtn" name="signupBtn" onclick="return validate_signup();">Sign Up</button>
+                </form>
+            </div>
+            <div class="modal-footer" style="display: unset !important;">
+                <p style="text-align: center">Already have an Account? <a href="javascript: void (0)" class="text-blue" onclick="signin_popup();">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- signup-modal -->
+
+<!-- signin-modal -->
+<div class="modal fade" id="signin-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content" id="form-area-login">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><i class="feather-log-in me-2 text-primary"></i>Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="login_form" name="login_form" enctype="multipart/form-data">
+                    <input type="hidden" id="URI" name="URI" value="<?= base64_encode("https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"); ?>">
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Mobile Number</label>
+                            <input class="form-control mb-0 allownumericwithoutdecimal" type="text" id="username" name="username" maxlength="10" placeholder="Enter your mobile number">
+                        </div>
+                        <span class="help-block" id="username_msg"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="input-space mb-0">
+                            <label class="form-label">Password</label>
+                            <input class="form-control mb-0" type="password" id="userpassword" name="userpassword" autocomplete="new-password" placeholder="Enter your password">
+                        </div>
+                        <span class="help-block" id="userpassword_msg"></span>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                        <div class="row">
+                            <div class="form-group col-lg-6" style="text-align: left">
+                                <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me" value="yes" checked>
+                                <label for="remember_me">Remember Password</label>
+                            </div>
+                            {{--<div class="form-group col-lg-6" style="text-align: right">
+                                <a href="javascript: void (0)" onclick="forgot_popup()">
+                                    Forgot Password?
+                                </a>
+                            </div>--}}
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-100" type="button" id="loginBtn" name="loginBtn" onclick="return validate_login()">Sign In</button>
+                </form>
+                <div style="text-align: center" id="loginThankMsg"></div>
+            </div>
+            <div class="modal-footer" style="display: unset !important;">
+                <p style="text-align: center">Create an Account? <a href="javascript: void (0)" class="text-blue" onclick="signup_popup();">Register</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- signin-modal -->
+
+<!-- forgot-modal -->
+<div class="modal fade" id="forgot-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content" id="form-area-forgot">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="forgot_form" name="forgot_form" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <div class="input-space">
+                            <label class="form-label">Mobile Number</label>
+                            <input class="form-control mb-0 allownumericwithoutdecimal" type="text" id="forgot_mobile" name="forgot_mobile" maxlength="10">
+                        </div>
+                        <span class="help-block" id="forgotmobile_msg"></span>
+                    </div>
+                    <button class="btn btn-primary w-100" type="button" id="forgotBtn" name="forgotBtn" onclick="return validate_forgot()">Forgot Password</button>
+                </form>
+                <div style="text-align: center" id="fotpThankMsg"></div>
+            </div>
+        </div>
+    </div>
+</div>

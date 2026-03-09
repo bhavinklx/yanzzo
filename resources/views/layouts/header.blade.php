@@ -37,21 +37,32 @@
                             @php $ACTIVE_LINK = (url()->current() == $SITE_URL) ? 'active' : ''; @endphp
                             @php
                                 $subPages = App\Models\Pages::where(['page_parent' => $pages->page_id, 'page_status' => '1', 'page_header_status' => '1'])->orderBy('page_order')->get();
+                                $categories = [];
+                                if($pages->page_id == 3) {
+                                    $categories = App\Models\Category::where(['category_parent' => 0, 'category_status' => '1'])->orderBy('category_order')->get();
+                                }
                             @endphp
-                            @if(isset($subPages) && count($subPages) > 0)
+                            @if((isset($subPages) && count($subPages) > 0) || (isset($categories) && count($categories) > 0))
                                 <li class="has-submenu">
-                                    <a href="javascript: void (0);">{{ $pages->page_title }} <i class="fas fa-chevron-down"></i></a>
+                                    <a href="{{ ($pages->page_id == 3) ? $SITE_URL : 'javascript: void (0);' }}">{{ $pages->page_title }} <i class="fas fa-chevron-down"></i></a>
                                     <ul class="submenu">
-                                        @foreach($subPages as $key => $sub)
-                                            @if($sub->page_link!='')
-                                                @php $SITE_URL = ($sub->page_link != '#') ? $sub->page_link : 'javascript: void(0)'; @endphp
-                                            @elseif($sub->page_slug=="home")
-                                                @php $SITE_URL = url('/'); @endphp
-                                            @else
-                                                @php $SITE_URL = url($sub->page_slug . '/'); @endphp
-                                            @endif
-                                            <li><a href="{{ $SITE_URL }}">{{ $sub->page_title }}</a></li>
-                                        @endforeach
+                                        @if(isset($subPages) && count($subPages) > 0)
+                                            @foreach($subPages as $key => $sub)
+                                                @if($sub->page_link!='')
+                                                    @php $SITE_URL = ($sub->page_link != '#') ? $sub->page_link : 'javascript: void(0)'; @endphp
+                                                @elseif($sub->page_slug=="home")
+                                                    @php $SITE_URL = url('/'); @endphp
+                                                @else
+                                                    @php $SITE_URL = url($sub->page_slug . '/'); @endphp
+                                                @endif
+                                                <li><a href="{{ $SITE_URL }}">{{ $sub->page_title }}</a></li>
+                                            @endforeach
+                                        @endif
+                                        @if(isset($categories) && count($categories) > 0)
+                                            @foreach($categories as $cat)
+                                                <li><a href="{{ url($pages->page_slug . '?category=' . $cat->category_slug) }}">{{ $cat->category_title }}</a></li>
+                                            @endforeach
+                                        @endif
                                     </ul>
                                 </li>
                             @else
@@ -60,48 +71,63 @@
                             </li>
                         @endforeach
                     @endif
+                    @if(session()->has('customer_id') && session()->has('customer_id') > 0)
+                        <li class="login-link">
+                            <a href="javascript: void (0)" {{--class="dropdown-toggle nav-link" data-bs-toggle="dropdown"--}}><span><i class="feather-users"></i></span> {{ Session::get('customer_name') }}</a>
+                            {{--<div class="dropdown-menu dropdown-menu-end" style="right: 11%">
+                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="{{ url('/my-account') }}">Dashboard</a></p>
+                                <p style="margin-bottom: 0px !important;"><a class="dropdown-item" href="javascript: void (0)" onclick="return logout()">Logout</a></p>
+                            </div>--}}
+                        </li>
+                        <li class="login-link">
+                            <a href="{{ url('/my-account') }}">Dashboard</a>
+                        </li>
+                        <li class="login-link">
+                            <a href="javascript: void (0)" onclick="return logout()">Logout</a>
+                        </li>
+                    @else
+                        <li class="login-link">
+                            <a href="javascript: void (0)" onclick="return signup_popup()">Register</a>
+                        </li>
+                        <li class="login-link">
+                            <a href="javascript: void (0)" onclick="return signin_popup()">Login</a>
+                        </li>
+                    @endif
                 </ul>
             </div>
             <ul class="nav header-navbar-rht">
-                <li class="nav-item">
-                    <div class="nav-link btn btn-white log-register">
-                        <a href="login.html"><span><i class="feather-users"></i></span>Login</a> / <a href="register.html">Register</a>
-                    </div>
-                </li>
-                {{--<li class="nav-item">
-                    <div class="search-wrapper">
-                        <!-- Toggle Button -->
-                        <button class="search-toggle-btn" id="searchToggle">
-                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                        </button>
-
-                        <!-- Dropdown Form -->
-                        <div class="search-dropdown" id="searchDropdown">
-                            <div class="search-dropdown-inner">
-                                <form action="coaches-grid.html" id="searchForm">
-                                    <div class="search-input-group">
-                                        <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <circle cx="11" cy="11" r="8"/>
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                        </svg>
-                                        <input
-                                                type="text"
-                                                name="q"
-                                                class="search-input"
-                                                placeholder="Search coaches, sports, location..."
-                                                autocomplete="off"
-                                        >
-                                    </div>
-                                    <button type="submit" class="search-submit">Search</button>
-                                </form>
+                @if(session()->has('customer_id') && session()->has('customer_id') > 0)
+                    <li class="nav-item">
+                        <div class="user-header-dropdown">
+                            <a href="javascript:void(0)" class="user-header-toggle">
+                                <i class="feather-user"></i> {{ Session::get('customer_name') }} <i class="fas fa-chevron-down ms-1" style="font-size:10px;"></i>
+                            </a>
+                            <div class="user-header-menu">
+                                <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i> Dashboard</a>
+                                <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i class="feather-plus-square"></i> Sell Your Machine</a>
+                                <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My Machines</a>
+                                <a class="user-header-item" href="{{ url('/chat') }}">
+                                    <i class="feather-message-square"></i> Messages
+                                    @php
+                                        $unreadHeader = \App\Models\Chat::where('receiver_id', Session::get('customer_id'))->where('is_read', false)->count();
+                                    @endphp
+                                    @if($unreadHeader > 0)
+                                        <span class="badge badge-danger rounded-circle ms-1" style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
+                                    @endif
+                                </a>
+                                <a class="user-header-item" href="javascript:void(0)" onclick="return logout()"><i class="feather-log-out"></i> Logout</a>
                             </div>
                         </div>
-                    </div>
-                </li>--}}
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <div class="nav-link btn btn-white log-register">
+                            <a href="javascript: void (0)" onclick="return signin_popup()"><span><i class="feather-log-in me-1"></i></span>Login</a> / <a href="javascript: void (0)" onclick="return signup_popup()"><span><i class="feather-user-plus ms-1 me-1"></i></span>Register</a>
+                        </div>
+                    </li>
+                @endif
             </ul>
+
         </nav>
     </div>
 </header>

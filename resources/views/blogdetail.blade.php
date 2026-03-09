@@ -1,8 +1,8 @@
 @extends("layouts.app")
-{{--@section('title', $pagesDetail->page_meta_title ?? DEFAULT_META_TITLE)
-@section('keywords', $pagesDetail->page_meta_keyword ?? DEFAULT_META_KEYWORD)
-@section('description', $pagesDetail->page_meta_desc ?? DEFAULT_META_DESCRIPTION)
-@section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')--}}
+@section('title', $blogDetail->blog_meta_title ?? DEFAULT_META_TITLE)
+@section('keywords', $blogDetail->blog_meta_keyword ?? DEFAULT_META_KEYWORD)
+@section('description', $blogDetail->blog_meta_desc ?? DEFAULT_META_DESCRIPTION)
+@section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')
 @section("content")
     <!-- Breadcrumb -->
     @if($pagesDetail->page_image!='' && file_exists(public_path('/uploads/pages/'.$pagesDetail->page_image)))

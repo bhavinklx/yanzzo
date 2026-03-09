@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -18,13 +17,31 @@ use App\Http\Controllers\Contact\ContactController;
 use App\Http\Controllers\Sponsor\SponsorController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Setting\SettingController;
+use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SellerController;
 
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
     Artisan::call('config:cache');
     Artisan::call('view:clear');
     return 'Application cache has been cleared';
+});
+
+Route::controller(AjaxController::class)->group(function (){
+    Route::post('/validate-email', 'validate_email')->name('validate-email');
+    Route::post('/validate-mobile', 'validate_mobile')->name('validate-mobile');
+    Route::post('/validate-signup', 'validate_signup')->name('validate-signup');
+    Route::post('/resend-otp', 'resend_otp')->name('resend-otp');
+    Route::post('/verify-otp', 'verify_otp')->name('verify-otp');
+    Route::post('/validate-forgot', 'validate_forgot')->name('validate-forgot');
+    Route::post('/reset-password', 'reset_password')->name('reset-password');
+    Route::post('/validate-login', 'validate_login')->name('validate-login');
+    Route::post('/validate-logout', 'logout')->name('validate-logout');
+    Route::post('/favourite-toggle', 'favourite_toggle')->name('favourite-toggle');
 });
 
 Route::get('/admin', function () {
@@ -321,6 +338,45 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/admin/service-image-upload', 'uploadImage')->name('service-image-upload');
     });
 
+    //For Customer
+    Route::controller(CustomerController::class)->group(function (){
+        Route::middleware('can:customer-list')->group(function () {
+            Route::get("/admin/customer-list", "view")->name("customer-list");
+            Route::get("/admin/customer-load-table", "load_table")->name("customer-load-table");
+        });
+        Route::middleware('can:customer-delete')->group(function () {
+            Route::post("/admin/customer-delete", "delete")->name("customer-delete");
+        });
+        Route::post("/admin/customer-change-status", "change_status")->name("customer-change-status");
+        Route::post("/admin/customer-update-order", "update_order")->name("customer-update-order");
+    });
+
+    //For Product
+    Route::controller(ProductController::class)->group(function (){
+        Route::middleware('can:product-add')->group(function () {
+            Route::get("/admin/product-add", "create")->name("product-add");
+            Route::post("/admin/product-insert", "insert")->name("product-insert");
+        });
+        Route::middleware('can:product-edit')->group(function () {
+            Route::get("/admin/product-edit/{id}", "edit")->name("product-edit");
+            Route::post("/admin/product-update", "update")->name("product-update");
+        });
+        Route::middleware('can:product-list')->group(function () {
+            Route::get("/admin/product-list", "view")->name("product-list");
+            Route::get("/admin/product-load-table", "load_table")->name("product-load-table");
+        });
+        Route::middleware('can:product-delete')->group(function () {
+            Route::post("/admin/product-delete", "delete")->name("product-delete");
+        });
+        Route::get("/admin/product-create-slug", "createSlug")->name("product-create-slug");
+        Route::post("/admin/product-change-status", "change_status")->name("product-change-status");
+        Route::post("/admin/product-update-order", "update_order")->name("product-update-order");
+        Route::get("/admin/product-get-subcategory", "getSubcategory")->name("product-get-subcategory");
+        Route::get("/admin/product-get-city", "getCity")->name("product-get-city");
+        Route::post('/admin/product-image-upload', 'uploadImage')->name('product-image-upload');
+        Route::post('/admin/product-image-delete', 'deleteImage')->name('product-image-delete');
+    });
+
     //For Setting
     Route::controller(SettingController::class)->group(function (){
         Route::middleware('can:setting-edit')->group(function () {
@@ -330,18 +386,38 @@ Route::group(['middleware' => ['auth']], function () {
     });
 });
 
+Route::controller(ProfileController::class)
+    ->middleware('customer.login')
+    ->group(function () {
+        Route::get('/my-account', 'myAccount');
+        Route::post('/my-account-update', 'myAccountUpdate')->name('my-account-update');
+        Route::get('/my-listing', 'myListing')->name('my-listing');
+        Route::post('/mark-as-sold', 'markAsSold')->name('mark-as-sold');
+        Route::get('/seller-inquiry', [SellerController::class, 'index'])->name('seller-inquiry');
+        Route::post('/seller-inquiry-insert', [SellerController::class, 'insert'])->name('seller-inquiry-insert');
+        Route::get('/seller-inquiry-get-subcategory', [SellerController::class, 'getSubcategory'])->name('seller-inquiry-get-subcategory');
+        Route::get('/seller-inquiry-get-city', [SellerController::class, 'getCity'])->name('seller-inquiry-get-city');
+        Route::post('/seller-inquiry-image-upload', [SellerController::class, 'uploadImage'])->name('seller-inquiry-image-upload');
+        Route::post('/seller-inquiry-image-delete', [SellerController::class, 'deleteImage'])->name('seller-inquiry-image-delete');
+        Route::get('/change-password', 'changePassword');
+    });
+
+Route::controller(\App\Http\Controllers\ChatController::class)
+    ->middleware('customer.login')
+    ->group(function () {
+        Route::get('/chat', 'index')->name('chat.index');
+        Route::get('/chat/{otherId}', 'show')->name('chat.show');
+        Route::post('/chat/send', 'store')->name('chat.store');
+    });
+
 Route::controller(HomeController::class)->group(function (){
     Route::get('/', 'index')->name('/');
     Route::get('/blogs','blog')->name('blog');
     Route::get('/blogs/{slug}', 'blogDetail');
     Route::get('/contact-us', 'contact')->name('contacts');
     Route::post('/contact-insert', 'contact_insert')->name('contact-insert');
-    Route::get('/faqs', 'faqs')->name('faqs');
-    Route::get('/membership', 'membership')->name('membership');
-    Route::get('/book-lounge', 'bookLounge')->name('book-lounge');
-    Route::get('/book-lounge/{slug}', 'bookLoungeDetail');
-    Route::get('/become-partner', 'becomePartner')->name('become-partner');
-    Route::post('/become-partner-insert', 'becomePartner_insert')->name('become-partner-insert');
+    Route::get('/machines', 'product')->name('machines');
+    Route::get('/machines/{slug}', 'productDetail');
     Route::get('/404', 'error404');
     Route::get('/{slug}', 'page');
 });

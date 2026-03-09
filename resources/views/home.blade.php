@@ -1,8 +1,8 @@
 @extends("layouts.app")
-{{--@section('title', $pagesDetail->page_meta_title ?? DEFAULT_META_TITLE)
+@section('title', $pagesDetail->page_meta_title ?? DEFAULT_META_TITLE)
 @section('keywords', $pagesDetail->page_meta_keyword ?? DEFAULT_META_KEYWORD)
 @section('description', $pagesDetail->page_meta_desc ?? DEFAULT_META_DESCRIPTION)
-@section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')--}}
+@section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')
 @section("content")
     <!-- Hero Section -->
     @if(is_array($bannerDetail) && count($bannerDetail) > 0)
@@ -82,134 +82,71 @@
     <!-- /Journey -->
 
     <!-- Latest News -->
-    <section class="section featured-venues latest-news">
-        <div class="container">
-            <div class="section-heading aos" data-aos="fade-up">
-                <h2>Latest Posted <span>Used Machines</span></h2>
-                <p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>
-            </div>
-            <div class="row">
-                <div class="featured-slider-group ">
-                    <div class="owl-carousel featured-venues-slider owl-theme">
-
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-01.jpg" alt="User">
-                                    </a>
-
+    @if(count($productDetail) > 0)
+        <section class="section featured-venues latest-news">
+            <div class="container">
+                <div class="section-heading aos" data-aos="fade-up">
+                    <h2>Latest Posted <span>Used Machines</span></h2>
+                    <p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>
+                </div>
+                <div class="row">
+                    <div class="featured-slider-group ">
+                        <div class="owl-carousel featured-venues-slider owl-theme">
+                            <!-- Featured Item -->
+                            @for($p=0; $p < count($productDetail); $p++)
+                                <div class="featured-venues-item">
+                                    <div class="listing-item listing-item-grid">
+                                        <div class="listing-img">
+                                            @if($productDetail[$p]['product_is_sold'] == '1')
+                                                <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                                                    <span class="badge bg-danger text-white px-3 py-2" style="font-weight: 700; text-transform: uppercase; border-radius: 6px;">SOLD OUT</span>
+                                                </div>
+                                            @endif
+                                            <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}">
+                                                <img src="http://127.0.0.1:8000/image/product-img.jpg" alt="{{ $productDetail[$p]['product_title'] }}">
+                                            </a>
+                                        </div>
+                                        <div class="listing-content">
+                                            <h3 class="listing-title">
+                                                <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}">{{ $productDetail[$p]['product_title'] }}</a>
+                                            </h3>
+                                            <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
+                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
+                                                        <i class="feather-cpu"></i>
+                                                    </span>
+                                                    <span class="text-dark fw-bold" style="font-size: 13px;">Model: {{ $productDetail[$p]['product_model'] ?? 'N/A' }}</span>
+                                                </div>
+                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                    <span class="bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
+                                                        <i class="feather-map-pin"></i>
+                                                    </span>
+                                                    <span class="text-dark fw-bold" style="font-size: 13px;">{{ $productDetail[$p]['city']['city_name'] ?? 'N/A' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="listing-details-group">
+                                                <p class="mb-0">
+                                                    {!! \Illuminate\Support\Str::limit(strip_tags($productDetail[$p]['product_short_desc']), 125, '') !!}
+                                                    <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}" class="text-primary fw-bold">Read More...</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">Used Accurpress Press Brake, 5 mtr, 320 Ton For Sale</a>
-                                    </h3>
-                                </div>
-                            </div>
+                            @endfor
+                        <!-- /Featured Item -->
                         </div>
-                        <!-- /News -->
-
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-02.jpg" alt="User">
-                                    </a>
-
-                                </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">Used Drilling Machine For Sale</a>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /News -->
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-03.jpg" alt="User">
-                                    </a>
-
-                                </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">used power press machine for sale </a>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /News -->
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-01.jpg" alt="User">
-                                    </a>
-
-                                </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">Used Accurpress Press Brake, 5 mtr, 320 Ton For Sale</a>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /News -->
-
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-02.jpg" alt="User">
-                                    </a>
-
-                                </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">Used Drilling Machine For Sale</a>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /News -->
-                        <!-- News -->
-                        <div class="featured-venues-item aos" data-aos="fade-up">
-                            <div class="listing-item mb-0">
-                                <div class="listing-img">
-                                    <a href="blog-details.html">
-                                        <img src="image/news-03.jpg" alt="User">
-                                    </a>
-
-                                </div>
-                                <div class="listing-content news-content">
-                                    <h3 class="listing-title">
-                                        <a href="blog-details.html">used power press machine for sale </a>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /News -->
-
-
                     </div>
                 </div>
-            </div>
 
-            <!-- View More -->
-            <div class="view-all text-center aos" data-aos="fade-up">
-                <a href="blog-grid.html" class="btn btn-secondary d-inline-flex align-items-center">View All News <span class="lh-1"><i class="feather-arrow-right-circle ms-2"></i></span></a>
+                <!-- View More -->
+                <div class="view-all text-center aos" data-aos="fade-up">
+                    <a href="{{ url('/machines') }}" class="btn btn-secondary d-inline-flex align-items-center">View All Machines <span class="lh-1"><i class="feather-arrow-right-circle ms-2"></i></span></a>
+                </div>
+                <!-- View More -->
             </div>
-            <!-- View More -->
-
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- /Latest News -->
 
     <!-- Group Coaching -->
@@ -414,7 +351,7 @@
 
                 <!-- View More -->
                 <div class="view-all text-center aos" data-aos="fade-up">
-                    <a href="{{ url('/blogs/') }}" class="btn btn-secondary d-inline-flex align-items-center">View All News <span class="lh-1"><i class="feather-arrow-right-circle ms-2"></i></span></a>
+                    <a href="{{ url('/blogs') }}" class="btn btn-secondary d-inline-flex align-items-center">View All News <span class="lh-1"><i class="feather-arrow-right-circle ms-2"></i></span></a>
                 </div>
                 <!-- View More -->
             </div>

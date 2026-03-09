@@ -45,7 +45,7 @@ class BlogController extends Controller
 
     public function create()
     {
-        $bcategoryDetail = Bcategory::where("bcategory_status", "1")->get();
+        $bcategoryDetail = Bcategory::select('bcategory_id', 'bcategory_title')->where("bcategory_status", "1")->get();
         return view("admin.blog.create", compact('bcategoryDetail'));
     }
 
@@ -63,7 +63,7 @@ class BlogController extends Controller
     public function edit($id)
     {
         $blogDetail = Blog::find($id);
-        $bcategoryDetail = Bcategory::where("bcategory_status", "1")->get();
+        $bcategoryDetail = Bcategory::select('bcategory_id', 'bcategory_title')->where("bcategory_status", "1")->get();
         return view("admin.blog.edit", compact('blogDetail', 'bcategoryDetail'));
     }
 
@@ -85,18 +85,15 @@ class BlogController extends Controller
 
     public function load_table(Request $request)
     {
-        $blogDetail = Blog::orderBy("blog_order");
+        $blogDetail = Blog::select('blog_id', 'bcategory_id', 'blog_title', 'blog_image', 'blog_status', 'created_at', 'blog_order');
+        $categoryDetail = Bcategory::select('bcategory_id', 'bcategory_title')->get()->pluck('bcategory_title', 'bcategory_id')->toArray();
+        
         return DataTables::of($blogDetail)
             ->editColumn("checkbox", function ($blog){
                 return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $blog->blog_id . '"> </div>';
             })
-            ->editColumn("category", function ($blog){
-                $categoryDetail = Bcategory::get()->toArray();
-                $categoryArray = [];
-                for ($c=0; $c < count($categoryDetail); $c++) {
-                    $categoryArray[$categoryDetail[$c]['bcategory_id']] = $categoryDetail[$c]['bcategory_title'];
-                }
-                return $categoryArray[$blog->bcategory_id] ?? "--";
+            ->editColumn("category", function ($blog) use ($categoryDetail) {
+                return $categoryDetail[$blog->bcategory_id] ?? "--";
             })
             ->editColumn("title", function ($blog){
                 return $blog->blog_title;

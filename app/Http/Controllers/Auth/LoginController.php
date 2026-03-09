@@ -44,6 +44,9 @@ class LoginController extends Controller
 
         // Login user manually
         Auth::login($user);
+
+        // Update timestamp
+        $user->touch();
         return redirect('/admin/dashboard');
     }
 

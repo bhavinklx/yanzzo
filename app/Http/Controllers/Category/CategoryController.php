@@ -44,7 +44,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        $parentCategory = Category::where(["category_status" => "1", "category_parent"=>"0"])->orderBy('category_order')->get();
+        $parentCategory = Category::select('category_id', 'category_title')->where(["category_status" => "1", "category_parent"=>"0"])->orderBy('category_order')->get();
         return view('admin.category.create', compact('parentCategory'));
     }
 
@@ -62,7 +62,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $categoryDetail = Category::find($id);
-        $parentCategory = Category::where(["category_status" => "1", "category_parent"=>"0"])->orderBy('category_order')->get();
+        $parentCategory = Category::select('category_id', 'category_title')->where(["category_status" => "1", "category_parent"=>"0"])->orderBy('category_order')->get();
         //echo '<pre>'; print_r($parentCategory); exit();
         return view("admin.category.edit", compact('categoryDetail', 'parentCategory'));
     }
@@ -80,8 +80,10 @@ class CategoryController extends Controller
 
     public function view()
     {
-        $categoryDetail = Category::with('subCategory')->where('category_parent', '0')->orderBy('category_order')->get();
-        return view("admin.category.list")->with('categoryDetail',$categoryDetail);
+        $categoryDetail = Category::select('category_id', 'category_title', 'category_order', 'category_status', 'created_at')->with(['subCategory' => function($query) {
+            $query->select('category_id', 'category_title', 'category_parent', 'category_order', 'category_status', 'created_at');
+        }])->where('category_parent', '0')->orderBy('category_order')->get();
+        return view("admin.category.list")->with('categoryDetail', $categoryDetail);
     }
 
     public function change_status(Request $request)

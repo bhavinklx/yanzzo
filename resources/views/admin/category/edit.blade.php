@@ -37,7 +37,9 @@
                                         <select class="form-select" id="category_parent" name="category_parent" value="{{ $categoryDetail->category_id }}">
                                             <option value="0">Select as Parent</option>
                                             @foreach ($parentCategory as $category)
-                                                <option value="{{ $category->category_id }}">{{ $category->page_title }}</option>
+                                                <option value="{{ $category->category_id }}"
+                                                    {{ $category->category_id == $categoryDetail->category_parent ? 'selected="selected"' : '' }}>
+                                                    {{ $category->category_title }}</option>
                                             @endforeach
                                         </select>
                                     </div>

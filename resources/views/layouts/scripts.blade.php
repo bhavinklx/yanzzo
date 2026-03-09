@@ -10,7 +10,9 @@
 <script src="{{ url('js/common.js?v=') . time() }}"></script>
 <script src="{{ url('js/page.js?v=') . time() }}"></script>
 <script src="{{ url('build/js/intlTelInput.js') }}"></script>
+<script src="{{ url('assets/vendor/dropzone/dropzone.min.js') }}"></script>
 <script>
+    Dropzone.autoDiscover = false;
     $(document).ready(function() {
         $(".allownumericwithoutdecimal").on("keypress keyup blur",function (event) {
             $(this).val($(this).val().replace(/[^\d].+/, ""));
@@ -86,7 +88,7 @@
     $('.mobile').blur(function() {
         // Does some stuff and logs the event to the console
         var number = iti.getSelectedCountryData();
-        alert(number.name)
+        //alert(number.name)
         $('.country').val(number.name);
         $('.prefix').val(number.dialCode);
     });

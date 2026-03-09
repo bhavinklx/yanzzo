@@ -23,81 +23,81 @@ function validate_contact() {
     //alert('Hello')
     $('#common_msg').html('');
     var emailFilter = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
-    var email       = $('#contact_email').val();
-    var mobile      = $('#contact_mobile').val();
-    var isCareer    = $('#is_career').val();
-    var error       = false;
+    var email = $('#contact_email').val();
+    var mobile = $('#contact_mobile').val();
+    //var isCareer = $('#is_career').val();
+    var error = false;
 
     if ($('#contact_fname').val() == '') {
         error = true;
-        $('#contact_fname').css('border', '1px solid red');
+        $('#contact_fname').addClass('is-invalid');
     } else {
-        $('#contact_fname').css('border', '');
+        $('#contact_fname').removeClass('is-invalid');
     }
 
     if ($('#contact_lname').val() == '') {
         error = true;
-        $('#contact_lname').css('border', '1px solid red');
+        $('#contact_lname').addClass('is-invalid');
     } else {
-        $('#contact_lname').css('border', '');
+        $('#contact_lname').removeClass('is-invalid');
     }
 
     if ($('#contact_email').val() == '') {
         error = true;
-        $('#contact_email').css('border', '1px solid red');
+        $('#contact_email').addClass('is-invalid');
     } else if (email != '' && !(emailFilter.test(email))) {
         error = true;
-        $('#contact_email').css('border', '1px solid red');
+        $('#contact_email').addClass('is-invalid');
     } else {
-        $('#contact_email').css('border', '');
+        $('#contact_email').removeClass('is-invalid');
     }
 
     if ($('#contact_mobile').val() == '') {
         error = true;
-        $('#contact_mobile').css('border', '1px solid red');
+        $('#contact_mobile').addClass('is-invalid');
     } else if (mobile.length < 10) {
         error = true;
-        $('#contact_mobile').css('border', '1px solid red');
+        $('#contact_mobile').addClass('is-invalid');
     } else {
-        $('#contact_mobile').css('border', '');
+        $('#contact_mobile').removeClass('is-invalid');
     }
 
     if ($('#contact_subject').val() == '') {
         error = true;
-        $('#contact_subject').css('border', '1px solid red');
+        $('#contact_subject').addClass('is-invalid');
     } else {
-        $('#contact_subject').css('border', '');
+        $('#contact_subject').removeClass('is-invalid');
     }
 
     if ($('#contact_message').val() == '') {
         error = true;
-        $('#contact_message').css('border', '1px solid red');
+        $('#contact_message').addClass('is-invalid');
     } else {
-        $('#contact_message').css('border', '');
+        $('#contact_message').removeClass('is-invalid');
     }
-    
-    if(error == false){
-        var fname   = $('#contact_fname').val();
-        var lname   = $('#contact_lname').val();
-        var email   = $('#contact_email').val();
+
+    if (error == false) {
+        var fname = $('#contact_fname').val();
+        var lname = $('#contact_lname').val();
+        var email = $('#contact_email').val();
         var country = $('#country').val();
-        var prefix  = $('#prefix').val();
-        var mobile  = $('#contact_mobile').val();
+        var prefix = $('#prefix').val();
+        var mobile = $('#contact_mobile').val();
         var subject = $('#contact_subject').val();
         var message = $('#contact_message').val();
         //$('#submit').html('<img src="https://artenspace.com/public/img/loader.gif" width="40px">');
-        $('#submit').prop('disabled',true);
+        $('#submit').prop('disabled', true);
 
-        setTimeout(function(){
+        setTimeout(function () {
             $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url  : "/contact-insert",
-                type : "POST",
-                data : {act:"contact", fname:fname, lname:lname, email:email, country:country, prefix:prefix, mobile:mobile, subject:subject, message:message},
-                success : function(result) {
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url: "/contact-insert",
+                type: "POST",
+                data: { act: "contact", fname: fname, lname: lname, email: email, country: country, prefix: prefix, mobile: mobile, subject: subject, message: message },
+                success: function (result) {
                     if (result == 'success') {
                         $("#contactForm").fadeOut(500);
-                        $('#submit').prop('disabled',false);
+                        $('#submit').prop('disabled', false);
                         $("#contactForm").trigger("reset");
                         setTimeout(function () {
                             $('#thankMsg').html('<h2 style="margin-bottom: 0 !important; color: black !important">Thank You</h2><p style="color: green;">Your message has been submitted. We will contact you shortly</p>');
@@ -106,7 +106,7 @@ function validate_contact() {
                     } else if (result == 'wrong') {
                         $('#thankMsg').html('<h2 style="margin-bottom: 0 !important; margin-top: 10px !important;">Robot verification failed, please try again</h2>');
                         $('#submit').html('Submit');
-                        $('#submit').prop('disabled',false);
+                        $('#submit').prop('disabled', false);
                     }
                 }
             });
@@ -118,11 +118,11 @@ function validate_contact() {
 }
 
 window.onload = () => {
-  //set local storage
-  localStorage.setItem('isLoader', 'true');
-  if (localStorage.getItem('isLoader') === 'true') {
-    $('#overlay-loader').hide();
-  }
+    //set local storage
+    localStorage.setItem('isLoader', 'true');
+    if (localStorage.getItem('isLoader') === 'true') {
+        $('#overlay-loader').hide();
+    }
 };
 
 // Clear localStorage
@@ -194,25 +194,25 @@ function forgot_popup() {
 
 function validate_signup() {
     var emailFilter = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
-    var email       = $('#user_email').val();
-    var mobile      = $('#user_mobile').val();
-    var gst         = $('#user_gst').val();
-    var error       = false;
+    var email = $('#user_email').val();
+    var mobile = $('#user_mobile').val();
+    var gst = $('#user_gst').val();
+    var error = false;
 
     if ($('#user_name').val() == '') {
         error = true;
         $('#uname_msg').html('Please enter your name');
-        $('#uname_msg').css({'color':'red'});
+        $('#uname_msg').css({ 'color': 'red' });
     } else {
         $('#uname_msg').html('');
     }
 
-    if(validate_email(email)) {
+    if (validate_email(email)) {
         error = true;
     } else {
     }
 
-    if(validate_mobile(mobile)) {
+    if (validate_mobile(mobile)) {
         error = true;
     } else {
     }
@@ -228,24 +228,12 @@ function validate_signup() {
     if ($('#user_password').val() == '') {
         error = true;
         $('#upass_msg').html('Please enter your password');
-        $('#upass_msg').css({'color':'red'});
+        $('#upass_msg').css({ 'color': 'red' });
     } else {
         $('#upass_msg').html('');
     }
 
-    /*if ($('#user_cpassword').val() == '') {
-     error = true;
-     $('#ucpass_msg').html('Please enter your confirm password');
-     $('#ucpass_msg').css({'color':'red'});
-     } else if ($('#user_password').val() != $('#user_cpassword').val()) {
-     error = true;
-     $('#ucpass_msg').html('password and confirm password do not match');
-     $('#ucpass_msg').css({'color':'red'});
-     } else {
-     $('#ucpass_msg').html('');
-     }*/
-
-    if($("#user_tc").prop("checked") == false){
+    if ($("#user_tc").prop("checked") == false) {
         error = true;
         $('#user_tc_msg').html('Please accept Terms and Condition');
         $('#user_tc_msg').css('color', 'red');
@@ -255,20 +243,20 @@ function validate_signup() {
         $('#user_tc_msg').html("");
     }
 
-    if(error == false){
-        $('#signupBtn').attr('disabled',true);
+    if (error == false) {
+        $('#signupBtn').attr('disabled', true);
         var frmData = $('#signup_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/validate-signup",
-            type : "POST",
-            data: frmData+'&act=validate_signup',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/validate-signup",
+            type: "POST",
+            data: frmData + '&act=validate_signup',
             dataType: 'json',
             success: function (response) {
                 $('#signup_form').find('input:text, input:password, select, textarea').val('');
                 $('#signup_form').find('input:radio, input:checkbox').prop('checked', false);
 
-                $('#signupBtn').attr('disabled',false);
+                $('#signupBtn').attr('disabled', false);
                 $('#form-area-signup').html(response.otp_form);
                 $('#resend_otp').show();
             }
@@ -279,24 +267,24 @@ function validate_signup() {
 //Check Email valid or not
 function validate_email(email) {
     var error = false;
-    var user  = $.ajax({
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url  : "/validate-email",
-        type : "POST",
-        data: {act:'validate_email', email:email},
+    var user = $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "/validate-email",
+        type: "POST",
+        data: { act: 'validate_email', email: email },
         async: false,
         global: false,
-        success: function(message) {
+        success: function (message) {
             if (message != '') {
                 $('#uemail_msg').html(message);
-                $('#uemail_msg').css({'color':'red','font-size':'15px'});
+                $('#uemail_msg').css({ 'color': 'red', 'font-size': '15px' });
             } else {
                 $('#uemail_msg').html('');
             }
             return message;
         }
     }).responseText;
-    if(user!=""){
+    if (user != "") {
         return user;
     }
 }
@@ -304,44 +292,44 @@ function validate_email(email) {
 //Check Mobile Number valid or not
 function validate_mobile(mobile) {
     var error = false;
-    var user  = $.ajax({
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url  : "/validate-mobile",
-        type : "POST",
-        data: {act:"validate_mobile", mobile:mobile},
+    var user = $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "/validate-mobile",
+        type: "POST",
+        data: { act: "validate_mobile", mobile: mobile },
         async: false,
         global: false,
-        success: function(message) {
+        success: function (message) {
             if (message != '') {
                 $('#umobile_msg').html(message);
-                $('#umobile_msg').css({'color':'red','font-size':'15px'});
+                $('#umobile_msg').css({ 'color': 'red', 'font-size': '15px' });
             } else {
                 $('#umobile_msg').html('');
             }
             return message;
         }
     }).responseText;
-    if(user!=""){
+    if (user != "") {
         return user;
     }
 }
 
 function resend_otp() {
-    $('#resendOtpBtn').attr('disabled',true);
+    $('#resendOtpBtn').attr('disabled', true);
     $('#otpThankMsg').html('');
     $('#fotpThankMsg').html('');
     $('#otp_verify_form').find('input:text, input:password, select, textarea').val('');
 
     var mobile = $('#verify_mobile').val();
     $.ajax({
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url  : "/resend-otp",
-        type : "POST",
-        data: {act:"resend_otp", mobile:mobile},
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "/resend-otp",
+        type: "POST",
+        data: { act: "resend_otp", mobile: mobile },
         dataType: 'json',
         success: function (response) {
             if (response.message == 'success') {
-                $('#resendOtpBtn').attr('disabled',false);
+                $('#resendOtpBtn').attr('disabled', false);
                 $("#otpThankMsg").html('<div><h2 style="margin-bottom: 0 !important; font-size: 18px !important; color: green;">OTP send successfully</h2></div>');
                 $("#fotpThankMsg").html('<div><h2 style="margin-bottom: 0 !important; font-size: 18px !important; color: green;">OTP send successfully</h2></div>');
             }
@@ -360,21 +348,21 @@ function verify_otp() {
     if ($('#user_otp').val() == '') {
         error = true;
         $('#uotp_msg').html('Please enter your OTP');
-        $('#uotp_msg').css({'color':'red'});
+        $('#uotp_msg').css({ 'color': 'red' });
         $('#user_otp').css('border', '1px solid red');
     } else {
         $('#uotp_msg').html('');
         $('#user_otp').css('border', '');
     }
 
-    if(error == false){
+    if (error == false) {
         //$('#verifyOtpBtn').attr('disabled',true);
         var frmData = $('#otp_verify_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/verify-otp",
-            type : "POST",
-            data: frmData+"&act=verify_otp",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/verify-otp",
+            type: "POST",
+            data: frmData + "&act=verify_otp",
             dataType: 'json',
             success: function (response) {
                 if (response.message == 'success') {
@@ -389,15 +377,15 @@ function verify_otp() {
                         //$('#login').modal({backdrop: 'static', keyboard: false})
                         //$('#signup-modal').removeClass('active');
                         $('#signup-modal').modal("hide");
-                    },1000);
+                    }, 1000);
                     if (response.redirect_url != "") {
                         setTimeout(function () {
                             window.location.href = response.redirect_url;
-                        },1000);
+                        }, 1000);
                     } else {
                         setTimeout(function () {
                             location.reload();
-                        },1000);
+                        }, 1000);
                     }
                     /*setTimeout(function () {
                         //$('#login').modal({backdrop: 'static', keyboard: false})
@@ -421,10 +409,20 @@ function verify_otp() {
 //validate login
 function validate_login() {
     var error = false;
+    if ($('#usertype').val() == '0') {
+        error = true;
+        $('#usertype_msg').html('Please select type');
+        $('#usertype_msg').css({ 'color': 'red' });
+        $('#usertype').css('border', '1px solid red');
+    } else {
+        $('#usertype_msg').html('');
+        $('#usertype').css('border', '');
+    }
+
     if ($('#username').val() == '') {
         error = true;
         $('#username_msg').html('Please enter your mobile number');
-        $('#username_msg').css({'color':'red'});
+        $('#username_msg').css({ 'color': 'red' });
         $('#username').css('border', '1px solid red');
     } else {
         $('#username_msg').html('');
@@ -434,7 +432,7 @@ function validate_login() {
     if ($('#userpassword').val() == '') {
         error = true;
         $('#userpassword_msg').html('Please enter your password');
-        $('#userpassword_msg').css({'color':'red'});
+        $('#userpassword_msg').css({ 'color': 'red' });
         $('#userpassword').css('border', '1px solid red');
     } else {
         $('#userpassword_msg').html('');
@@ -445,11 +443,11 @@ function validate_login() {
         $('#loginBtn').attr('disabled', true);
         var frmData = $('#login_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/validate-login",
-            type : "POST",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/validate-login",
+            type: "POST",
             dataType: 'json',
-            data: frmData+"&act=validate_login",
+            data: frmData + "&act=validate_login",
             xhrFields: { withCredentials: true },
             success: function (response) {
                 //alert(response.redirect_url)
@@ -457,21 +455,21 @@ function validate_login() {
                     $('#login_form').find('input:text, input:password, select, textarea').val('');
                     $('#login_form').find('input:radio, input:checkbox').prop('checked', false);
 
-                    /*$('#login_form').slideUp();
+                    $('#login_form').slideUp();
                     $('#loginThankMsg').html('<div><h2 style="margin-bottom: 0 !important; font-size: 18px !important; color: green; text-align: center;">' + response.msg_text + '</h2></div>');
                     $('#create_account').hide();
                     if (response.redirect_url != "") {
                         setTimeout(function () {
                             window.location.href = response.redirect_url;
-                        },2000);
+                        }, 2000);
                     } else {
                         setTimeout(function () {
                             location.reload();
-                        },2000);
-                    }*/
-                    $('#loginBtn').attr('disabled',false);
-                    $('#form-area-login').html(response.otp_form);
-                    $('#resend_otp').show();
+                        }, 2000);
+                    }
+                    //$('#loginBtn').attr('disabled',false);
+                    //$('#form-area-login').html(response.otp_form);
+                    //$('#resend_otp').show();
                 } else {
                     $('#loginBtn').attr('disabled', false);
                     $('#loginThankMsg').html('<div><h2 style="margin-bottom: 0 !important; font-size: 18px !important; color: red; text-align: center;">' + response.msg_text + '</h2></div>');
@@ -487,7 +485,7 @@ function validate_forgot() {
     if ($('#forgot_mobile').val() == '') {
         error = true;
         $('#forgotmobile_msg').html('Please enter your mobile number');
-        $('#forgotmobile_msg').css({'color':'red'});
+        $('#forgotmobile_msg').css({ 'color': 'red' });
         $('#forgot_mobile').css('border', '1px solid red');
     } else {
         $('#forgotmobile_msg').html('');
@@ -496,24 +494,24 @@ function validate_forgot() {
 
     if (error == false) {
         $('#fotpThankMsg').html('');
-        $('#forgotBtn').attr('disabled',true);
+        $('#forgotBtn').attr('disabled', true);
         var frmData = $('#forgot_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/validate-forgot",
-            type : "POST",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/validate-forgot",
+            type: "POST",
             dataType: 'json',
-            data: frmData+"&act=validate_forgot",
+            data: frmData + "&act=validate_forgot",
             success: function (response) {
                 if (response.message == 'success') {
                     $('#forgot_form').find('input:text, input:password, select, textarea').val('');
                     $('#forgot_form').find('input:radio, input:checkbox').prop('checked', false);
 
                     $('#fresend_otp').show();
-                    $('#forgotBtn').attr('disabled',false);
+                    $('#forgotBtn').attr('disabled', false);
                     $('#form-area-forgot').html(response.otp_form);
                 } else {
-                    $('#forgotBtn').attr('disabled',false);
+                    $('#forgotBtn').attr('disabled', false);
                     $('#fotpThankMsg').html('<div><h2 style="margin-bottom: 0 !important; font-size: 18px !important; color: red;">' + response.msg_text + '</h2></div>');
                 }
             }
@@ -530,7 +528,7 @@ function forgot_password() {
     if ($('#user_otp').val() == '') {
         error = true;
         $('#uotp_msg').html('Please enter your OTP');
-        $('#uotp_msg').css({'color':'red'});
+        $('#uotp_msg').css({ 'color': 'red' });
         $('#user_otp').css('border', '1px solid red');
     } else {
         $('#uotp_msg').html('');
@@ -538,24 +536,24 @@ function forgot_password() {
     }
 
     if (error == false) {
-        $('#verifyOtpBtn').attr('disabled',true);
+        $('#verifyOtpBtn').attr('disabled', true);
         var frmData = $('#otp_verify_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/verify-otp",
-            type : "POST",
-            data: frmData+"&act=verify_otp",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/verify-otp",
+            type: "POST",
+            data: frmData + "&act=verify_otp",
             dataType: 'json',
             success: function (response) {
                 if (response.message == 'success') {
-                    $('#verifyOtpBtn').attr('disabled',false);
+                    $('#verifyOtpBtn').attr('disabled', false);
                     $('#fresend_otp').hide();
                     setTimeout(function () {
                         //$('#login').modal({backdrop: 'static', keyboard: false})
                         $('#form-area-forgot').html(response.reset_form);
-                    },500);
+                    }, 500);
                 } else if (response.message == 'wrong') {
-                    $('#verifyOtpBtn').attr('disabled',false);
+                    $('#verifyOtpBtn').attr('disabled', false);
                     $('#fresend_otp').show();
                     $("#fotpThankMsg").html('<div><h2 style="margin-bottom: 0 !important; font-size: 20px !important; color: red;">Invalid OTP</h2></div>');
                 }
@@ -570,7 +568,7 @@ function reset_password() {
     if ($('#resetpassword').val() == '') {
         error = true;
         $('#rpass_msg').html('<ul class="list-unstyled"><li>Please enter your password</li></ul>');
-        $('#rpass_msg').css({'color':'red','font-size':'15px'});
+        $('#rpass_msg').css({ 'color': 'red', 'font-size': '15px' });
         $('#resetpassword').css('border', '1px solid red');
     } else {
         $('#rpass_msg').html('');
@@ -581,12 +579,12 @@ function reset_password() {
     if ($('#resetcpassword').val() == '') {
         error = true;
         $('#rcpass_msg').html('<ul class="list-unstyled"><li>Please enter your confirm password</li></ul>');
-        $('#rcpass_msg').css({'color':'red','font-size':'15px'});
+        $('#rcpass_msg').css({ 'color': 'red', 'font-size': '15px' });
         $('#resetcpassword').css('border', '1px solid red');
     } else if ($('#resetpassword').val() != $('#resetcpassword').val()) {
         error = true;
         $('#rcpass_msg').html('<ul class="list-unstyled"><li>password and confirm password do not match</li></ul>');
-        $('#rcpass_msg').css({'color':'red','font-size':'15px'});
+        $('#rcpass_msg').css({ 'color': 'red', 'font-size': '15px' });
         $('#resetcpassword').css('border', '1px solid red');
     } else {
         $('#rcpass_msg').html('');
@@ -594,33 +592,33 @@ function reset_password() {
     }
 
     if (error == false) {
-        $('#resetPassBtn').attr('disabled',true);
+        $('#resetPassBtn').attr('disabled', true);
         var frmData = $('#resetPass_form').serialize();
         $.ajax({
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url  : "/reset-password",
-            type : "POST",
-            data: frmData+"&act=reset_password",
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url: "/reset-password",
+            type: "POST",
+            data: frmData + "&act=reset_password",
             dataType: 'json',
             success: function (response) {
                 if (response.message == 'success') {
                     $('#resetPass_form').find('input:text, input:password, select, textarea').val('');
                     $('#resetPass_form').find('input:radio, input:checkbox').prop('checked', false);
 
-                    $('#resetPassBtn').attr('disabled',false);
+                    $('#resetPassBtn').attr('disabled', false);
                     $('#fresend_otp').hide();
                     $('#fotpThankMsg').addClass('ps-form__content');
                     $('#resetPassFrm').slideUp();
-                    $('#fotpThankMsg').html('<div><h2 style="margin-bottom: 0 !important; font-size: 20px !important; color: green;">' +response.msg_text+ '</h2></div>');
+                    $('#fotpThankMsg').html('<div><h2 style="margin-bottom: 0 !important; font-size: 20px !important; color: green;">' + response.msg_text + '</h2></div>');
                     setTimeout(function () {
                         //$('#login').modal({backdrop: 'static', keyboard: false})
                         $('#forgot-modal').modal("hide");
                         signin_popup();
-                    },1000);
+                    }, 1000);
                 } else if (response.message == 'wrong') {
-                    $('#resetPassBtn').attr('disabled',false);
+                    $('#resetPassBtn').attr('disabled', false);
                     $('#fresend_otp').hide();
-                    $("#fotpThankMsg").html('<div><h2 style="margin-bottom: 0 !important; font-size: 20px !important; color: red;">' +response.msg_text+ '</h2></div>');
+                    $("#fotpThankMsg").html('<div><h2 style="margin-bottom: 0 !important; font-size: 20px !important; color: red;">' + response.msg_text + '</h2></div>');
                 }
             }
         });
@@ -633,9 +631,9 @@ function validate_franchise() {
     //alert('Hello')
     $('#common_msg').html('');
     var emailFilter = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
-    var email       = $('#inquiry_email').val();
-    var mobile      = $('#inquiry_mobile').val();
-    var error       = false;
+    var email = $('#inquiry_email').val();
+    var mobile = $('#inquiry_mobile').val();
+    var error = false;
 
     if ($('#inquiry_company').val() == '') {
         error = true;
@@ -692,29 +690,29 @@ function validate_franchise() {
         $('#inquiry_zipcode').css('border', '');
     }
 
-    if(error == false){
+    if (error == false) {
         var company = $('#inquiry_company').val();
-        var name    = $('#inquiry_name').val();
-        var email   = $('#inquiry_email').val();
+        var name = $('#inquiry_name').val();
+        var email = $('#inquiry_email').val();
         var country = $('#country').val();
-        var prefix  = $('#prefix').val();
-        var mobile  = $('#inquiry_mobile').val();
-        var city    = $('#inquiry_city').val();
-        var state   = $('#inquiry_state').val();
+        var prefix = $('#prefix').val();
+        var mobile = $('#inquiry_mobile').val();
+        var city = $('#inquiry_city').val();
+        var state = $('#inquiry_state').val();
         var zipcode = $('#inquiry_zipcode').val();
         $('#submit').html('<img src="https://artenspace.com/public/img/loader.gif" width="40px">');
-        $('#submit').prop('disabled',true);
+        $('#submit').prop('disabled', true);
 
-        setTimeout(function(){
+        setTimeout(function () {
             $.ajax({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url  : "/franchise-insert",
-                type : "POST",
-                data : {act:"franchise", company:company, name:name, email:email, country:country, prefix:prefix, mobile:mobile, city:city, state:state, zipcode:zipcode},
-                success : function(result) {
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url: "/franchise-insert",
+                type: "POST",
+                data: { act: "franchise", company: company, name: name, email: email, country: country, prefix: prefix, mobile: mobile, city: city, state: state, zipcode: zipcode },
+                success: function (result) {
                     if (result == 'success') {
                         $("#franchiseForm").fadeOut(500);
-                        $('#submit').prop('disabled',false);
+                        $('#submit').prop('disabled', false);
                         $("#franchiseForm").trigger("reset");
                         $(".save-changes").hide();
                         setTimeout(function () {
@@ -724,7 +722,7 @@ function validate_franchise() {
                     } else if (result == 'wrong') {
                         $('#thankMsg').html('<h2 style="margin-bottom: 0 !important; margin-top: 10px !important;">Robot verification failed, please try again</h2>');
                         $('#submit').html('Submit');
-                        $('#submit').prop('disabled',false);
+                        $('#submit').prop('disabled', false);
                     }
                 }
             });
@@ -738,9 +736,9 @@ function validate_franchise() {
 // for forgot otp verify
 function logout() {
     $.ajax({
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url  : "/validate-logout",
-        type : "POST",
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: "/validate-logout",
+        type: "POST",
         dataType: 'json',
         success: function (response) {
             if (response.message == 'success') {
@@ -749,4 +747,3 @@ function logout() {
         }
     });
 }
-   

@@ -44,7 +44,7 @@ class PagesController extends Controller
 
     public function create()
     {
-        $parentPages = Pages::where(["page_status" => "1", "page_parent"=>"0"])->orderBy('page_order')->get();
+        $parentPages = Pages::select('page_id', 'page_title')->where(["page_status" => "1", "page_parent"=>"0"])->orderBy('page_order')->get();
         return view('admin.pages.create', compact('parentPages'));
     }
 
@@ -62,7 +62,7 @@ class PagesController extends Controller
     public function edit($id)
     {
         $pagesDetail = Pages::find($id);
-        $parentPages = Pages::where(["page_status" => "1", "page_parent"=>"0"])->orderBy('page_order')->get();
+        $parentPages = Pages::select('page_id', 'page_title')->where(["page_status" => "1", "page_parent"=>"0"])->orderBy('page_order')->get();
         //echo '<pre>'; print_r($parentPages); exit();
         return view("admin.pages.edit", compact('pagesDetail', 'parentPages'));
     }
@@ -80,8 +80,10 @@ class PagesController extends Controller
 
     public function view()
     {
-        $pagesDetail = Pages::with('subPages')->where('page_parent', '0')->orderBy('page_order')->get();
-        return view("admin.pages.list")->with('pagesDetail',$pagesDetail);
+        $pagesDetail = Pages::select('page_id', 'page_title', 'page_order', 'page_status', 'page_header_status', 'page_footer_status', 'created_at')->with(['subPages' => function($query) {
+            $query->select('page_id', 'page_title', 'page_parent', 'page_order', 'page_status', 'page_header_status', 'page_footer_status', 'created_at');
+        }])->where('page_parent', '0')->orderBy('page_order')->get();
+        return view("admin.pages.list")->with('pagesDetail', $pagesDetail);
     }
 
     public function change_status(Request $request)

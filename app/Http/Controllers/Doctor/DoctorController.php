@@ -161,10 +161,10 @@ class DoctorController extends Controller
     private function validateData(Request $request)
     {
         return $request->validate([
-            "doctor_fname"             => 'required|string|max:255',
-            "doctor_lname"             => 'required|string|max:255',
-            "doctor_email"             => 'required|string|max:255',
-            "doctor_phone"             => "required"
+            "doctor_fname"              => 'required|string|max:255',
+            "doctor_lname"              => 'required|string|max:255',
+            "doctor_email"              => 'required|string|max:255',
+            "doctor_phone"              => "required"
         ]);
     }
 

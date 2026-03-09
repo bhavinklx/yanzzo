@@ -74,7 +74,7 @@ class BannerController extends Controller
                 }
             })
             ->editColumn("status", function ($banner) {
-                if ($banner->blog_status == '1') {
+                if ($banner->banner_status == '1') {
                     return '<div id="td_status_' . $banner->banner_id . '"><a href="javascript:void(0)" onclick="change_status(' . $banner->banner_id . ',0)" ><span class="badge bg-success">Active</span></a></div>';
                 } else {
                     return '<div id="td_status_' . $banner->banner_id . '"><a href="javascript:void(0)" onclick="change_status(' . $banner->banner_id . ',1)" ><span class="badge bg-danger">Inactive</span></a></div>';

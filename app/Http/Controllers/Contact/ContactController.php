@@ -25,7 +25,7 @@ class ContactController extends Controller
 
     public function load_table(Request $request)
     {
-        $contactDetail = Contact::orderBy("contact_order", "DESC")->get();
+        $contactDetail = Contact::select('contact_id', 'contact_name', 'contact_email', 'contact_mobile', 'contact_city', 'contact_zipcode', 'contact_message', 'created_at', 'contact_order')->orderBy("contact_order", "DESC");
         return DataTables::of($contactDetail)
             ->editColumn("checkbox", function ($contact){
                 return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $contact->contact_id . '"> </div>';

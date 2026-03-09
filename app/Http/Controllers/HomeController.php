@@ -13,11 +13,14 @@ use App\Models\Pages;
 use App\Models\Bcategory;
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Testimonial;
 use App\Models\Sponsor;
 use App\Models\Contact;
 use App\Models\Setting;
 use App\Models\Service;
+use App\Models\State;
+use App\Models\Favourite;
 
 class HomeController extends Controller
 {
@@ -35,11 +38,12 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $pagesDetail = Pages::where('page_id', 1)->first();
+            $pagesDetail = Pages::firstWhere('page_id', 1);
             if (!$pagesDetail) {
                 return redirect('/404');
             }
             $bannerDetail = Banner::where(['banner_status' => '1'])->orderBy('banner_order')->get()->toArray();
+            $productDetail = Product::with(['pimages', 'city'])->where('product_status', '1')->orderBy('product_id', 'DESC')->take(6)->get()->toArray();
             $testimonialDetail = Testimonial::where('testimonial_status', 1)->orderBy('testimonial_order')->get()->toArray();
             $sponsorDetail = Sponsor::where('sponsor_status', 1)->orderBy('sponsor_order')->get()->toArray();
             $ourFeatureDetail = Service::where(['service_status' => '1', 'service_type' => '0'])->orderBy('service_order')->get()->toArray();
@@ -49,6 +53,7 @@ class HomeController extends Controller
             return view('home')->with([
                 'pagesDetail' => $pagesDetail,
                 'bannerDetail' => $bannerDetail,
+                'productDetail' => $productDetail,
                 'testimonialDetail' => $testimonialDetail,
                 'sponsorDetail' => $sponsorDetail,
                 'ourFeatureDetail' => $ourFeatureDetail,
@@ -82,7 +87,7 @@ class HomeController extends Controller
     public function contact()
     {
         try {
-            $pagesDetail = Pages::findOrFail(3);
+            $pagesDetail = Pages::findOrFail(5);
             return view('contact', compact('pagesDetail'));
         } catch (\Exception $e) {
             return redirect('/404');
@@ -92,7 +97,7 @@ class HomeController extends Controller
     public function contact_insert(Request $request)
     {
         try {
-            $pagesDetail = Pages::where('page_id', 4)->first();
+            $pagesDetail = Pages::firstWhere('page_id', 5);
             if(!$pagesDetail){
                 return redirect('/404');
             }
@@ -227,15 +232,6 @@ class HomeController extends Controller
         }
     }
 
-    public function faqs() {
-        $pagesDetail = Pages::where('page_id', 5)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        $faqDetail = Faq::where('faq_status', '1')->orderBy('faq_order')->get()->toArray();
-        return view('faq')->with(['pagesDetail' => $pagesDetail, 'faqDetail' => $faqDetail]);
-    }
-
     public function blog(Request $request)
     {
         try {
@@ -252,7 +248,7 @@ class HomeController extends Controller
             //End Pagination
 
             $bcategoryNameArray = [];
-            $pagesDetail = Pages::where('page_id', 2)->first();
+            $pagesDetail = Pages::firstWhere('page_id', 4);
             if(!$pagesDetail){
                 return redirect('/404');
             }
@@ -317,7 +313,7 @@ class HomeController extends Controller
     public function blogDetail($slug)
     {
         $bcategoryNameArray = $totalBlogArray = [];
-        $pagesDetail = Pages::where('page_id', 2)->first();
+        $pagesDetail = Pages::firstWhere('page_id', 4);
         if(!$pagesDetail){
             return redirect('/404');
         }
@@ -347,92 +343,133 @@ class HomeController extends Controller
         ]);
     }
 
-    public function membership() {
+    public function product(Request $request) {
         try {
-            Session::forget('discount');
-            Session::forget('discount_text');
-            Session::forget('discount_code');
-            Session::forget('discount_id');
-
-            $pagesDetail = Pages::where('page_id', 3)->first();
+            $pagesDetail = Pages::firstWhere('page_id', 3);
             if(!$pagesDetail){
                 return redirect('/404');
             }
-            $orderDetail = [];
-            $membershipDetail = Membership::get()->toArray();
-            if (session()->has('customer_id') && session()->has('customer_id') > 0) {
-                $order = MembershipOrder::where([
-                    ['customer_id', Session::get('customer_id')],
-                    ['msorder_status', '1'],
-                    ['msorder_end_date', '>=', Carbon::today()->toDateString()]
-                ])->first();
-                if ($order) {
-                    $orderDetail = $order->toArray();
+
+            // Get selected subcategory slug from URL
+            $categorySlug = $request->category;
+            $subcategorySlug = $request->subcategory;
+
+            // Fetch active products with pagination
+            $query = Product::with(['pimages', 'city'])->where('product_status', '1');
+            // Apply subcategory filter if slug exists
+            if (!empty($categorySlug)) {
+                $categoryId = Category::where('category_slug', trim($categorySlug))->value('category_id');
+                // If slug invalid → show 404
+                if (!$categoryId) {
+                    return redirect('/404');
                 }
+                $query->where('category_id', $categoryId);
             }
-            return view('membership')->with(['pagesDetail' => $pagesDetail, 'membershipDetail' => $membershipDetail, 'orderDetail' => $orderDetail]);
-        } catch (Exception $e) {
-            Log::error('Catch error membership: ' . $e->getMessage());
+            if (!empty($subcategorySlug)) {
+                $subcategoryId = Category::where('category_slug', trim($subcategorySlug))->value('category_id');
+                // If slug invalid → show 404
+                if (!$subcategoryId) {
+                    return redirect('/404');
+                }
+                $query->where('subcategory_id', $subcategoryId);
+            }
+
+            // Apply state filter if location exists in query
+            $locationId = $request->location;
+            if (!empty($locationId)) {
+                $query->where('state_id', $locationId);
+            }
+
+            $productDetail = $query
+                ->orderBy('product_id', 'DESC')
+                ->paginate(9);
+
+            // Ensure pagination links maintain the desired parameter order
+            $productDetail->appends(array_filter([
+                'category' => $categorySlug,
+                'subcategory' => $subcategorySlug,
+                'location' => $locationId,
+            ]));
+
+            $categoryDetail = Category::where('category_parent', 0)
+                ->withCount(['product' => function ($q) {
+                    $q->where('product_status', '1');
+                }])
+                ->having('product_count', '>', 0)
+                ->get();
+
+            $subcategoryDetail = Category::where('category_parent', '>', 0)
+                ->withCount(['product' => function ($q) {
+                    $q->where('product_status', '1');
+                }])
+                ->having('product_count', '>', 0)
+                ->get();
+
+            $stateDetail = State::where('state_status', '1')
+                ->withCount(['product' => function ($q) {
+                    $q->where('product_status', '1');
+                }])
+                ->having('product_count', '>', 0)
+                ->orderBy('state_name')
+                ->get();
+
+            return view('product', compact(
+                'pagesDetail',
+                'productDetail',
+                'categoryDetail',
+                'subcategoryDetail',
+                'categorySlug',
+                'subcategorySlug',
+                'stateDetail',
+                'locationId'
+            ));
+        } catch (\Exception $e) {
+            Log::error('Machines page error: '.$e->getMessage());
+            return redirect('/404');
         }
     }
 
-    public function bookLounge(Request $request) {
-        $pagesDetail = Pages::where('page_id', 2)->first();
-        if(!$pagesDetail){
-            return redirect('/404');
-        }
-        $cityNameArray = $cityIdArray = [];
-        if (isset($request->city) && $request->city != "") {
-            $cityDetail = Cities::where('cities_name', trim(ucwords($request->city)))->get()->toArray();
-            if ($cityDetail) {
-                for($c=0; $c < count($cityDetail); $c++) {
-                    $cityIdArray[] = $cityDetail[$c]['cities_id'];
-                }
+    public function productDetail($slug) {
+        try {
+            $pagesDetail = Pages::firstWhere('page_id', 3);
+            if(!$pagesDetail){
+                return redirect('/404');
             }
-        }
-        $cityDetail = Cities::get()->toArray();
-        $cityNameArray = [];
-        for($c=0; $c < count($cityDetail); $c++) {
-            $cityNameArray[$cityDetail[$c]['cities_id']] = $cityDetail[$c]['cities_name'];
-        }
-        if (count($cityIdArray) > 0) {
-            $loungeDetail = Lounge::where(['lounge_status' => '1'])->whereIn('cities_id', $cityIdArray)->orderBy('lounge_order')->get()->toArray();
-        } else {
-            $loungeDetail = Lounge::where(['lounge_status' => '1'])->orderBy('lounge_order')->get()->toArray();
-        }
-        return view('booklounge')->with(['pagesDetail' => $pagesDetail, 'cityNameArray' => $cityNameArray, 'loungeDetail' => $loungeDetail]);
-    }
 
-    public function bookLoungeDetail($slug) {
-        $pagesDetail = Pages::where('page_id', 2)->first();
-        if(!$pagesDetail){
+            $productDetail = Product::with(['category', 'subCategory', 'customer', 'pimages', 'city'])->where('product_slug', trim($slug))->first();
+            if (!$productDetail) {
+                return redirect('/404');
+            }
+
+            // Increment product view count
+            $productDetail->increment('product_view');
+
+            $similarDetail = Product::with(['pimages', 'city'])->where('product_status', '1')
+                ->where('product_id', '<>', $productDetail->product_id)
+                ->where(function ($query) use ($productDetail) {
+                    $query->where('category_id', $productDetail->category_id)->where('subcategory_id', $productDetail->subcategory_id);
+                })
+                ->inRandomOrder()
+                ->take(3)
+                ->get();
+
+            $isFavourite = false;
+            if (Session::has('customer_id')) {
+                $isFavourite = Favourite::where('customer_id', Session::get('customer_id'))
+                    ->where('product_id', $productDetail->product_id)
+                    ->exists();
+            }
+
+            return view('productDetail')->with([
+                'pagesDetail' => $pagesDetail,
+                'productDetail' => $productDetail,
+                'similarDetail' => $similarDetail,
+                'isFavourite' => $isFavourite
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Machines page error: '.$e->getMessage());
             return redirect('/404');
         }
-        $loungeDetail = Lounge::where('lounge_slug', trim($slug))->first();
-        $limageDetail = LoungeImage::where('lounge_id', $loungeDetail->lounge_id)->orderBy('limage_order')->get(['limage_id', 'limage_image'])->toArray();
-        $encryptedId = Crypt::encrypt($loungeDetail->lounge_id);
-        $ltimeDetail = DB::select("SELECT 
-                                       GROUP_CONCAT(ltime_day ORDER BY FIELD(ltime_day, 'MON','TUE','WED','THU','FRI','SAT','SUN')) AS days,
-                                       time_range,
-                                       rate
-                                  FROM (
-                                      SELECT 
-                                          ltime_day,
-                                          CONCAT(
-                                              LPAD(ltime_open_hour, 2, '0'), ':', LPAD(ltime_open_time, 2, '0'), ' ', ltime_open_ap,
-                                              ' - ',
-                                              LPAD(ltime_close_hour, 2, '0'), ':', LPAD(ltime_close_time, 2, '0'), ' ', ltime_close_ap
-                                          ) AS time_range,
-                                          ltime_text AS rate
-                                      FROM lounge_time
-                                      WHERE lounge_id = '".$loungeDetail->lounge_id."'
-                                   ) AS sub
-                                  GROUP BY 
-                                      time_range, rate
-                                  ORDER BY 
-                                      MIN(FIELD(ltime_day, 'MON','TUE','WED','THU','FRI','SAT','SUN')),
-                                      CAST(rate AS UNSIGNED)");
-        return view('bookloungedetail')->with(['pagesDetail' => $pagesDetail, 'loungeDetail' => $loungeDetail, 'limageDetail' => $limageDetail, 'ltimeDetail' => $ltimeDetail, 'loungeId' => $encryptedId]);
     }
 
     public function sendMail($fromEmail='', $toEmail='', $fromName='', $toName='', $subject='', $message='', $isAttachment=0, $fileName='')

@@ -55,23 +55,18 @@
                 </li>
             @endif
 
-            @if(auth()->user()->can('patient-list') || auth()->user()->can('patient-add'))
-                <li class="treeview {{ ($fileName == 'patient-list' || $fileName == 'patient-add' || $fileName == 'patient-edit') ? 'active current-page' : '' }}">
+            @if(auth()->user()->can('customer-list') || auth()->user()->can('customer-add'))
+                <li class="treeview {{ ($fileName == 'customer-list') ? 'active current-page' : '' }}">
                     <a href="javascript: void (0)">
-                        <i class="ri-heart-pulse-line"></i>
-                        <span class="menu-text">Patients</span>
+                        <i class="ri-team-line"></i>
+                        <span class="menu-text">Yanzzo User</span>
                     </a>
                     <ul class="treeview-menu">
-                        @can('patient-list')
+                        @can('customer-list')
                             <li>
-                                <a href="{{ route("patient-list") }}" class="{{ ($fileName == 'patient-list') ? 'active-sub' : '' }}">Patient List</a>
+                                <a href="{{ route("customer-list") }}" class="{{ ($fileName == 'customer-list') ? 'active-sub' : '' }}">User List</a>
                             </li>
                         @endcan
-                        {{--@can('patient-add')
-                            <li>
-                                <a href="{{ route("patient-add") }}" class="{{ ($fileName == 'patient-add' || $fileName == 'patient-edit') ? 'active-sub' : '' }}">Add Patient</a>
-                            </li>
-                        @endcan--}}
                     </ul>
                 </li>
             @endif
@@ -191,11 +186,11 @@
                 </li>
             @endif
 
-            @if(auth()->user()->can('category-list') || auth()->user()->can('category-add'))
-                <li class="treeview {{ ($fileName == 'category-list' || $fileName == 'category-add' || $fileName == 'category-edit') ? 'active current-page' : '' }}">
+            @if(auth()->user()->can('category-list', 'web') || auth()->user()->can('product-list', 'web'))
+                <li class="treeview {{ ($fileName == 'category-list' || $fileName == 'category-add' || $fileName == 'category-edit' || $fileName == 'product-list' || $fileName == 'product-add' || $fileName == 'product-edit') ? 'active current-page' : '' }}">
                     <a href="javascript: void (0)">
-                        <i class="ri-gallery-view-2"></i>
-                        <span class="menu-text">Categories</span>
+                        <i class="ri-shopping-bag-3-line"></i>
+                        <span class="menu-text">Products</span>
                     </a>
                     <ul class="treeview-menu">
                         @can('category-list')
@@ -206,6 +201,16 @@
                         @can('category-add')
                             <li>
                                 <a href="{{ route("category-add") }}" class="{{ ($fileName == 'category-add' || $fileName == 'category-edit') ? 'active-sub' : '' }}">Add Category</a>
+                            </li>
+                        @endcan
+                        @can('product-list')
+                            <li>
+                                <a href="{{ route("product-list") }}" class="{{ ($fileName == 'product-list') ? 'active-sub' : '' }}">Product List</a>
+                            </li>
+                        @endcan
+                        @can('product-add')
+                            <li>
+                                <a href="{{ route("product-add") }}" class="{{ ($fileName == 'product-add' || $fileName == 'product-edit') ? 'active-sub' : '' }}">Add Product</a>
                             </li>
                         @endcan
                     </ul>

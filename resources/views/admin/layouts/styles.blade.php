@@ -23,6 +23,20 @@
     .ql-editor {
         min-height: 260px;
     }
+    .badge-danger-bg {
+        background-color: #ffeef0;
+        color: #ff4d4d;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    .badge-success-light-bg {
+        background-color: #f0fff4;
+        color: #38a169;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
 </style>
 <!-- Required jQuery first, then Bootstrap Bundle JS -->
 <script type="text/javascript" src="{{ url('assets/js/jquery.min.js') }}"></script>
