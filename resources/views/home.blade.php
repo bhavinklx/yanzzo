@@ -47,7 +47,7 @@
     <!-- /Hero Section -->
 
     <!-- Journey -->
-    <section class="section journey-section">
+    {{--<section class="section journey-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 d-flex align-items-center">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>--}}
     <!-- /Journey -->
 
     <!-- Latest News -->

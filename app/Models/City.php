@@ -16,4 +16,9 @@ class City extends Model
         "city_name",
         "city_status"
     ];
+
+    public function product()
+    {
+        return $this->hasMany(Product::class, 'city_id', 'city_id');
+    }
 }
