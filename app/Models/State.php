@@ -20,4 +20,9 @@ class State extends Model
     {
         return $this->hasMany(Product::class, 'state_id', 'state_id');
     }
+
+    public function cities()
+    {
+        return $this->hasMany(City::class, 'state_id', 'state_id');
+    }
 }

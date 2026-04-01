@@ -28,7 +28,7 @@ class HomeController extends Controller
     {
         date_default_timezone_set('Asia/Kolkata');
         $settingDetail = Setting::get()->toArray();
-        for ($s=0; $s < count($settingDetail); $s++) {
+        for ($s = 0; $s < count($settingDetail); $s++) {
             if (!defined($settingDetail[$s]['setting_name'])) {
                 define($settingDetail[$s]['setting_name'], $settingDetail[$s]['setting_value']);
             }
@@ -98,12 +98,12 @@ class HomeController extends Controller
     {
         try {
             $pagesDetail = Pages::firstWhere('page_id', 5);
-            if(!$pagesDetail){
+            if (!$pagesDetail) {
                 return redirect('/404');
             }
             $lastOrder = Contact::orderBy('contact_order', 'DESC')->first();
             Contact::create([
-                'contact_name' => ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])),
+                'contact_name' => ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])),
                 'contact_email' => strtolower($_POST['email']),
                 'contact_country' => $_POST['country'],
                 'contact_prefix' => $_POST['prefix'],
@@ -117,13 +117,13 @@ class HomeController extends Controller
             ]);
 
             //$fromEmail        = FROM_EMAIL;
-            $fromName           = 'YAARIOKE';
-            $subjectUser        = "Thank You for reaching out: YAARIOKE is here to help !";
-            $subjectAdmin       = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname']));
+            $fromName = 'YAARIOKE';
+            $subjectUser = "Thank You for reaching out: YAARIOKE is here to help !";
+            $subjectAdmin = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname']));
 
-            $messageHeaderUser  =
+            $messageHeaderUser =
                 "<tr>
-                        <td style='font-size:15px'>Hello ".ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])).",</td>
+                        <td style='font-size:15px'>Hello " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])) . ",</td>
                     </tr>
                     <tr>
                         <td style='font-size:15px'>Thank you for reaching out to us.<br>We appreciate your interest in YAARIOKE. Our team is currently reviewing your inquiry and we will get back to you shortly.<br>If you have any urgent questions or concerns, feel free to contact us directly at <a href='tel:919509914499'>+91 950 991 4499</a>.</td>
@@ -134,20 +134,20 @@ class HomeController extends Controller
                         <td style='font-size:15px'>Dear Administrator,</td>
                     </tr>
                     <tr>
-                        <td style='font-size:15px'>".ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname']))." submitted contact form from website.</td>
+                        <td style='font-size:15px'>" . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])) . " submitted contact form from website.</td>
                     </tr>
                     <tr>
                         <td style='font-size:15px'>Details are below</td>
                     </tr><br>";
 
-            $message            =
+            $message =
                 "<tr>
                         <td style=\"font-size:15px; background:#dbeef4;\">
                             <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">
                             <tr>
                                 <td width=\"150\"><strong>Full Name: </strong></td>
                                 <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname']))."</td>
+                                <td align=\"left\" valign=\"top\">" . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])) . "</td>
                             </tr>
                             </table>
                         </td>
@@ -158,7 +158,7 @@ class HomeController extends Controller
                             <tr>
                                 <td width=\"150\"><strong>Mobile: </strong></td>
                                <!-- <td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['mobile']."</td>
+                                <td align=\"left\" valign=\"top\">" . $_POST['mobile'] . "</td>
                             </tr>
                             </table>
                         </td>
@@ -169,7 +169,7 @@ class HomeController extends Controller
                             <tr>
                                 <td width=\"150\"><strong>Email: </strong></td>
                                <!-- <td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['email']."</td>
+                                <td align=\"left\" valign=\"top\">" . $_POST['email'] . "</td>
                             </tr>
                             </table>
                         </td>
@@ -191,13 +191,13 @@ class HomeController extends Controller
                             <tr>
                                 <td width=\"150\"><strong>Message: </strong></td>
                                 <!--<td>&nbsp;</td>-->
-                                <td align=\"left\" valign=\"top\">".$_POST['message']."</td>
+                                <td align=\"left\" valign=\"top\">" . $_POST['message'] . "</td>
                             </tr>
                             </table>
                         </td>
                     </tr>";
 
-            $messageFooterUser  =
+            $messageFooterUser =
                 "<br><tr>
                         <td style='font-size:15px'>Thank you,</td>
                     </tr>
@@ -217,7 +217,7 @@ class HomeController extends Controller
 
             //mail sent to admin
             //if (ADMIN_EMAIL != "") {
-                //$this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
+            //$this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
             //}
             return 'success';
         } catch (\Exception $e) {
@@ -240,54 +240,59 @@ class HomeController extends Controller
             $pageno = 1;
             $limit = 9;
             $start = 0;
-            if(isset($request['page']) && $request['page']!='') {
+            if (isset($request['page']) && $request['page'] != '') {
                 $pageno = $request['page'];
             }
-            $start = ($pageno-1) * $limit;
+            $start = ($pageno - 1) * $limit;
             $pagecount = $limit * $pageno;
             //End Pagination
 
             $bcategoryNameArray = [];
             $pagesDetail = Pages::firstWhere('page_id', 4);
-            if(!$pagesDetail){
+            if (!$pagesDetail) {
                 return redirect('/404');
             }
             $bcategoryDetail = Bcategory::get(['bcategory_id', 'bcategory_title'])->toArray();
-            for($b=0; $b < count($bcategoryDetail); $b++) {
+            for ($b = 0; $b < count($bcategoryDetail); $b++) {
                 $bcategoryNameArray[$bcategoryDetail[$b]['bcategory_id']] = $bcategoryDetail[$b]['bcategory_title'];
             }
             //get category wise blog
-            if (isset($request['act']) && $request['act']=='load_blog') {
+            if (isset($request['act']) && $request['act'] == 'load_blog') {
                 //get all blog
                 $blogDetail = Blog::where('blog_status', '1')->orderBy('blog_order', 'DESC')->skip($start)->take($limit)->get()->toArray();
-                if(is_array($blogDetail) && count($blogDetail) > 0) { for($b=0; $b < count($blogDetail); $b++) { ?>
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-                        <!-- Blog -->
-                        <div class="featured-venues-item">
-                            <div class="listing-item">
-                                <div class="listing-img">
-                                    <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">
-                                        <img src="<?= asset('/uploads/blog/'.$blogDetail[$b]['blog_image']); ?>" class="img-fluid" alt="<?= $blogDetail[$b]['blog_title']; ?>">
-                                    </a>
-                                </div>
-                                <div class="listing-content news-content">
-                                    <div class="listing-venue-owner">
-                                        <div class="navigation">
-                                            <i class="feather-calendar"></i> <?= date('d M, Y', strtotime($blogDetail[$b]['blog_date'])); ?>
-                                        </div>
+                if (is_array($blogDetail) && count($blogDetail) > 0) {
+                    for ($b = 0; $b < count($blogDetail); $b++) { ?>
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+                            <!-- Blog -->
+                            <div class="featured-venues-item">
+                                <div class="listing-item">
+                                    <div class="listing-img">
+                                        <a href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>">
+                                            <img src="<?= asset('/uploads/blog/' . $blogDetail[$b]['blog_image']); ?>" class="img-fluid"
+                                                alt="<?= $blogDetail[$b]['blog_title']; ?>">
+                                        </a>
                                     </div>
-                                    <h3 class="listing-title blog-title">
-                                        <a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>"><?= $blogDetail[$b]['blog_title']; ?></a>
-                                    </h3>
-                                    <div class="listing-button read-new text-center">
-                                        <span><a href="<?= url('/' . $pagesDetail->page_slug . '/'. $blogDetail[$b]['blog_slug']); ?>">5 Min To Read</a></span>
+                                    <div class="listing-content news-content">
+                                        <div class="listing-venue-owner">
+                                            <div class="navigation">
+                                                <i class="feather-calendar"></i> <?= date('d M, Y', strtotime($blogDetail[$b]['blog_date'])); ?>
+                                            </div>
+                                        </div>
+                                        <h3 class="listing-title blog-title">
+                                            <a
+                                                href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>"><?= $blogDetail[$b]['blog_title']; ?></a>
+                                        </h3>
+                                        <div class="listing-button read-new text-center">
+                                            <span><a href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>">5 Min
+                                                    To Read</a></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- /Blog -->
                         </div>
-                        <!-- /Blog -->
-                    </div>
-                <?php } }
+                    <?php }
+                }
                 exit;
             } else {
                 $bcategoryName = '';
@@ -305,7 +310,7 @@ class HomeController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error('Blog page error: '.$e->getMessage());
+            Log::error('Blog page error: ' . $e->getMessage());
             return redirect('/404');
         }
     }
@@ -314,18 +319,18 @@ class HomeController extends Controller
     {
         $bcategoryNameArray = $totalBlogArray = [];
         $pagesDetail = Pages::firstWhere('page_id', 4);
-        if(!$pagesDetail){
+        if (!$pagesDetail) {
             return redirect('/404');
         }
         $bcategoryDetail = Bcategory::get(['bcategory_id', 'bcategory_title', 'bcategory_slug'])->toArray();
-        for($b=0; $b < count($bcategoryDetail); $b++) {
+        for ($b = 0; $b < count($bcategoryDetail); $b++) {
             $bcategoryNameArray[$bcategoryDetail[$b]['bcategory_id']] = $bcategoryDetail[$b]['bcategory_title'];
         }
 
         $totalBlog = Blog::select('bcategory.bcategory_id', DB::raw('COUNT(blog.blog_id) AS total_blog'))
             ->join('bcategory', 'blog.bcategory_id', 'bcategory.bcategory_id')
             ->groupBy('bcategory.bcategory_id')->get()->toArray();
-        for($t=0; $t < count($totalBlog); $t++) {
+        for ($t = 0; $t < count($totalBlog); $t++) {
             $totalBlogArray[$totalBlog[$t]['bcategory_id']] = $totalBlog[$t]['total_blog'];
         }
 
@@ -343,23 +348,24 @@ class HomeController extends Controller
         ]);
     }
 
-    public function product(Request $request) {
+    public function product(Request $request)
+    {
         try {
             $pagesDetail = Pages::firstWhere('page_id', 3);
-            if(!$pagesDetail){
+            if (!$pagesDetail) {
                 return redirect('/404');
             }
 
-            // Get selected subcategory slug from URL
+            // Get selected slugs from URL
             $categorySlug = $request->category;
             $subcategorySlug = $request->subcategory;
 
             // Fetch active products with pagination
             $query = Product::with(['pimages', 'city'])->where('product_status', '1');
-            // Apply subcategory filter if slug exists
+
+            // Apply category filter if slug exists
             if (!empty($categorySlug)) {
                 $categoryId = Category::where('category_slug', trim($categorySlug))->value('category_id');
-                // If slug invalid → show 404
                 if (!$categoryId) {
                     return redirect('/404');
                 }
@@ -367,7 +373,6 @@ class HomeController extends Controller
             }
             if (!empty($subcategorySlug)) {
                 $subcategoryId = Category::where('category_slug', trim($subcategorySlug))->value('category_id');
-                // If slug invalid → show 404
                 if (!$subcategoryId) {
                     return redirect('/404');
                 }
@@ -377,39 +382,75 @@ class HomeController extends Controller
             // Apply state filter if location exists in query
             $locationId = $request->location;
             if (!empty($locationId)) {
-                $query->where('state_id', $locationId);
+                $locations = is_array($locationId) ? $locationId : explode(',', $locationId);
+                $query->whereIn('state_id', $locations);
+            }
+
+            // Apply city filter if city exists in query
+            $cityId = $request->city;
+            if (!empty($cityId)) {
+                $query->where('city_id', $cityId);
+            }
+
+            // Sorting Logic
+            $sortBy = $request->sort ?? 'newest';
+            if ($sortBy == 'price-low') {
+                $query->orderBy('product_price', 'ASC');
+            } elseif ($sortBy == 'price-high') {
+                $query->orderBy('product_price', 'DESC');
+            } else {
+                $query->orderBy('product_id', 'DESC');
             }
 
             $productDetail = $query
-                ->orderBy('product_id', 'DESC')
                 ->paginate(9);
 
-            // Ensure pagination links maintain the desired parameter order
+            // Ensure pagination links maintain params
             $productDetail->appends(array_filter([
                 'category' => $categorySlug,
                 'subcategory' => $subcategorySlug,
                 'location' => $locationId,
+                'city' => $cityId,
+                'sort' => $sortBy,
             ]));
 
             $categoryDetail = Category::where('category_parent', 0)
-                ->withCount(['product' => function ($q) {
-                    $q->where('product_status', '1');
-                }])
+                ->withCount([
+                    'product' => function ($q) {
+                        $q->where('product_status', '1');
+                    }
+                ])
                 ->having('product_count', '>', 0)
                 ->get();
 
             $subcategoryDetail = Category::where('category_parent', '>', 0)
-                ->withCount(['product' => function ($q) {
-                    $q->where('product_status', '1');
-                }])
+                ->withCount([
+                    'product' => function ($q) {
+                        $q->where('product_status', '1');
+                    }
+                ])
                 ->having('product_count', '>', 0)
                 ->get();
 
             $stateDetail = State::where('state_status', '1')
-                ->withCount(['product' => function ($q) {
-                    $q->where('product_status', '1');
-                }])
+                ->withCount([
+                    'product' => function ($q) {
+                        $q->where('product_status', '1');
+                    }
+                ])
                 ->having('product_count', '>', 0)
+                ->with([
+                    'cities' => function ($q) {
+                        $q->where('city_status', '1')
+                            ->withCount([
+                                'product' => function ($q2) {
+                                    $q2->where('product_status', '1');
+                                }
+                            ])
+                            ->having('product_count', '>', 0)
+                            ->orderBy('city_name');
+                    }
+                ])
                 ->orderBy('state_name')
                 ->get();
 
@@ -421,18 +462,21 @@ class HomeController extends Controller
                 'categorySlug',
                 'subcategorySlug',
                 'stateDetail',
-                'locationId'
+                'locationId',
+                'cityId',
+                'sortBy'
             ));
         } catch (\Exception $e) {
-            Log::error('Machines page error: '.$e->getMessage());
+            Log::error('Machines page error: ' . $e->getMessage());
             return redirect('/404');
         }
     }
 
-    public function productDetail($slug) {
+    public function productDetail($slug)
+    {
         try {
             $pagesDetail = Pages::firstWhere('page_id', 3);
-            if(!$pagesDetail){
+            if (!$pagesDetail) {
                 return redirect('/404');
             }
 
@@ -467,12 +511,12 @@ class HomeController extends Controller
                 'isFavourite' => $isFavourite
             ]);
         } catch (\Exception $e) {
-            Log::error('Machines page error: '.$e->getMessage());
+            Log::error('Machines page error: ' . $e->getMessage());
             return redirect('/404');
         }
     }
 
-    public function sendMail($fromEmail='', $toEmail='', $fromName='', $toName='', $subject='', $message='', $isAttachment=0, $fileName='')
+    public function sendMail($fromEmail = '', $toEmail = '', $fromName = '', $toName = '', $subject = '', $message = '', $isAttachment = 0, $fileName = '')
     {
         $mail = new PHPMailer(true);
         try {
@@ -480,8 +524,7 @@ class HomeController extends Controller
             $mail->SetFrom($fromEmail, $fromName);
             $mail->Subject = $subject;
             $mail->AltBody = 'To view the message, please use an HTML compatible email viewer!'; // optional - MsgHTML will create an alternate automatically
-            if ($isAttachment > 0 && $fileName != "")
-            {
+            if ($isAttachment > 0 && $fileName != "") {
                 $mail->AddAttachment('/home/pvja0pu1hp5k/public_html/public/uploads/career/' . $fileName);
             }
             $mail->MsgHTML($message);
@@ -493,27 +536,30 @@ class HomeController extends Controller
         }
     }
 
-    function sendSMS($mobileNumber, $message) {
+    function sendSMS($mobileNumber, $message)
+    {
         //$authKey 		= "23a1a991572963a7d9a64c436a3dfd";
-        $authKey 		= "3f357f49d352f63de49bfdf118a4458";
-        $senderId 		= "YARIOK";
-        $message 		= urlencode($message);
+        $authKey = "3f357f49d352f63de49bfdf118a4458";
+        $senderId = "YARIOK";
+        $message = urlencode($message);
 
-        $url  			= ("http://sms1.omnetsolution.com/rest/services/sendSMS/sendGroupSms?AUTH_KEY=$authKey&message=$message&senderId=$senderId&routeId=1&mobileNos=$mobileNumber&smsContentType=english");
-        $data 			= @file_get_contents($url);
+        $url = ("http://sms1.omnetsolution.com/rest/services/sendSMS/sendGroupSms?AUTH_KEY=$authKey&message=$message&senderId=$senderId&routeId=1&mobileNos=$mobileNumber&smsContentType=english");
+        $data = @file_get_contents($url);
 
         return true;
     }
 
-    public function error404() {
+    public function error404()
+    {
         $pagesDetail = Pages::where('page_id', 18)->first();
-        if(!$pagesDetail){
+        if (!$pagesDetail) {
             return redirect('/404');
         }
         return view('404error')->with(['pagesDetail' => $pagesDetail]);
     }
 
-    public static function postMethod($url, $postFields) {
+    public static function postMethod($url, $postFields)
+    {
         try {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
