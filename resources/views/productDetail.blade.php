@@ -79,9 +79,6 @@
                         <div class="spec-cards-grid mt-4">
                             <!-- Price -->
                             <div class="spec-card">
-                                <div class="spec-card__icon" style="background:#ffaa00;">
-                                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Asking Price</span>
                                     @if(session()->has('customer_id') && session()->has('customer_id') > 0)
@@ -97,9 +94,6 @@
 
                             @if($productDetail->product_brand)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--blue">
-                                    <i class="fa-solid fa-tag"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Brand</span>
                                     <span class="spec-card__value">{{ $productDetail->product_brand }}</span>
@@ -109,9 +103,6 @@
 
                             @if($productDetail->product_model)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--teal">
-                                    <i class="fa-solid fa-gear"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Model / Year</span>
                                     <span class="spec-card__value">{{ $productDetail->product_model }}</span>
@@ -121,9 +112,6 @@
 
                             @if($productDetail->product_location)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--orange">
-                                    <i class="fa-solid fa-location-dot"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Location</span>
                                     <span class="spec-card__value">{{ $productDetail->city->city_name ?? 'N/A' }}</span>
@@ -133,9 +121,6 @@
 
                             @if($productDetail->product_listing_id)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--purple">
-                                    <i class="fa-solid fa-hashtag"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Listing ID</span>
                                     <span class="spec-card__value">
@@ -147,9 +132,6 @@
 
                             @if($productDetail->category)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--green">
-                                    <i class="fa-solid fa-layer-group"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Category</span>
                                     <span class="spec-card__value">{{ $productDetail->category->category_title }}</span>
@@ -159,9 +141,6 @@
 
                             @if($productDetail->subCategory)
                             <div class="spec-card">
-                                <div class="spec-card__icon spec-card__icon--indigo">
-                                    <i class="fa-solid fa-sitemap"></i>
-                                </div>
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Sub Category</span>
                                     <span class="spec-card__value">{{ $productDetail->subCategory->category_title }}</span>

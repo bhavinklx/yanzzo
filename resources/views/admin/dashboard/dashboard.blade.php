@@ -31,7 +31,7 @@
                 $greeting = "Good Night";
             }
         @endphp
-        <div class="row gx-3">
+        {{--<div class="row gx-3">
             <div class="col-xxl-12 col-sm-12">
                 <div class="card mb-3 bg-2">
                     <div class="card-body">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>--}}
         <!-- Row ends -->
 
         <!-- Row starts -->
@@ -159,7 +159,8 @@
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="card-title">User Registrations</h5>
                         <div class="dropdown">
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ date('Y') }}</span>
+                            <span
+                                class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ date('Y') }}</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -172,7 +173,8 @@
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="card-title">Product Registrations</h5>
                         <div class="dropdown">
-                            <span class="badge bg-success-subtle text-success border border-success-subtle">{{ date('Y') }}</span>
+                            <span
+                                class="badge bg-success-subtle text-success border border-success-subtle">{{ date('Y') }}</span>
                         </div>
                     </div>
                     <div class="card-body">
@@ -189,16 +191,16 @@
     <script type="text/javascript">
         var options1 = {
             chart: {
-                height: 300,
-                type: "bar",
+                height: 350,
+                type: 'line',
                 toolbar: {
                     show: false,
                 },
             },
             plotOptions: {
                 bar: {
-                    columnWidth: '45%',
-                    borderRadius: 4,
+                    columnWidth: '40%',
+                    borderRadius: 2,
                 }
             },
             dataLabels: {
@@ -206,58 +208,84 @@
             },
             stroke: {
                 curve: "smooth",
-                width: 3,
+                width: [0, 3], // 0 width for bar series, 3 for line
             },
             series: [{
-                name: "Registrations",
-                data: @json($customerData),
+                name: "Registered Users",
+                type: "column",
+                data: @json($customerDaily),
+            }, {
+                name: "7-Day Moving Avg",
+                type: "line",
+                data: @json($movingAverage),
             }],
             grid: {
-                borderColor: "#dfd6ff",
-                strokeDashArray: 5,
+                borderColor: "#f1f1f1",
+                strokeDashArray: 0,
                 xaxis: {
                     lines: {
-                        show: true,
+                        show: false,
                     },
                 },
                 yaxis: {
                     lines: {
-                        show: false,
+                        show: true,
                     },
                 },
                 padding: {
                     top: 0,
                     right: 0,
-                    bottom: 10,
+                    bottom: 0,
                     left: 0,
                 },
             },
             xaxis: {
-                categories: [
-                    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-                ],
+                categories: @json($customerLabels),
+                labels: {
+                    rotate: -45,
+                    rotateAlways: true,
+                    style: {
+                        fontSize: '12px'
+                    }
+                },
+                tooltip: {
+                    enabled: false
+                }
             },
             yaxis: {
+                title: {
+                    text: 'Registered Users',
+                },
                 labels: {
-                    show: false,
+                    show: true,
                 },
             },
             colors: [
-                "#207a5a", // Users (Deep Green)
+                "#3b82f6", // Blue
+                "#f59e0b", // Yellow
             ],
             markers: {
-                size: 4,
-                opacity: 0.3,
-                colors: ["#207a5a"],
-                strokeColor: "#ffffff",
-                strokeWidth: 2,
+                size: 0,
                 hover: {
-                    size: 7,
+                    size: 5,
                 },
             },
             legend: {
-                position: 'bottom',
+                position: 'top',
                 horizontalAlign: 'center',
+                offsetY: 0,
+                markers: {
+                    width: 12,
+                    height: 12,
+                    strokeWidth: 0,
+                    strokeColor: '#fff',
+                    fillColors: undefined,
+                    radius: 12,
+                    customHTML: undefined,
+                    onClick: undefined,
+                    offsetX: 0,
+                    offsetY: 0
+                },
             }
         };
         var chart1 = new ApexCharts(document.querySelector("#customerGraph"), options1);
@@ -266,80 +294,92 @@
         // Product Registration Graph
         var options2 = {
             chart: {
-                type: "area",
-                height: 300,
-                foreColor: "#999",
-                stacked: true,
-                dropShadow: {
-                    enabled: true,
-                    enabledSeries: [0],
-                    top: -2,
-                    left: 2,
-                    blur: 5,
-                    opacity: 0.06
-                },
+                height: 350,
+                type: 'line',
                 toolbar: {
-                    show: false
-                }
+                    show: false,
+                },
             },
-            colors: ['#ffb02e', '#ff6b6b'],
-            stroke: {
-                curve: "smooth",
-                width: 3
+            plotOptions: {
+                bar: {
+                    columnWidth: '40%',
+                    borderRadius: 2,
+                }
             },
             dataLabels: {
-                enabled: false
+                enabled: false,
+            },
+            stroke: {
+                curve: "smooth",
+                width: [0, 3], // 0 width for bar series, 3 for line
             },
             series: [{
-                name: 'Total Products',
-                data: @json($productData)
+                name: "Registered Products",
+                type: "column",
+                data: @json($productDaily),
+            }, {
+                name: "7-Day Moving Avg",
+                type: "line",
+                data: @json($productMovingAverage),
             }],
-            markers: {
-                size: 0,
-                strokeColor: "#fff",
-                strokeWidth: 3,
-                strokeOpacity: 1,
-                fillOpacity: 1,
-                hover: {
-                    size: 6
-                }
+            grid: {
+                borderColor: "#f1f1f1",
+                strokeDashArray: 0,
+                xaxis: {
+                    lines: {
+                        show: false,
+                    },
+                },
+                yaxis: {
+                    lines: {
+                        show: true,
+                    },
+                },
+                padding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                },
             },
             xaxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                axisBorder: {
-                    show: false
+                categories: @json($customerLabels),
+                labels: {
+                    rotate: -45,
+                    rotateAlways: true,
+                    style: {
+                        fontSize: '12px'
+                    }
                 },
-                axisTicks: {
-                    show: false
+                tooltip: {
+                    enabled: false
                 }
             },
             yaxis: {
-                labels: {
-                    offsetX: 14,
-                    offsetY: -5
+                title: {
+                    text: 'Registered Products',
                 },
-                tooltip: {
-                    enabled: true
-                }
+                labels: {
+                    show: true,
+                },
             },
-            grid: {
-                padding: {
-                    left: -5,
-                    right: 5
-                }
-            },
-            tooltip: {
-                x: {
-                    format: "dd MMM yyyy"
+            colors: [
+                "#10b981", // Green
+                "#ef4444", // Red
+            ],
+            markers: {
+                size: 0,
+                hover: {
+                    size: 5,
                 },
             },
             legend: {
                 position: 'top',
-                horizontalAlign: 'left'
-            },
-            fill: {
-                type: "solid",
-                fillOpacity: 0.7
+                horizontalAlign: 'center',
+                offsetY: 0,
+                markers: {
+                    radius: 12,
+                },
             }
         };
         var chart2 = new ApexCharts(document.querySelector("#productGraph"), options2);

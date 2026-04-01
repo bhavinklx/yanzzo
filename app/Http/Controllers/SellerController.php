@@ -56,8 +56,8 @@ class SellerController extends Controller
             "product_title"                     => "required|string|max:255",
             "product_brand"                     => "required|string|max:255",
             "product_model"                     => "required|string|max:255",
+            "product_year"                      => "required|numeric|min:1900|max:" . (date('Y') + 1),
             "product_price"                     => "required|numeric",
-            "product_short_desc"                => "required|string",
             "product_desc"                      => "required|string",
             "product_specification"             => "required|string",
             "product_images"                    => "required|array|min:1"
@@ -82,8 +82,8 @@ class SellerController extends Controller
                 'city_id'                       => $request->city_id,
                 'product_title'                 => $product_title,
                 'product_slug'                  => $this->generateUniqueSlug($product_title),
-                'product_date'                  => $request->product_date ? date('Y-m-d', strtotime($request->product_date)) : date('Y-m-d'),
-                'product_short_desc'            => addslashes($request->product_short_desc),
+                'product_date'                  => date('Y-m-d'), // Set current date as listing date
+                'product_short_desc'            => Str::limit(strip_tags($request->product_desc), 250), // Auto-generate from description
                 'product_desc'                  => $request->product_desc,
                 'product_specification'         => $request->product_specification,
                 'product_price'                 => $request->product_price,
@@ -92,7 +92,7 @@ class SellerController extends Controller
                 'product_location'              => $request->product_location,
                 'product_meta_title'            => $product_title,
                 'product_meta_keyword'          => $product_title,
-                'product_meta_desc'             => substr(strip_tags($request->product_desc), 0, 160),
+                'product_meta_desc'             => Str::limit(strip_tags($request->product_desc), 160),
                 'product_listing_id'            => $this->generateUniqueListingId(),
                 'product_order'                 => (!empty($lastOrder)) ? $lastOrder->product_order + 1 : 1,
                 'product_status'                => '0', // Pending approval

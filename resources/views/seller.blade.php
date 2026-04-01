@@ -99,141 +99,140 @@
                         <div class="card">
                             <form id="sellerform" method="POST" action="{{ route('seller-inquiry-insert') }}">
                                 @csrf
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <h4 class="fw-bold">Machine Information</h4>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="input-space">
-                                            <label for="category_id" class="form-label">Category *</label>
-                                            <select id="category_id" name="category_id" class="form-select">
-                                                <option value="0">Select Category</option>
-                                                @foreach($categoryDetail as $category)
-                                                    <option value="{{ $category->category_id }}">{{ $category->category_title }}</option>
-                                                @endforeach
-                                            </select>
+                                
+                                <!-- Step 1: Category Selection -->
+                                <div id="form-step-1">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4">
+                                            <h4 class="fw-bold">Step 1: Choose Category</h4>
+                                            <p class="text-muted small">Select the category and sub-category of the machine you want to sell.</p>
+                                            <hr>
                                         </div>
-                                        <div id="msg_category_id"></div>
-                                    </div>
 
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="input-space">
-                                            <label for="subcategory_id" class="form-label">Sub Category *</label>
-                                            <select id="subcategory_id" name="subcategory_id" class="form-select">
-                                                <option value="0">Select Sub Category</option>
-                                            </select>
-                                        </div>
-                                        <div id="msg_subcategory_id"></div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="input-space">
-                                            <label for="state_id" class="form-label">State *</label>
-                                            <select id="state_id" name="state_id" class="form-select">
-                                                <option value="0">Select State</option>
-                                                @foreach($stateDetail as $state)
-                                                    <option value="{{ $state->state_id }}">{{ $state->state_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div id="msg_state_id"></div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="input-space">
-                                            <label for="city_id" class="form-label">City *</label>
-                                            <select id="city_id" name="city_id" class="form-select">
-                                                <option value="0">Select City</option>
-                                            </select>
-                                        </div>
-                                        <div id="msg_city_id"></div>
-                                    </div>
-
-                                    <div class="col-lg-12">
-                                        <div class="input-space">
-                                            <label for="product_title" class="form-label">Machine Name / Listing Title *</label>
-                                            <input type="text" id="product_title" name="product_title" class="form-control" placeholder="Enter Product Title">
-                                        </div>
-                                        <div id="msg_product_title"></div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="input-space">
-                                            <label for="product_price" class="form-label">Price *</label>
-                                            <input type="text" id="product_price" name="product_price" class="form-control" placeholder="Enter Price">
-                                        </div>
-                                        <div id="msg_product_price"></div>
-                                    </div>
-                                    
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="input-space">
-                                            <label for="product_brand" class="form-label">Brand *</label>
-                                            <input type="text" id="product_brand" name="product_brand" class="form-control" placeholder="Enter Brand">
-                                        </div>
-                                        <div id="msg_product_brand"></div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="input-space">
-                                            <label for="product_model" class="form-label">Model *</label>
-                                            <input type="text" id="product_model" name="product_model" class="form-control" placeholder="Enter Model">
-                                        </div>
-                                        <div id="msg_product_model"></div>
-                                    </div>
-
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="input-space">
-                                            <label for="product_date" class="form-label">Listing Date</label>
-                                            <input type="date" id="product_date" name="product_date" class="form-control" value="{{ date('Y-m-d') }}">
-                                        </div>
-                                        <div id="msg_product_date"></div>
-                                    </div>
-
-                                    <div class="col-lg-12">
-                                        <div class="input-space">
-                                            <label for="product_short_desc" class="form-label">Short Description</label>
-                                            <textarea id="product_short_desc" name="product_short_desc" class="form-control" rows="2" placeholder="Brief highlight of the machine (max 255 characters)..."></textarea>
-                                        </div>
-                                        <div id="msg_product_short_desc"></div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="input-space">
-                                            <label for="product_desc" class="form-label">Detailed Description *</label>
-                                            <textarea id="product_desc" name="product_desc" class="form-control" rows="4" placeholder="Detailed info about condition, features, usage, and reason for selling..."></textarea>
-                                        </div>
-                                        <div id="msg_product_desc"></div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="input-space">
-                                            <label for="product_specification" class="form-label">Technical Specifications</label>
-                                            <textarea id="product_specification" name="product_specification" class="form-control" rows="4" placeholder="Capacity, Power, etc..."></textarea>
-                                        </div>
-                                        <div id="msg_product_specification"></div>
-                                    </div>
-
-                                    <div class="col-sm-12">
-                                        <div class="input-space">
-                                            <label class="form-label">Machine Photos *</label>
-                                            <link rel="stylesheet" href="{{ url('assets/vendor/dropzone/dropzone.min.css') }}">
-                                            <div class="dropzone dz-clickable" id="product-images-upload">
-                                                <div class="dz-message text-center">
-                                                    <img src="{{ url('/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">
-                                                    <p class="mb-0">Click or drop here to upload photos</p>
-                                                </div>
+                                        <div class="col-lg-6 col-md-6 mb-3">
+                                            <div class="input-space mb-0">
+                                                <label for="category_id" class="form-label">Category *</label>
+                                                <select id="category_id" name="category_id" class="form-select">
+                                                    <option value="0">Select Category</option>
+                                                    @foreach($categoryDetail as $category)
+                                                        <option value="{{ $category->category_id }}">{{ $category->category_title }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div id="product-images-container"></div>
-                                            <div id="msg_product_images"></div>
+                                            <div id="err_category_id" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6 mb-3">
+                                            <div class="input-space mb-0">
+                                                <label for="subcategory_id" class="form-label">Sub Category *</label>
+                                                <select id="subcategory_id" name="subcategory_id" class="form-select">
+                                                    <option value="0">Select Sub Category</option>
+                                                </select>
+                                            </div>
+                                            <div id="err_subcategory_id" class="text-danger small mt-1"></div>
+                                        </div>
+
+                                        <div class="col-12 mt-4">
+                                            <button type="button" onclick="goToStep(2)" class="btn btn-primary px-5 py-2">Next: Enter Details <i class="feather-arrow-right ms-2"></i></button>
                                         </div>
                                     </div>
+                                </div>
 
+                                <!-- Step 2: Machine Details -->
+                                <div id="form-step-2" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <h4 class="fw-bold mb-0">Step 2: Machine Details</h4>
+                                                <button type="button" onclick="goToStep(1)" class="btn btn-link text-muted text-decoration-none p-0"><i class="feather-arrow-left me-1"></i> Back</button>
+                                            </div>
+                                            <hr>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="input-space">
+                                                <label for="state_id" class="form-label">State *</label>
+                                                <select id="state_id" name="state_id" class="form-select">
+                                                    <option value="0">Select State</option>
+                                                    @foreach($stateDetail as $state)
+                                                        <option value="{{ $state->state_id }}">{{ $state->state_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="input-space">
+                                                <label for="city_id" class="form-label">City *</label>
+                                                <select id="city_id" name="city_id" class="form-select">
+                                                    <option value="0">Select City</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="input-space">
+                                                <label for="product_title" class="form-label">Machine Name / Listing Title *</label>
+                                                <input type="text" id="product_title" name="product_title" class="form-control" placeholder="Enter Product Title">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="input-space">
+                                                <label for="product_brand" class="form-label">Brand *</label>
+                                                <input type="text" id="product_brand" name="product_brand" class="form-control" placeholder="Enter Brand">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="input-space">
+                                                <label for="product_price" class="form-label">Price *</label>
+                                                <input type="text" id="product_price" name="product_price" class="form-control" placeholder="Enter Price (e.g. 1000)" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="input-space">
+                                                <label for="product_model" class="form-label">Model *</label>
+                                                <input type="text" id="product_model" name="product_model" class="form-control" placeholder="Enter Model (YYYY) e.g. 2026" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="input-space">
+                                                <label for="product_desc" class="form-label">Detailed Description *</label>
+                                                <textarea id="product_desc" name="product_desc" class="form-control" rows="4" placeholder="Detailed info about condition, features, usage, etc..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="input-space">
+                                                <label for="product_specification" class="form-label">Technical Specifications</label>
+                                                <textarea id="product_specification" name="product_specification" class="form-control" rows="4" placeholder="Capacity, Power, etc..."></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="input-space">
+                                                <label class="form-label">Machine Photos *</label>
+                                                <link rel="stylesheet" href="{{ url('assets/vendor/dropzone/dropzone.min.css') }}">
+                                                <div class="dropzone dz-clickable bg-light" id="product-images-upload" style="border: 2px dashed #ddd; border-radius: 10px;">
+                                                    <div class="dz-message text-center">
+                                                        <img src="{{ url('/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">
+                                                        <p class="mb-0">Click or drop here to upload photos</p>
+                                                    </div>
+                                                </div>
+                                                <div id="product-images-container"></div>
+                                                <div id="msg_product_images"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12 mt-4 text-end">
+                                            <button type="button" id="submitBtn" class="btn btn-secondary btn-lg px-5">Submit Details</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
-                        </div>
-                        <div class="save-changes text-end">
-                            <button type="button" id="submitBtn" class="btn btn-secondary">Submit Details</button>
                         </div>
                     </div>
                 </div>
@@ -246,6 +245,39 @@
 @section('page-js')
 <script>
 $(document).ready(function() {
+    // Step Navigation
+    window.goToStep = function(step) {
+        if (step == 2) {
+            // Validate Step 1
+            var category = $('#category_id').val();
+            var subcategory = $('#subcategory_id').val();
+            var valid = true;
+
+            $('#err_category_id, #err_subcategory_id').html('');
+            
+            if (category == 0) {
+                $('#err_category_id').html('Please select a category');
+                valid = false;
+            }
+            if (subcategory == 0) {
+                $('#err_subcategory_id').html('Please select a sub-category');
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            $('#form-step-1').fadeOut(200, function() {
+                $('#form-step-2').fadeIn(200);
+                window.scrollTo(0, 0);
+            });
+        } else {
+            $('#form-step-2').fadeOut(200, function() {
+                $('#form-step-1').fadeIn(200);
+                window.scrollTo(0, 0);
+            });
+        }
+    }
+
     // Dynamic Subcategory
     $('#category_id').change(function() {
         var category_id = $(this).val();
@@ -319,7 +351,7 @@ $(document).ready(function() {
         var form = $('#sellerform');
         var btn = $(this);
         
-        btn.prop('disabled', true).html('Processing...');
+        btn.prop('disabled', true).html('<i class="feather-loader me-2"></i> Processing...');
         
         form.find(".is-invalid").removeClass("is-invalid");
         $(".invalid-feedback").remove();
@@ -332,21 +364,28 @@ $(document).ready(function() {
             processData: false,
             success: function(response) {
                 if (response.status == "validation-error") {
+                    var firstErrorField = null;
                     $.each(response.data, function(key, value) {
                         if (key == 'product_images') {
                             $('#product-images-upload').addClass("is-invalid");
-                            $("#msg_product_images").html('<div class="invalid-feedback d-block" style="margin-top: 5px; margin-bottom: 15px; margin-left: 5px;"><small class="text-danger">' + value + '</small></div>');
+                            $("#msg_product_images").html('<div class="invalid-feedback d-block"><small class="text-danger">' + value + '</small></div>');
+                            if (!firstErrorField) firstErrorField = 'product-images-upload';
                         } else {
                             $("#" + key).addClass("is-invalid");
-                            $("#" + key).closest('.input-space').after('<div class="invalid-feedback d-block" style="margin-top: -15px; margin-bottom: 15px; margin-left: 5px;"><small class="text-danger">' + value + '</small></div>');
+                            $("#" + key).after('<div class="invalid-feedback d-block"><small class="text-danger">' + value + '</small></div>');
+                            if (!firstErrorField) firstErrorField = key;
                         }
                     });
                     btn.prop('disabled', false).text('Submit Details');
                     
-                    var firstError = $(".is-invalid").first();
-                    if (firstError.length) {
+                    if (firstErrorField) {
+                        var errorElement = $("#" + firstErrorField);
+                        // Check if error is in Step 1 but we are in Step 2
+                        if (firstErrorField == 'category_id' || firstErrorField == 'subcategory_id') {
+                            goToStep(1);
+                        }
                         $('html, body').animate({
-                            scrollTop: firstError.offset().top - 150
+                            scrollTop: errorElement.offset().top - 150
                         }, 500);
                     }
                 } else if (response.redirect_url) {
@@ -355,6 +394,7 @@ $(document).ready(function() {
             },
             error: function() {
                 btn.prop('disabled', false).text('Submit Details');
+                alert('An error occurred. Please try again.');
             }
         });
     });
