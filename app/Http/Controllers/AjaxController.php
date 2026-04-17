@@ -93,8 +93,10 @@ class AjaxController extends Controller {
                                     <input type="hidden" name="verify_mobile" id="verify_mobile" value="'.base64_encode($_POST['user_mobile']).'">
                                     <p style="margin-bottom: 0px;">OTP has been sent to ******<span id="mobile_id">'.$last.'</span></p>
                                     <div class="mb-3">
-                                        <label>OTP</label>
-                                        <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                        <div class="input-space mb-0">
+                                            <label class="form-label">OTP</label>
+                                            <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                        </div>
                                         <span class="help-block" id="uotp_msg"></span>
                                     </div>
                                     <button class="btn btn-primary w-100" type="button" id="verifyOtpBtn" name="verifyOtpBtn" onclick="return verify_otp();">Verify</button>
@@ -174,13 +176,17 @@ class AjaxController extends Controller {
                         <!--<p>Subscribe to our newsletters and don’t miss new arrivals, the latest fashion updates and our promotions.</p>-->
                         <input type="hidden" name="reset_mobile" id="reset_mobile" value="'.base64_encode($customerDetail->customer_mobile).'">
                         <div class="mb-3">
-                            <label>Password</label>
-                            <input class="form-control mb-0" type="password" id="resetpassword" name="resetpassword">
+                            <div class="input-space mb-0">
+                                <label class="form-label">Password</label>
+                                <input class="form-control mb-0" type="password" id="resetpassword" name="resetpassword">
+                            </div>
                             <span class="help-block" id="rpass_msg"></span>
                         </div>
                         <div class="mb-3">
-                            <label>Confirm Password</label>
-                            <input class="form-control mb-0" type="password" id="resetcpassword" name="resetcpassword">
+                            <div class="input-space mb-0">
+                                <label class="form-label">Confirm Password</label>
+                                <input class="form-control mb-0" type="password" id="resetcpassword" name="resetcpassword">
+                            </div>
                             <span class="help-block" id="rcpass_msg"></span>
                         </div>
                         <button class="btn btn-primary w-100" type="button" id="resetPassBtn" name="resetPassBtn" onclick="return reset_password();">Reset Password</button>
@@ -190,20 +196,29 @@ class AjaxController extends Controller {
             </div>';
 
 
-            // Save session
-            Session::put('customer_id', $customerDetail->customer_id);
-            Session::put('customer_name', $customerDetail->customer_name);
-            Session::put('customer_email', $customerDetail->customer_email);
-            Session::put('customer_phone', $customerDetail->customer_mobile);
+            // Save session & update login info if not in forgot mode
+            if ($request->mode != 'forgot') {
+                Session::put('customer_id', $customerDetail->customer_id);
+                Session::put('customer_name', $customerDetail->customer_name);
+                Session::put('customer_email', $customerDetail->customer_email);
+                Session::put('customer_phone', $customerDetail->customer_mobile);
 
-            // Update last login info
-            $customerDetail->update([
-                'customer_otp' => '',
-                'customer_last_login_date' => now(),
-                'customer_last_login_ip' => $request->ip(),
+                $customerDetail->update([
+                    'customer_otp' => '',
+                    'customer_last_login_date' => now(),
+                    'customer_last_login_ip' => $request->ip(),
+                ]);
+            } else {
+                $customerDetail->update([
+                    'customer_otp' => '',
+                ]);
+            }
+
+            return response()->json([
+                "message" => "success", 
+                "redirect_url" => ($request->mode != 'forgot') ? ($request->input('URI') ? base64_decode($request->input('URI')) : url('/')) : "", 
+                "reset_form" => $reset_form
             ]);
-
-            return response()->json(["message" => "success", "redirect_url" => $request->input('URI') ? base64_decode($request->input('URI')) : url('/'), "reset_form" => $reset_form]);
         } /*elseif ($customerDetail && $customerDetail->customer_status == "0") {
             return response()->json(["message"  => "unauthorised", "msg_text" => "Your account has not been activated yet. Please reset your account."]);
         }*/ else {
@@ -233,8 +248,10 @@ class AjaxController extends Controller {
                             <input type="hidden" name="verify_mobile" id="verify_mobile" value="'.base64_encode($request->forgot_mobile).'">
                             <p style="margin-bottom: 0px;">OTP has been sent to ******<span id="mobile_id">'.$last.'</span></p>
                             <div class="mb-3">
-                                <label>OTP</label>
-                                <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                <div class="input-space mb-0">
+                                    <label class="form-label">OTP</label>
+                                    <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                </div>
                                 <span class="help-block" id="uotp_msg"></span>
                             </div>
                             <button class="btn btn-primary w-100" type="button" id="verifyOtpBtn" name="verifyOtpBtn" onclick="return forgot_password();">Verify</button>
@@ -266,10 +283,10 @@ class AjaxController extends Controller {
 
     public function reset_password(Request $request) {
         try {
-            $customerDetail             = Customer::where('customer_mobile', $request->reset_mobile)->first();
+            $customerDetail             = Customer::where('customer_mobile', base64_decode($request->reset_mobile))->first();
             if ($customerDetail) {
                 Customer::where('customer_id', $customerDetail->customer_id)->update([
-                    'customer_password' => md5(trim($request->md5(trim($_POST["resetpassword"])))),
+                    'customer_password' => md5(trim($request->resetpassword)),
                     'customer_otp' => ''
                 ]);
 
@@ -335,8 +352,10 @@ class AjaxController extends Controller {
                             <input type="hidden" id="URI" name="URI" value="'.$redirect_url.'">
                             <p style="margin-bottom: 0px;">OTP has been sent to ******<span id="mobile_id">'.$last.'</span></p>
                             <div class="mb-3">
-                                <label>OTP</label>
-                                <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                <div class="input-space mb-0">
+                                    <label class="form-label">OTP</label>
+                                    <input class="form-control mb-0" type="password" id="user_otp" name="user_otp" onkeypress="return isNumberKey(event);" maxlength="6">
+                                </div>
                                 <span class="help-block" id="uotp_msg"></span>
                             </div>
                             <button class="btn btn-primary w-100" type="button" id="verifyOtpBtn" name="verifyOtpBtn" onclick="return verify_otp();">Verify</button>

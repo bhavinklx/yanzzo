@@ -250,11 +250,11 @@
                                 <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me" value="yes" checked>
                                 <label for="remember_me">Remember Password</label>
                             </div>
-                            {{--<div class="form-group col-lg-6" style="text-align: right">
+                            <div class="form-group col-lg-6" style="text-align: right">
                                 <a href="javascript: void (0)" onclick="forgot_popup()">
                                     Forgot Password?
                                 </a>
-                            </div>--}}
+                            </div>
                         </div>
                     </div>
                     <button class="btn btn-primary w-100" type="button" id="loginBtn" name="loginBtn" onclick="return validate_login()">Sign In</button>
