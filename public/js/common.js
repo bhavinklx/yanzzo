@@ -362,7 +362,7 @@ function verify_otp() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: "/verify-otp",
             type: "POST",
-            data: frmData + "&act=verify_otp",
+            data: frmData + "&act=verify_otp" + "&mode=register",
             dataType: 'json',
             success: function (response) {
                 if (response.message == 'success') {
@@ -542,7 +542,7 @@ function forgot_password() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url: "/verify-otp",
             type: "POST",
-            data: frmData + "&act=verify_otp",
+            data: frmData + "&act=verify_otp" + "&mode=forgot",
             dataType: 'json',
             success: function (response) {
                 if (response.message == 'success') {

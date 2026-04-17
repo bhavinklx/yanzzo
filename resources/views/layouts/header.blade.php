@@ -106,8 +106,8 @@
                     <li class="nav-item">
                         <div class="user-header-dropdown">
                             <a href="javascript:void(0)" class="user-header-toggle">
-                                <i class="feather-user"></i> {{ Session::get('customer_name') }} <i
-                                    class="fas fa-chevron-down ms-1" style="font-size:10px;"></i>
+                                <i class="feather-user"></i> <span class="user-name-text">{{ Session::get('customer_name') }}</span> <i
+                                     class="fas fa-chevron-down" style="font-size:10px;"></i>
                             </a>
                             <div class="user-header-menu">
                                 <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i>
@@ -130,14 +130,21 @@
                                         class="feather-log-out"></i> Logout</a>
                             </div>
                         </div>
+                    <li class="nav-item ms-3">
+                        <a href="{{ url('/seller-inquiry') }}" class="btn-sell">
+                            <i class="feather-plus-circle me-1"></i> SELL
+                        </a>
                     </li>
                 @else
                     <li class="nav-item">
-                        <div class="nav-link btn btn-white log-register">
-                            <a href="javascript: void (0)" onclick="return signin_popup()"><span><i
-                                        class="feather-log-in"></i></span>Login</a> / <a href="javascript: void (0)"
-                                onclick="return signin_popup()"><span><i class="feather-plus-square ms-1"></i></span>Sell Your Machine</a>
-                        </div>
+                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell">
+                            <i class="feather-user me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell">
+                            <i class="feather-plus-circle me-1"></i> SELL
+                        </a>
                     </li>
                 @endif
             </ul>
