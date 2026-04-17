@@ -31,18 +31,6 @@ Route::get('/clear-cache', function () {
     return 'Application cache has been cleared';
 });
 
-Route::controller(AjaxController::class)->group(function (){
-    Route::post('/validate-email', 'validate_email')->name('validate-email');
-    Route::post('/validate-mobile', 'validate_mobile')->name('validate-mobile');
-    Route::post('/validate-signup', 'validate_signup')->name('validate-signup');
-    Route::post('/resend-otp', 'resend_otp')->name('resend-otp');
-    Route::post('/verify-otp', 'verify_otp')->name('verify-otp');
-    Route::post('/validate-forgot', 'validate_forgot')->name('validate-forgot');
-    Route::post('/reset-password', 'reset_password')->name('reset-password');
-    Route::post('/validate-login', 'validate_login')->name('validate-login');
-    Route::post('/validate-logout', 'logout')->name('validate-logout');
-    Route::post('/favourite-toggle', 'favourite_toggle')->name('favourite-toggle');
-});
 
 Route::get('/admin', function () {
     if (\Auth::guest()) {
@@ -423,3 +411,16 @@ Route::controller(HomeController::class)->group(function (){
 });
 
 require __DIR__.'/auth.php';
+
+Route::controller(AjaxController::class)->group(function (){
+    Route::post('/validate-email', 'validate_email')->name('validate-email');
+    Route::post('/validate-mobile', 'validate_mobile')->name('validate-mobile');
+    Route::post('/validate-signup', 'validate_signup')->name('validate-signup');
+    Route::post('/resend-otp', 'resend_otp')->name('resend-otp');
+    Route::post('/verify-otp', 'verify_otp')->name('verify-otp');
+    Route::post('/validate-forgot', 'validate_forgot')->name('validate-forgot');
+    Route::post('/reset-password', 'reset_password')->name('reset-password');
+    Route::post('/validate-login', 'validate_login')->name('validate-login');
+    Route::post('/validate-logout', 'logout')->name('validate-logout');
+    Route::post('/favourite-toggle', 'favourite_toggle')->name('favourite-toggle');
+});

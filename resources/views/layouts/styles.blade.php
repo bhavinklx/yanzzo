@@ -153,4 +153,70 @@
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 12px 25px rgba(57, 166, 141, 0.35) !important;
     }
+
+    /* Shared Header Button Styling (Sell & User Profile) */
+    .btn-sell, .user-header-toggle {
+        background: #fff !important;
+        border: 2px solid #2d4487 !important;
+        color: #2d4487 !important;
+        font-weight: 700 !important;
+        border-radius: 50px !important;
+        height: 40px !important;
+        width: 155px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-transform: uppercase;
+        font-size: 13px !important;
+        transition: all 0.3s ease;
+        padding: 0 !important;
+        box-shadow: none !important;
+        text-decoration: none !important;
+        gap: 8px !important;
+    }
+    .user-header-dropdown {
+        position: relative !important;
+        width: 155px !important;
+        display: inline-block !important;
+    }
+    .user-header-menu {
+        left: 50% !important;
+        right: auto !important;
+        top: 100% !important;
+        margin-top: 5px !important;
+        transform: translateX(-50%) !important;
+        width: 200px !important;
+        text-align: left;
+        pointer-events: auto !important;
+    }
+    /* Bridge the gap between button and menu to prevent closing on hover */
+    .user-header-menu::before {
+        content: "";
+        position: absolute;
+        top: -15px;
+        left: 0;
+        right: 0;
+        height: 15px;
+        background: transparent;
+    }
+    .user-header-toggle {
+        text-transform: none !important;
+        font-size: 14px !important;
+    }
+    .user-header-toggle span.user-name-text {
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+        text-align: center;
+    }
+    .btn-sell:hover, .user-header-toggle:hover {
+        background: #2d4487 !important;
+        color: #fff !important;
+        transform: none !important;
+    }
+    .btn-sell i, .user-header-toggle i {
+        font-size: 16px;
+    }
 </style>
