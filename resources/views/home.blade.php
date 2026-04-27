@@ -73,7 +73,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="journey-img aos" data-aos="fade-up">
-                        <img src="image/about-img.jpg" class="img-fluid" alt="User">
+                        <img src="{{ asset('image/about-img.jpg') }}" class="img-fluid" alt="User">
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                                                 @if(count($productDetail[$p]['pimages']) > 0)
                                                     <img src="{{ asset('uploads/product/' . $productDetail[$p]['pimages'][0]['pimage_image']) }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
                                                 @else
-                                                    <img src="{{ asset('image/product-img.jpg') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
+                                                    <img src="{{ asset('image/product-img.jpg') }}') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
                                                 @endif
                                             </a>
                                         </div>
@@ -301,22 +301,22 @@
                                     </div>
                                 @endif
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-04.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
                                 </div>
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-03.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
                                 </div>
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-04.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
                                 </div>
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-05.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-05.svg') }}" alt="Brand">
                                 </div>
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-03.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
                                 </div>
                                 <div class="brand-logos">
-                                    <img  src="image/testimonial-icon-04.svg" alt="Brand">
+                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
                                 </div>
                             </div>
                         </div>
@@ -382,10 +382,10 @@
                 <div class="col-sm-12">
                     <div class="subscribe-style aos" data-aos="fade-up">
                         <div class="banner-blk">
-                            <img src="image/newsletter.png" class="img-fluid" alt="Subscribe">
+                            <img src="{{ asset('image/newsletter.png') }}" class="img-fluid" alt="Subscribe">
                         </div>
                         <div class="banner-info ">
-                            <img src="image/subscribe.svg" class="img-fluid" alt="Subscribe">
+                            <img src="{{ asset('image/subscribe.svg') }}" class="img-fluid" alt="Subscribe">
                             <h2>Subscribe to Newsletter</h2>
                             <p>Just for you, exciting badminton news updates.</p>
                             <div class="subscribe-blk bg-white">

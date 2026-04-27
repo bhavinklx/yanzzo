@@ -173,7 +173,7 @@
                                                 @if(count($productDetail[$p]->pimages) > 0)
                                                     <img src="{{ asset('uploads/product/' . $productDetail[$p]->pimages[0]->pimage_image) }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
                                                 @else
-                                                    <img src="{{ asset('image/product-img.jpg') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
+                                                    <img src="{{ asset('image/product-img.jpg') }}') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
                                                 @endif
                                             </a>
                                         </div>
