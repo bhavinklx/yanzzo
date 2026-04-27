@@ -215,7 +215,6 @@
                                         <div class="col-sm-12">
                                             <div class="input-space">
                                                 <label class="form-label">Machine Photos *</label>
-                                                <link rel="stylesheet" href="{{ url('assets/vendor/dropzone/dropzone.min.css') }}">
                                                 <div class="dropzone dz-clickable bg-light" id="product-images-upload" style="border: 2px dashed #ddd; border-radius: 10px;">
                                                     <div class="dz-message text-center">
                                                         <img src="{{ url('/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">

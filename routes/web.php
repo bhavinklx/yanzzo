@@ -32,18 +32,19 @@ Route::get('/clear-cache', function () {
 });
 
 
-Route::get('/admin', function () {
-    if (\Auth::guest()) {
-        return redirect(url('/admin/login'));
-    } else {
-        return redirect(url('/admin/dashboard'));
-    }
-});
+Route::middleware(['force.www'])->group(function () {
+    Route::get('/admin', function () {
+        if (\Auth::guest()) {
+            return redirect(url('/admin/login'));
+        } else {
+            return redirect(url('/admin/dashboard'));
+        }
+    });
 
-Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/admin/login', [LoginController::class, 'login'])->name('login');
+    Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/admin/login', [LoginController::class, 'login'])->name('login');
 
-Route::group(['middleware' => ['auth']], function () {
+    Route::group(['middleware' => ['auth']], function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name("dashboard");
     Route::get('/admin/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -370,6 +371,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::middleware('can:setting-edit')->group(function () {
             Route::get("/admin/setting", "edit")->name("setting");
             Route::post("/admin/setting-update", "update")->name("setting-update");
+        });
         });
     });
 });

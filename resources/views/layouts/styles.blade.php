@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{ url('css/chat.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url('build/css/intlTelInput.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url('build/css/demo.css') }}">
+<link rel="stylesheet" href="{{ url('assets/vendor/dropzone/dropzone.min.css') }}">
 <!-- jQuery -->
 <script src="{{ url('js/jquery-3.7.1.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
