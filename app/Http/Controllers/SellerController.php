@@ -59,7 +59,7 @@ class SellerController extends Controller
             "product_year"                      => "required|numeric|min:1900|max:" . (date('Y') + 1),
             "product_price"                     => "required|numeric",
             "product_desc"                      => "required|string",
-            "product_specification"             => "required|string",
+            /*"product_specification"           => "required|string",*/
             "product_images"                    => "required|array|min:1"
         ], [
             "product_images.required"           => "Please upload at least one machine photo."
