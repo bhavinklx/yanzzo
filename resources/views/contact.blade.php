@@ -5,13 +5,13 @@
 @section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')
 @section("content")
     <!-- Breadcrumb -->
-    @if($pagesDetail->page_image!='' && file_exists(public_path('/uploads/pages/'.$pagesDetail->page_image)))
+    @if($pagesDetail->page_image!='' && file_exists(public_path('uploads/pages/'.$pagesDetail->page_image)))
         @php
-            $pageBanner = asset('/uploads/pages/'.$pagesDetail->page_image);
+            $pageBanner = asset('uploads/pages/'.$pagesDetail->page_image);
         @endphp
     @else
         @php
-            $pageBanner = 'image/innerbanner.jpg';
+            $pageBanner = asset('image/innerbanner.jpg');
         @endphp
     @endif
     <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});">
