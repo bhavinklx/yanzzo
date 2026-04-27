@@ -13,7 +13,7 @@
     <meta property="og:description" content="@yield('description')" />
     <meta property="og:url" content="@yield('canonical')" />
     <meta property="og:type" content="Website">
-    <link rel="shortcut icon" href="assets/images/favicon.svg">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}">
 
     <!-- This page CSS -->
     @include('layouts.styles')
