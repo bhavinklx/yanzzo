@@ -35,13 +35,13 @@
                         <ul>
                             <li>
                                 <a href="{{ url('/my-account') }}" class="d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/profile-icon.svg') }}" alt="Profile Setting" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
+                                    <img src="{{ asset('image/profile-icon.svg') }}') }}" alt="Profile Setting" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
                                     <span style="display: inline-block; font-weight: 600;">Profile Setting</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ url('/seller-inquiry') }}" class="active d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/u_plus-square.svg') }}" alt="Seller Inquiries" style="margin-bottom: 0; margin-right: 10px; width: 22px;">
+                                    <img src="{{ asset('image/u_plus-square.svg') }}') }}" alt="Seller Inquiries" style="margin-bottom: 0; margin-right: 10px; width: 22px;">
                                     <span style="display: inline-block; font-weight: 600;">Sell Your Machine</span>
                                 </a>
                             </li>
@@ -65,7 +65,7 @@
                             </li>
                             <li>
                                 <a href="javascript: void (0)" onclick="return logout()" class="d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/wallet-icon.svg') }}" alt="Logout" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
+                                    <img src="{{ asset('image/wallet-icon.svg') }}') }}" alt="Logout" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
                                     <span style="display: inline-block; font-weight: 600;">Logout</span>
                                 </a>
                             </li>
@@ -217,7 +217,7 @@
                                                 <label class="form-label">Machine Photos *</label>
                                                 <div class="dropzone dz-clickable bg-light" id="product-images-upload" style="border: 2px dashed #ddd; border-radius: 10px;">
                                                     <div class="dz-message text-center">
-                                                        <img src="{{ url('/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">
+                                                        <img src="{{ url('/public/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">
                                                         <p class="mb-0">Click or drop here to upload photos</p>
                                                     </div>
                                                 </div>

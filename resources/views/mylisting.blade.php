@@ -34,13 +34,13 @@
                         <ul>
                             <li>
                                 <a href="{{ url('/my-account') }}" class="d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/profile-icon.svg') }}" alt="Profile Setting" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
+                                    <img src="{{ asset('image/profile-icon.svg') }}') }}" alt="Profile Setting" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
                                     <span style="display: inline-block; font-weight: 600;">Profile Setting</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ url('/seller-inquiry') }}" class="d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/u_plus-square.svg') }}" alt="Seller Inquiries" style="margin-bottom: 0; margin-right: 10px; width: 22px;">
+                                    <img src="{{ asset('image/u_plus-square.svg') }}') }}" alt="Seller Inquiries" style="margin-bottom: 0; margin-right: 10px; width: 22px;">
                                     <span style="display: inline-block; font-weight: 600;">Sell Your Machine</span>
                                 </a>
                             </li>
@@ -64,7 +64,7 @@
                             </li>
                             <li>
                                 <a href="javascript: void (0)" onclick="return logout()" class="d-inline-flex align-items-center justify-content-center" style="min-width: auto; padding: 15px 25px;">
-                                    <img src="{{ url('/image/wallet-icon.svg') }}" alt="Logout" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
+                                    <img src="{{ asset('image/wallet-icon.svg') }}') }}" alt="Logout" style="margin-bottom: 0; margin-right: 10px; width: 20px;">
                                     <span style="display: inline-block; font-weight: 600;">Logout</span>
                                 </a>
                             </li>
@@ -121,7 +121,7 @@
                                                             @if($product->pimages->count() > 0)
                                                                 <img src="{{ asset('uploads/product/'.$product->pimages[0]->pimage_image) }}" alt="{{ $product->product_title }}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
                                                             @else
-                                                                <img src="{{ asset('image/product-img.jpg') }}" alt="User" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
+                                                                <img src="{{ asset('image/product-img.jpg') }}') }}" alt="User" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
                                                             @endif
                                                         </a>
                                                         <div style="max-width: 250px;">
