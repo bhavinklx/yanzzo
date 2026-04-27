@@ -115,7 +115,7 @@ class AjaxController extends Controller {
 
                     $homeController     = new HomeController();
                     //mail sent to user
-                    //$homeController->sendMail($fromEmail, $_POST['user_email'], $fromName, htmlspecialchars(addslashes(strip_tags(ucwords(strtolower($request->customer_name))))), $subjectUser, $Message);
+                    $homeController->sendMail($fromEmail, $_POST['user_email'], $fromName, htmlspecialchars(addslashes(strip_tags(ucwords(strtolower($request->customer_name))))), $subjectUser, $Message);
 
                     // SEND SMS to User
                     $Message            = $otp . " is your one-time verification code for yaarioke.com. YARIOK";
@@ -139,7 +139,7 @@ class AjaxController extends Controller {
 
             $homeController             = new HomeController();
             //mail sent to user
-            //$homeController->sendMail($fromEmail, $customerDetail->customer_email, $fromName, $customerDetail->customer_name, $subjectUser, $Message);
+            $homeController->sendMail($fromEmail, $customerDetail->customer_email, $fromName, $customerDetail->customer_name, $subjectUser, $Message);
 
             // SEND SMS to User
             $Message                    = $customerDetail->customer_otp . " is your one-time verification code for yaarioke.com. YARIOK";
@@ -270,7 +270,7 @@ class AjaxController extends Controller {
 
             $homeController             = new HomeController();
             //mail sent to user
-            //$homeController->sendMail($fromEmail, $customerDetail->customer_email, $fromName, $customerDetail->customer_name, $subjectUser, $Message);
+            $homeController->sendMail($fromEmail, $customerDetail->customer_email, $fromName, $customerDetail->customer_name, $subjectUser, $Message);
             // SEND SMS to User
             // SEND SMS to User
             $Message                    = $customerDetail->customer_otp . " is your one-time verification code for yaarioke.com. YARIOK";
@@ -374,7 +374,7 @@ class AjaxController extends Controller {
 
                 $homeController         = new HomeController();
                 //mail sent to user
-                //$homeController->sendMail($fromEmail, $result->customer_email, $fromName, htmlspecialchars(addslashes(strip_tags(ucwords(strtolower($result->customer_name))))), $subjectUser, $Message);
+                $homeController->sendMail($fromEmail, $result->customer_email, $fromName, htmlspecialchars(addslashes(strip_tags(ucwords(strtolower($result->customer_name))))), $subjectUser, $Message);
 
                 // SEND SMS to User
                 $Message                = $otp . " is your one-time verification code for yaarioke.com. YARIOK";
