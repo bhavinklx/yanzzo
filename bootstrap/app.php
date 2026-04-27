@@ -15,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission'    => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
             'role'          => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-            'customer.login'=> \App\Http\Middleware\CheckCustomerLogin::class
+            'customer.login'=> \App\Http\Middleware\CheckCustomerLogin::class,
+            'force.www'     => \App\Http\Middleware\ForceWWW::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

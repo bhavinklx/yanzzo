@@ -119,16 +119,16 @@ class HomeController extends Controller
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
-            $fromName = 'YAARIOKE';
-            $subjectUser = "Thank You for reaching out: YAARIOKE is here to help !";
-            $subjectAdmin = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname']));
+            $fromName = 'Yanzzo';
+            $subjectUser = "Thank You for reaching out: Yanzzo is here to help !";
+            $subjectAdmin = "New Inquiry from Yanzzo By " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname']));
 
             $messageHeaderUser =
                 "<tr>
                         <td style='font-size:15px'>Hello " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])) . ",</td>
                     </tr>
                     <tr>
-                        <td style='font-size:15px'>Thank you for reaching out to us.<br>We appreciate your interest in YAARIOKE. Our team is currently reviewing your inquiry and we will get back to you shortly.<br>If you have any urgent questions or concerns, feel free to contact us directly at <a href='tel:919509914499'>+91 950 991 4499</a>.</td>
+                        <td style='font-size:15px'>Thank you for reaching out to us.<br>We appreciate your interest in Yanzzo. Our team is currently reviewing your inquiry and we will get back to you shortly.<br>If you have any urgent questions or concerns, feel free to contact us directly at <a href='tel:919509914499'>+91 950 991 4499</a>.</td>
                     </tr><br>";
 
             $messageHeaderAdmin =
@@ -204,14 +204,14 @@ class HomeController extends Controller
                         <td style='font-size:15px'>Thank you,</td>
                     </tr>
                     <tr>
-                        <td style='font-size:15px'>YAARIOKE Team.</td>
+                        <td style='font-size:15px'>Yanzzo Team.</td>
                     </tr>";
             $messageFooterAdmin =
                 "<br><br><tr>
                         <td style='font-size:15px'>Thank you,</td>
                     </tr>
                     <tr>
-                        <td style='font-size:15px'>YAARIOKE Team.</td>
+                        <td style='font-size:15px'>Yanzzo Team.</td>
                     </tr>";
 
             //mail sent to user
