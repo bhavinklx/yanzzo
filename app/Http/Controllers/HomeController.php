@@ -21,6 +21,9 @@ use App\Models\Setting;
 use App\Models\Service;
 use App\Models\State;
 use App\Models\Favourite;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class HomeController extends Controller
 {
@@ -213,12 +216,12 @@ class HomeController extends Controller
                     </tr>";
 
             //mail sent to user
-            //$this->sendMail($fromEmail, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
+            $this->sendMail(FROM_EMAIL, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
 
             //mail sent to admin
-            //if (ADMIN_EMAIL != "") {
-            //$this->sendMail($fromEmail, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
-            //}
+            if (ADMIN_EMAIL != "") {
+                $this->sendMail(FROM_EMAIL, ADMIN_EMAIL, $fromName, '', $subjectAdmin, $messageHeaderAdmin . $message . $messageFooterAdmin);
+            }
             return 'success';
         } catch (\Exception $e) {
             // Log error for debugging
@@ -531,22 +534,9 @@ class HomeController extends Controller
             $mail->Send();
             //print_r($mail); die;
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
-    }
-
-    function sendSMS($mobileNumber, $message)
-    {
-        //$authKey 		= "23a1a991572963a7d9a64c436a3dfd";
-        $authKey = "3f357f49d352f63de49bfdf118a4458";
-        $senderId = "YARIOK";
-        $message = urlencode($message);
-
-        $url = ("http://sms1.omnetsolution.com/rest/services/sendSMS/sendGroupSms?AUTH_KEY=$authKey&message=$message&senderId=$senderId&routeId=1&mobileNos=$mobileNumber&smsContentType=english");
-        $data = @file_get_contents($url);
-
-        return true;
     }
 
     public function error404()
