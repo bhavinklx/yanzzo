@@ -119,7 +119,6 @@ class HomeController extends Controller
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
 
-            //$fromEmail        = FROM_EMAIL;
             $fromName = 'YAARIOKE';
             $subjectUser = "Thank You for reaching out: YAARIOKE is here to help !";
             $subjectAdmin = "New Inquiry from YAARIOKE By " . ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname']));
