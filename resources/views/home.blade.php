@@ -13,7 +13,7 @@
                     <div class="owl-carousel owl-theme hero-carousel">
                         @for($b=0; $b < count($bannerDetail); $b++)
                             <div class="hero-slide w-100" style="background-image: url('{{ $bannerDetail[$b]['banner_image'] != '' ? asset('uploads/banner/'.$bannerDetail[$b]['banner_image']) : '' }}'); background-size: cover; background-position: center; min-height: 600px; display: flex; align-items: center; justify-content: center; position: relative;">
-                                <div class="overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(14, 38, 59, 0.75);"></div>
+                                <div class="overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; /*background: rgba(14, 38, 59, 0.75);*/"></div>
                                 <div class="container position-relative z-1">
                                     <div class="row">
                                         <div class="col-lg-10 mx-auto text-center py-5">
