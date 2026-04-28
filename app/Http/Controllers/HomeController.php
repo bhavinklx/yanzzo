@@ -381,6 +381,15 @@ class HomeController extends Controller
                 $query->where('subcategory_id', $subcategoryId);
             }
 
+            // Apply keyword search
+            $keyword = $request->q;
+            if (!empty($keyword)) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('product_title', 'like', '%' . $keyword . '%')
+                      ->orWhere('product_model', 'like', '%' . $keyword . '%');
+                });
+            }
+
             // Apply state filter if location exists in query
             $locationId = $request->location;
             if (!empty($locationId)) {
@@ -414,6 +423,7 @@ class HomeController extends Controller
                 'location' => $locationId,
                 'city' => $cityId,
                 'sort' => $sortBy,
+                'q' => $keyword,
             ]));
 
             $categoryDetail = Category::where('category_parent', 0)
