@@ -6,34 +6,48 @@
 @section("content")
     <!-- Hero Section -->
     @if(is_array($bannerDetail) && count($bannerDetail) > 0)
-        <section class="hero-section position-relative">
-            <div class="container">
+        <section class="hero-section position-relative p-0" style="overflow: hidden;">
+            <div class="container-fluid p-0">
                 <div class="home-banner">
                     <!-- Owl Carousel yahan start -->
                     <div class="owl-carousel owl-theme hero-carousel">
-                        <!-- Slide 1 -->
                         @for($b=0; $b < count($bannerDetail); $b++)
-                            <div class="hero-slide">
-                                <div class="row align-items-center w-100">
-                                    <div class="col-lg-7 col-md-10 mx-auto">
-                                        <div class="section-search aos" data-aos="fade-up">
-                                            @if(!empty($bannerDetail[$b]['banner_text']))
-                                                <h4>{{ $bannerDetail[$b]['banner_text'] }}</h4>
-                                            @endif
-                                            @if(!empty($bannerDetail[$b]['banner_title']))
-                                                <h1>{!! $bannerDetail[$b]['banner_title'] !!}</h1>
-                                            @endif
-                                            @if(!empty($bannerDetail[$b]['banner_text1']))
-                                                <p class="sub-info">{{ $bannerDetail[$b]['banner_text1'] }}</p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        @if($bannerDetail[$b]['banner_image']!='' && file_exists(public_path('/uploads/banner/'.$bannerDetail[$b]['banner_image'])))
-                                            <div class="banner-imgs text-center aos" data-aos="fade-up">
-                                                <img src="{{ asset('/uploads/banner/'.$bannerDetail[$b]['banner_image']) }}" alt="{{ $bannerDetail[$b]['banner_image'] }}">
+                            <div class="hero-slide w-100" style="background-image: url('{{ $bannerDetail[$b]['banner_image'] != '' ? asset('uploads/banner/'.$bannerDetail[$b]['banner_image']) : '' }}'); background-size: cover; background-position: center; min-height: 600px; display: flex; align-items: center; justify-content: center; position: relative;">
+                                <div class="overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(14, 38, 59, 0.75);"></div>
+                                <div class="container position-relative z-1">
+                                    <div class="row">
+                                        <div class="col-lg-10 mx-auto text-center py-5">
+                                            <div class="section-search aos" data-aos="fade-up">
+                                                @if(!empty($bannerDetail[$b]['banner_title']))
+                                                    <h1 class="text-white fw-bold mb-3" style="font-size: 3rem; letter-spacing: -0.5px;">{!! strip_tags($bannerDetail[$b]['banner_title']) !!}</h1>
+                                                @endif
+                                                @if(!empty($bannerDetail[$b]['banner_text']))
+                                                    <p class="sub-info text-white mb-4" style="font-size: 1.15rem;">{{ $bannerDetail[$b]['banner_text'] }}</p>
+                                                @endif
+
+                                                <form action="{{ url('machines') }}" method="GET" class="mt-4">
+                                                    <div class="input-group mx-auto shadow-lg align-items-center" style="max-width: 650px; border-radius: 50px; background: #fff; padding: 6px 8px 6px 25px;">
+                                                        <input type="text" name="q" class="form-control border-0 shadow-none p-0" placeholder="Search by category, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required>
+                                                        <button class="btn text-white px-4 border-0 ms-2" type="submit" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); border-radius: 50px; font-weight: 600; padding-top: 10px; padding-bottom: 10px;">
+                                                            <i class="fas fa-search me-1"></i> Search
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    {{--
+                                                    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4" style="gap: 10px;">
+                                                        @php
+                                                            $topCategories = \App\Models\Category::where('category_status', '1')->take(8)->get();
+                                                        @endphp
+                                                        @if(isset($topCategories) && count($topCategories) > 0)
+                                                            @foreach($topCategories as $cat)
+                                                                <a href="{{ url('machines?category='.$cat->category_slug) }}" class="btn btn-sm rounded-pill px-3 py-1" style="background: rgba(27, 132, 238, 0.9); color: #fff; border: 1px solid rgba(255,255,255,0.2); font-weight: 500; font-size: 13px; text-decoration: none;">{{ $cat->category_title }}</a>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                    --}}
+                                                </form>
                                             </div>
-                                        @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +101,7 @@
             <div class="container">
                 <div class="section-heading aos" data-aos="fade-up">
                     <h2>Latest Posted <span>Used Machines</span></h2>
-                    <p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>
+                    {{--<p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>--}}
                 </div>
                 <div class="row">
                     <div class="featured-slider-group ">
