@@ -56,7 +56,7 @@ class SellerController extends Controller
             "product_title"                     => "required|string|max:255",
             "product_brand"                     => "required|string|max:255",
             "product_model"                     => "required|string|max:255",
-            "product_year"                      => "required|numeric|min:1900|max:" . (date('Y') + 1),
+            /*"product_year"                    => "required|numeric|min:1900|max:" . (date('Y') + 1),*/
             "product_price"                     => "required|numeric",
             "product_desc"                      => "required|string",
             /*"product_specification"           => "required|string",*/

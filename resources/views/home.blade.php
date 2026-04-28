@@ -249,14 +249,14 @@
     <!-- /How It Works -->
 
     <!-- Testimonials -->
-    <section class="section our-testimonials">
-        <div class="container">
-            <div class="section-heading aos" data-aos="fade-up">
-                <h2>Our <span>Testimonials</span></h2>
-                <p class="sub-title">Glowing testimonials from passionate badminton enthusiasts worldwide, showcasing our exceptional services.</p>
-            </div>
-            <div class="row">
-                @if(is_array($testimonialDetail) && count($testimonialDetail) > 0)
+    @if(is_array($testimonialDetail) && count($testimonialDetail) > 0)
+        <section class="section our-testimonials">
+            <div class="container">
+                <div class="section-heading aos" data-aos="fade-up">
+                    <h2>Our <span>Testimonials</span></h2>
+                    <p class="sub-title">Glowing testimonials from passionate badminton enthusiasts worldwide, showcasing our exceptional services.</p>
+                </div>
+                <div class="row">
                     <div class="featured-slider-group aos" data-aos="fade-up">
                         <div class="owl-carousel testimonial-slide featured-venues-slider owl-theme">
                             <!-- Testimonials Item -->
@@ -285,46 +285,46 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endfor
+                        @endfor
                         <!-- /Testimonials Item -->
                         </div>
                     </div>
-                @endif
 
-                @if(is_array($sponsorDetail) && count($sponsorDetail) > 0)
-                    @for($s=0; $s < count($sponsorDetail); $s++)
-                        <div class="brand-slider-group aos" data-aos="fade-up">
-                            <div class="owl-carousel testimonial-brand-slider owl-theme">
-                                @if($sponsorDetail[$s]['sponsor_image']!='' && file_exists(public_path('/uploads/sponsor/'.$sponsorDetail[$s]['sponsor_image'])))
+                    @if(is_array($sponsorDetail) && count($sponsorDetail) > 0)
+                        @for($s=0; $s < count($sponsorDetail); $s++)
+                            <div class="brand-slider-group aos" data-aos="fade-up">
+                                <div class="owl-carousel testimonial-brand-slider owl-theme">
+                                    @if($sponsorDetail[$s]['sponsor_image']!='' && file_exists(public_path('/uploads/sponsor/'.$sponsorDetail[$s]['sponsor_image'])))
+                                        <div class="brand-logos">
+                                            <img src="{{ asset('/uploads/sponsor/'.$sponsorDetail[$s]['sponsor_image']) }}" alt="{{ $sponsorDetail[$s]['sponsor_title'] }}">
+                                        </div>
+                                    @endif
                                     <div class="brand-logos">
-                                        <img src="{{ asset('/uploads/sponsor/'.$sponsorDetail[$s]['sponsor_image']) }}" alt="{{ $sponsorDetail[$s]['sponsor_title'] }}">
+                                        <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
                                     </div>
-                                @endif
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
-                                </div>
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
-                                </div>
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
-                                </div>
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-05.svg') }}" alt="Brand">
-                                </div>
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
-                                </div>
-                                <div class="brand-logos">
-                                    <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
+                                    <div class="brand-logos">
+                                        <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
+                                    </div>
+                                    <div class="brand-logos">
+                                        <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
+                                    </div>
+                                    <div class="brand-logos">
+                                        <img  src="{{ asset('image/testimonial-icon-05.svg') }}" alt="Brand">
+                                    </div>
+                                    <div class="brand-logos">
+                                        <img  src="{{ asset('image/testimonial-icon-03.svg') }}" alt="Brand">
+                                    </div>
+                                    <div class="brand-logos">
+                                        <img  src="{{ asset('image/testimonial-icon-04.svg') }}" alt="Brand">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endfor
-                @endif
+                        @endfor
+                    @endif
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- /Testimonials -->
 
     <!-- Latest News -->
