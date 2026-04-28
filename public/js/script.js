@@ -792,7 +792,7 @@ $(document).ready(function () {
 		loop: true,
 		margin: 0,
 		nav: false,
-		dots: true,
+		dots: false,
 		autoplay: true,
 		autoplayTimeout: 5000, // 5 seconds
 		autoplayHoverPause: true,
