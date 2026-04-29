@@ -482,14 +482,22 @@ function validate_login() {
 //for validate forgot
 function validate_forgot() {
     var error = false;
-    if ($('#forgot_mobile').val() == '') {
+    var emailFilter = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/;
+    var email = $('#forgot_email').val();
+
+    if (email == '') {
         error = true;
-        $('#forgotmobile_msg').html('Please enter your mobile number');
-        $('#forgotmobile_msg').css({ 'color': 'red' });
-        $('#forgot_mobile').css('border', '1px solid red');
+        $('#forgotemail_msg').html('Please enter your email address');
+        $('#forgotemail_msg').css({ 'color': 'red' });
+        $('#forgot_email').css('border', '1px solid red');
+    } else if (!(emailFilter.test(email))) {
+        error = true;
+        $('#forgotemail_msg').html('Please enter a valid email address');
+        $('#forgotemail_msg').css({ 'color': 'red' });
+        $('#forgot_email').css('border', '1px solid red');
     } else {
-        $('#forgotmobile_msg').html('');
-        $('#forgot_mobile').css('border', '');
+        $('#forgotemail_msg').html('');
+        $('#forgot_email').css('border', '');
     }
 
     if (error == false) {

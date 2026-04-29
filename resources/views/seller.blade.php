@@ -391,9 +391,14 @@ $(document).ready(function() {
                     window.location.href = response.redirect_url;
                 }
             },
-            error: function() {
+            error: function(xhr) {
                 btn.prop('disabled', false).text('Submit Details');
-                alert('An error occurred. Please try again.');
+                if (xhr.status === 419) {
+                    alert('Your session has expired. The page will now refresh so you can safely submit again.');
+                    window.location.reload();
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
             }
         });
     });
