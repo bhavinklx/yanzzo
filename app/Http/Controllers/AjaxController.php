@@ -188,14 +188,24 @@ class AjaxController extends Controller
                         <div class="mb-3">
                             <div class="input-space mb-0">
                                 <label class="form-label">Password</label>
-                                <input class="form-control mb-0" type="password" id="resetpassword" name="resetpassword">
+                                <div class="position-relative">
+                                    <input class="form-control mb-0" type="password" id="resetpassword" name="resetpassword" style="padding-right: 40px;">
+                                    <span class="position-absolute" onclick="togglePasswordVisibility(\'resetpassword\', this)" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;">
+                                        <i class="far fa-eye-slash"></i>
+                                    </span>
+                                </div>
                             </div>
                             <span class="help-block" id="rpass_msg"></span>
                         </div>
                         <div class="mb-3">
                             <div class="input-space mb-0">
                                 <label class="form-label">Confirm Password</label>
-                                <input class="form-control mb-0" type="password" id="resetcpassword" name="resetcpassword">
+                                <div class="position-relative">
+                                    <input class="form-control mb-0" type="password" id="resetcpassword" name="resetcpassword" style="padding-right: 40px;">
+                                    <span class="position-absolute" onclick="togglePasswordVisibility(\'resetcpassword\', this)" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;">
+                                        <i class="far fa-eye-slash"></i>
+                                    </span>
+                                </div>
                             </div>
                             <span class="help-block" id="rcpass_msg"></span>
                         </div>

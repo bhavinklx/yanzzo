@@ -234,7 +234,7 @@
                         <br>
                         <span class="help-block" id="user_tc_msg"></span>
                     </div>
-                    <button class="btn btn-primary w-100" type="button" id="signupBtn" name="signupBtn"
+                    <button class="btn btn-primary w-100 mb-3" type="button" id="signupBtn" name="signupBtn"
                         onclick="return validate_signup();">Sign Up</button>
                 </form>
             </div>
@@ -298,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary w-100" type="button" id="loginBtn" name="loginBtn"
+                    <button class="btn btn-primary w-100 mb-3" type="button" id="loginBtn" name="loginBtn"
                         onclick="return validate_login()">Sign In</button>
                 </form>
                 <div style="text-align: center" id="loginThankMsg"></div>
