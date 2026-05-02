@@ -363,7 +363,7 @@ class HomeController extends Controller
             $subcategorySlug = $request->subcategory;
 
             // Fetch active products with pagination
-            $query = Product::with(['pimages', 'city'])->where('product_status', '1');
+            $query = Product::with(['pimages', 'city', 'state'])->where('product_status', '1');
 
             // Apply category filter if slug exists
             if (!empty($categorySlug)) {
@@ -386,7 +386,16 @@ class HomeController extends Controller
             if (!empty($keyword)) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('product_title', 'like', '%' . $keyword . '%')
-                      ->orWhere('product_model', 'like', '%' . $keyword . '%');
+                      ->orWhere('product_model', 'like', '%' . $keyword . '%')
+                      ->orWhere('product_short_desc', 'like', '%' . $keyword . '%')
+                      ->orWhere('product_desc', 'like', '%' . $keyword . '%')
+                      ->orWhere('product_meta_keyword', 'like', '%' . $keyword . '%')
+                      ->orWhereHas('city', function($q2) use ($keyword) {
+                          $q2->where('city_name', 'like', '%' . $keyword . '%');
+                      })
+                      ->orWhereHas('state', function($q3) use ($keyword) {
+                          $q3->where('state_name', 'like', '%' . $keyword . '%');
+                      });
                 });
             }
 
