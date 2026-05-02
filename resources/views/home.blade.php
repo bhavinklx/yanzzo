@@ -27,7 +27,7 @@
 
                                                 <form action="{{ url('machines') }}" method="GET" class="mt-4">
                                                     <div class="input-group mx-auto shadow-lg align-items-center" style="max-width: 650px; border-radius: 50px; background: #fff; padding: 6px 8px 6px 25px;">
-                                                        <input type="text" name="q" class="form-control border-0 shadow-none p-0" placeholder="Search by category, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required>
+                                                        <input type="text" name="q" class="form-control border-0 shadow-none p-0" placeholder="Search by title, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required>
                                                         <button class="btn text-white px-4 border-0 ms-2" type="submit" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); border-radius: 50px; font-weight: 600; padding-top: 10px; padding-bottom: 10px;">
                                                             <i class="fas fa-search me-1"></i> Search
                                                         </button>
