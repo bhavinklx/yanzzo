@@ -92,10 +92,10 @@ Version      : 1.0
 	function hasScrolled() {
 		var st = $(document).scrollTop();
 		if (st + $(window).height() < $(document).height()) {
-			$(".header-trans").css("background", "#F4B400");
+			$(".header-trans").addClass("header-colored");
 			$(".header-sticky").addClass("fixed-top");
 			if (st === 0) {
-				$(".header-trans").css("background", "transparent");
+				$(".header-trans").removeClass("header-colored");
 				$(".header-sticky").removeClass("fixed-top");
 			}
 		}
