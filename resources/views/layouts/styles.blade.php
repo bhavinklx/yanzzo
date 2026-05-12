@@ -162,7 +162,7 @@
         color: #2d4487 !important;
         font-weight: 700 !important;
         border-radius: 50px !important;
-        height: 40px !important;
+        /*height: 40px !important;*/
         width: 155px !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -170,7 +170,7 @@
         text-transform: uppercase;
         font-size: 13px !important;
         transition: all 0.3s ease;
-        padding: 0 !important;
+        /*padding: 0 !important;*/
         box-shadow: none !important;
         text-decoration: none !important;
         gap: 8px !important;
