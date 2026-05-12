@@ -79,7 +79,7 @@
                                 </li>
                                 <li class="d-flex align-items-center">
                                     <div class="white-bg d-flex align-items-center review shadow-sm mb-0">
-                                        <span class="bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 28px; border-radius: 5px; padding: 5px;">
+                                        <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 28px; border-radius: 5px; padding: 5px;">
                                             <i class="feather-map-pin"></i>
                                         </span>
                                         <span class="text-dark fw-bold">{{ $productDetail->city->city_name ?? 'N/A' }}</span>
@@ -358,7 +358,7 @@
                                                     <span class="text-dark fw-bold" style="font-size: 13px;">Model: {{ $similarDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
                                                 <div class="dark-yellow-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
+                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
                                                         <i class="feather-map-pin"></i>
                                                     </span>
                                                     <span class="text-dark fw-bold" style="font-size: 13px;">{{ $similarDetail[$p]->city->city_name ?? 'N/A' }}</span>

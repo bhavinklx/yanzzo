@@ -106,16 +106,13 @@
                     <li class="nav-item">
                         <div class="user-header-dropdown">
                             <a href="javascript:void(0)" class="user-header-toggle">
-                                <i class="feather-user"></i> <span class="user-name-text">{{ Session::get('customer_name') }}</span> <i
-                                     class="fas fa-chevron-down" style="font-size:10px;"></i>
+                                <i class="feather-user"></i> <span class="user-name-text">{{ Session::get('customer_name') }}</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
                             </a>
                             <div class="user-header-menu">
                                 <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i>
                                     Dashboard</a>
-                                <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i
-                                        class="feather-plus-square"></i> Sell Your Machine</a>
-                                <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My
-                                    Machines</a>
+                                <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i class="feather-plus-square"></i> Sell Your Machine</a>
+                                <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My Machines</a>
                                 <a class="user-header-item" href="{{ url('/chat') }}">
                                     <i class="feather-message-square"></i> Messages
                                     @php
@@ -126,10 +123,10 @@
                                             style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
                                     @endif
                                 </a>
-                                <a class="user-header-item" href="javascript:void(0)" onclick="return logout()"><i
-                                        class="feather-log-out"></i> Logout</a>
+                                <a class="user-header-item" href="javascript:void(0)" onclick="return logout()"><i class="feather-log-out"></i> Logout</a>
                             </div>
                         </div>
+                    </li>
                     <li class="nav-item ms-3">
                         <a href="{{ url('/seller-inquiry') }}" class="btn-sell-new">
                             <i class="feather-plus-circle me-1"></i> SELL
