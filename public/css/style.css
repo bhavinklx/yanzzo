@@ -1206,11 +1206,11 @@ div#global-loader,
 }
 
 .header-trans.header-colored .main-menu-wrapper .main-nav > li.active > a {
-  color: #566db1 !important;
+  color: #2d4487 !important;
 }
 
-.header-trans.header-colored .main-menu-wrapper .main-nav > li > a:hover {
-  color: #566db1 !important;
+.header-trans.header-colored .header-nav .main-nav > li > a:hover {
+  color: #2d4487 !important;
 }
 
 .header .logo a {
