@@ -1515,9 +1515,14 @@ div#global-loader,
   }
 }
 
+/*.header .main-menu-wrapper .main-nav>li.active>a {
+  display: block;
+  color: #566db1;
+}*/
+
 .header .main-menu-wrapper .main-nav>li.active>a {
   display: block;
-  color: #2d4487;
+  color: #a67c05;
 }
 
 .header .main-menu-wrapper .main-nav>li.active>a:before {
@@ -2892,7 +2897,7 @@ header.header-sticky.fixed-top {
 }
 
 .work-grid.coaching-grid .work-content {
-  text-align: left;
+  text-align: justify;
 }
 
 .work-grid.coaching-grid .work-content p {
@@ -2946,7 +2951,7 @@ header.header-sticky.fixed-top {
 
 .featured-venues:after {
   content: "";
-  background-image: url(../image/bg-01.svg);
+  /*background-image: url(../image/bg-01.svg);*/
   background-repeat: no-repeat;
   background-size: cover;
   width: 363px;
@@ -5336,7 +5341,7 @@ header.header-sticky.fixed-top {
 
 .venue-coach-details.coach-detail .content .move-top {
   position: relative;
-  top: -90px;
+  /*top: -90px;*/
 }
 
 @media (max-width: 991.98px) {
@@ -5411,12 +5416,19 @@ header.header-sticky.fixed-top {
 }
 
 .dark-yellow-bg {
-  width: 30px;
+  /*width: 30px;
   height: 28px;
   background: #FFAA00;
   border-radius: 5px;
   padding: 5px;
-  color: #FFFFFF;
+  color: #FFFFFF;*/
+
+  width: 30px;
+  height: 28px;
+  background: #f5f5f5;
+  border-radius: 5px;
+  padding: 5px;
+  color: #2d4485;
 }
 
 .venue-coach-details.coach-detail .content .move-top .coach-info .info ul li img {
@@ -13344,4 +13356,54 @@ div#global-loader {
 
 .filter-list-scroll::-webkit-scrollbar-thumb:hover {
   background: #2d4487;
+}
+
+.btn-sell-new {
+  border: none;
+  outline: none;
+  color: #000000;
+  background: #ffffff;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  padding: 10px 20px;
+  font-size: 18px;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 25px;
+}
+
+.btn-sell-new:before {
+  content: '';
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  position: absolute;
+  top: -2px;
+  left:-2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 1;
+  transition: opacity .3s ease-in-out;
+  border-radius: 25px;
+}
+
+.btn-sell-new:after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  left: 0;
+  top: 0;
+  border-radius: 25px;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
 }

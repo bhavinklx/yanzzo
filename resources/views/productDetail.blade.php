@@ -15,7 +15,25 @@
         @endphp
     @endif
     <!-- Banner -->
-    <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});"></section>
+    {{--<section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});"></section>--}}
+    <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});">
+        <div class="container">
+            <h1 class="text-white">{{ $pagesDetail->page_title ?? '' }}</h1>
+            <ul>
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ url('/' . $pagesDetail->page_slug) }}">{{ $pagesDetail->page_title ?? '' }}</a></li>
+                @if(request()->has('q') && request()->get('q') != '')
+                    <li>Search: {{ request()->get('q') }}</li>
+                @elseif($productDetail->category)
+                    <li>{{ $productDetail->category->category_title }}</li>
+                @elseif($productDetail->subCategory)
+                    <li>{{ $productDetail->subCategory->category_title }}</li>
+                @else
+                    <li>{{ $productDetail->product_title }}</li>
+                @endif
+            </ul>
+        </div>
+    </section>
 
     <!-- Page Content -->
     <div class="content">

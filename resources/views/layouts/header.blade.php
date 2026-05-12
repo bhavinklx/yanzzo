@@ -131,18 +131,18 @@
                             </div>
                         </div>
                     <li class="nav-item ms-3">
-                        <a href="{{ url('/seller-inquiry') }}" class="btn-sell">
+                        <a href="{{ url('/seller-inquiry') }}" class="btn-sell-new">
                             <i class="feather-plus-circle me-1"></i> SELL
                         </a>
                     </li>
                 @else
                     <li class="nav-item">
-                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell">
+                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell-new">
                             <i class="feather-user me-1"></i>Login
                         </a>
                     </li>
                     <li class="nav-item ms-3">
-                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell">
+                        <a href="javascript: void (0)" onclick="return signin_popup()" class="btn-sell-new">
                             <i class="feather-plus-circle me-1"></i> SELL
                         </a>
                     </li>
