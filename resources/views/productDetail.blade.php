@@ -357,7 +357,7 @@
                                                     </span>
                                                     <span class="text-dark fw-bold" style="font-size: 13px;">Model: {{ $similarDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
-                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                <div class="dark-yellow-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
                                                     <span class="bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
                                                         <i class="feather-map-pin"></i>
                                                     </span>
