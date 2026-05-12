@@ -15,7 +15,25 @@
         @endphp
     @endif
     <!-- Banner -->
-    <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});"></section>
+    {{--<section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});"></section>--}}
+    <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});">
+        <div class="container">
+            <h1 class="text-white">{{ $pagesDetail->page_title ?? '' }}</h1>
+            <ul>
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ url('/' . $pagesDetail->page_slug) }}">{{ $pagesDetail->page_title ?? '' }}</a></li>
+                @if(request()->has('q') && request()->get('q') != '')
+                    <li>Search: {{ request()->get('q') }}</li>
+                @elseif($productDetail->category)
+                    <li>{{ $productDetail->category->category_title }}</li>
+                @elseif($productDetail->subCategory)
+                    <li>{{ $productDetail->subCategory->category_title }}</li>
+                @else
+                    <li>{{ $productDetail->product_title }}</li>
+                @endif
+            </ul>
+        </div>
+    </section>
 
     <!-- Page Content -->
     <div class="content">
@@ -339,7 +357,7 @@
                                                     </span>
                                                     <span class="text-dark fw-bold" style="font-size: 13px;">Model: {{ $similarDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
-                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                <div class="dark-yellow-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
                                                     <span class="bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
                                                         <i class="feather-map-pin"></i>
                                                     </span>
