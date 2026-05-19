@@ -240,8 +240,8 @@ class AjaxController extends Controller
                 "reset_form" => $reset_form
             ]);
         } /*elseif ($customerDetail && $customerDetail->customer_status == "0") {
-           return response()->json(["message"  => "unauthorised", "msg_text" => "Your account has not been activated yet. Please reset your account."]);
-       }*/ else {
+          return response()->json(["message"  => "unauthorised", "msg_text" => "Your account has not been activated yet. Please reset your account."]);
+      }*/ else {
             return response()->json(["message" => "wrong"]);
         }
     }
@@ -348,7 +348,7 @@ class AjaxController extends Controller
             } elseif ($result && $result->customer_status == "0") {
                 return response()->json(["message" => "wrong", "msg_text" => "Your account has not been activated yet. Please reset your account."]);
             } else {
-                return response()->json(["message" => "wrong", "msg_text" => "Invalid username and password"]);
+                return response()->json(["message" => "wrong", "msg_text" => "Invalid mobile number and password"]);
             }
             if ($result) {
                 $otp = mt_rand(100000, 999999);
