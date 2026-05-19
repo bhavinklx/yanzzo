@@ -32,7 +32,7 @@
                                                             <i class="fas fa-search me-1"></i> Search
                                                         </button>
                                                     </div>
-                                                    
+
                                                     {{--
                                                     <div class="d-flex flex-wrap justify-content-center gap-2 mt-4" style="gap: 10px;">
                                                         @php
@@ -130,8 +130,8 @@
                                             </h3>
                                             <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
                                                 <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 11px; border-radius: 4px;">
-                                                        <i class="feather-cpu"></i>
+                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 22px; font-size: 11px; border-radius: 4px;">
+                                                        Year
                                                     </span>
                                                     <span class="text-dark fw-bold" style="font-size: 12px;">{{ $productDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
@@ -152,7 +152,7 @@
                                                     <li class="w-100 mb-0">
                                                         <div class="avalibity-datecontent px-3 py-2 border border-primary rounded bg-light text-center">
                                                             @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($productDetail[$p]['product_price'] ?? 15000) }}/-</h5>
+                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ \App\Helpers\FormatHelper::formatIndianPrice($productDetail[$p]['product_price']) }}/-</h5>
                                                             @else
                                                                 <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> XXXXX/-</h5>
                                                             @endif
@@ -184,7 +184,7 @@
         <section class="section group-coaching">
             <div class="container">
                 <div class="section-heading aos" data-aos="fade-up">
-                    <h2>Our <span>Features</span></h2>
+                    <h2>Why <span>Choose Us</span></h2>
                     <p class="sub-title">Discover your potential with our comprehensive training, expert trainers, and advanced facilities. Join us to improve your athletic career.</p>
                 </div>
                 {{--<div class="row">

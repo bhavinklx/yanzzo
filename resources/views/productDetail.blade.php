@@ -46,9 +46,9 @@
                             <div class="owl-carousel gallery-slider owl-theme">
                                 @if(count($productDetail->pimages) > 0)
                                     @foreach($productDetail->pimages as $image)
-                                        <div class="gallery-widget-item">
-                                            <a class="corner-radius-10" href="{{ asset('uploads/product/' . $image->pimage_image) }}" data-fancybox="gallery2">
-                                                <img class="img-fluid corner-radius-10" alt="{{ $productDetail->product_title }}" src="{{ asset('uploads/product/' . $image->pimage_image) }}">
+                                        <div class="gallery-widget-item" style="height: 500px; overflow: hidden;">
+                                            <a class="corner-radius-10 d-block h-100" href="{{ asset('uploads/product/' . $image->pimage_image) }}" data-fancybox="gallery2" style="height: 100%;">
+                                                <img class="img-fluid corner-radius-10" alt="{{ $productDetail->product_title }}" src="{{ asset('uploads/product/' . $image->pimage_image) }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                                             </a>
                                         </div>
                                     @endforeach
@@ -100,7 +100,7 @@
                                 <div class="spec-card__body">
                                     <span class="spec-card__label">Asking Price</span>
                                     @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                                        <span class="spec-card__value spec-card__value--price">₹ {{ number_format($productDetail->product_price) }}/-</span>
+                                        <span class="spec-card__value spec-card__value--price">₹ {{ \App\Helpers\FormatHelper::formatIndianPrice($productDetail->product_price) }}/-</span>
                                     @else
                                         <span class="spec-card__value spec-card__value--masked">₹ XXXXX/-</span>
                                         <a href="javascript:void(0)" class="spec-card__login-link" onclick="return signin_popup()">
@@ -352,10 +352,10 @@
                                             </h3>
                                             <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
                                                 <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
-                                                        <i class="feather-cpu"></i>
+                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 22px; font-size: 12px; border-radius: 4px;">
+                                                        Year
                                                     </span>
-                                                    <span class="text-dark fw-bold" style="font-size: 13px;">Model: {{ $similarDetail[$p]['product_model'] ?? 'N/A' }}</span>
+                                                    <span class="text-dark fw-bold" style="font-size: 13px;">{{ $similarDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
                                                 <div class="dark-yellow-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
                                                     <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 12px; border-radius: 4px;">
@@ -376,7 +376,7 @@
                                                         <div class="avalibity-date">
                                                             <div class="avalibity-datecontent px-3 py-2 border border-primary rounded-pill bg-light shadow-sm">
                                                                 @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                                                                    <h5 class="mb-0 fw-bold primary-text text-center"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($similarDetail[$p]['product_price'] ?? 15000) }}/-</h5>
+                                                                    <h5 class="mb-0 fw-bold primary-text text-center"><i class="fa-solid fa-indian-rupee-sign"></i> {{ \App\Helpers\FormatHelper::formatIndianPrice($similarDetail[$p]['product_price'] ?? 15000) }}/-</h5>
                                                                 @else
                                                                     <h5 class="mb-0 fw-bold primary-text text-center"><i class="fa-solid fa-indian-rupee-sign"></i> XXXXX/-</h5>
                                                                 @endif
