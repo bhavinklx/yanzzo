@@ -93,7 +93,7 @@
                                         @foreach($stateDetail as $state)
                                             @php
                                                 $isStateActive = ($locationId == $state->state_id);
-                                                
+
                                                 $hasActiveCity = false;
                                                 foreach($state->cities as $city) {
                                                     if($cityId == $city->city_id) {
@@ -101,7 +101,7 @@
                                                         break;
                                                     }
                                                 }
-                                                
+
                                                 $isOpen = $isStateActive || $hasActiveCity;
                                             @endphp
                                             <li class="mb-2">
@@ -110,20 +110,20 @@
                                                         <a href="javascript:void(0);" class="text-muted me-2 city-toggle" onclick="toggleCities('{{ $state->state_id }}', this)">
                                                             <i class="feather-{{ $isOpen ? 'minus' : 'plus' }}-square" style="font-size: 16px;"></i>
                                                         </a>
-                                                        <a href="{{ $getFilterUrl(['location' => $state->state_id, 'city' => '']) }}" 
-                                                           class="text-decoration-none {{ $isStateActive ? 'text-primary' : 'text-dark' }}" 
+                                                        <a href="{{ $getFilterUrl(['location' => $state->state_id, 'city' => '']) }}"
+                                                           class="text-decoration-none {{ $isStateActive ? 'text-primary' : 'text-dark' }}"
                                                            style="font-size: 14px; font-weight: 600;">
                                                             {{ $state->state_name }}
                                                         </a>
                                                     </div>
                                                     <span class="badge rounded-pill" style="font-size: 10px; background: #f8f9fa; color: #666; border: 1px solid #eee; font-weight: 500;">{{ $state->product_count }}</span>
                                                 </div>
-                                                
+
                                                 <ul class="list-unstyled mt-2 city-list {{ $isOpen ? '' : 'd-none' }}" id="cities_{{ $state->state_id }}" style="margin-left: 8px; border-left: 1px solid #ddd; padding-left: 20px;">
                                                     @foreach($state->cities as $city)
                                                         <li class="mb-1">
-                                                            <a href="{{ $getFilterUrl(['location' => $state->state_id, 'city' => $city->city_id]) }}" 
-                                                               class="text-decoration-none d-flex justify-content-between align-items-center {{ $cityId == $city->city_id ? 'text-primary fw-bold' : 'text-dark' }}" 
+                                                            <a href="{{ $getFilterUrl(['location' => $state->state_id, 'city' => $city->city_id]) }}"
+                                                               class="text-decoration-none d-flex justify-content-between align-items-center {{ $cityId == $city->city_id ? 'text-primary fw-bold' : 'text-dark' }}"
                                                                style="font-size: 13px; opacity: 0.8;">
                                                                 <span>{{ $city->city_name }}</span>
                                                                 <span class="ms-1 small text-muted">({{ $city->product_count }})</span>
@@ -183,8 +183,8 @@
                                             </h3>
                                             <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
                                                 <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 11px; border-radius: 4px;">
-                                                        <i class="feather-cpu"></i>
+                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 22px; font-size: 11px; border-radius: 4px;">
+                                                        Year
                                                     </span>
                                                     <span class="text-dark fw-bold" style="font-size: 12px;">{{ $productDetail[$p]['product_model'] ?? 'N/A' }}</span>
                                                 </div>
@@ -205,7 +205,7 @@
                                                     <li class="w-100 mb-2">
                                                         <div class="avalibity-datecontent px-3 py-2 border border-primary rounded bg-light text-center">
                                                             @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($productDetail[$p]['product_price'] ?? 15000) }}/-</h5>
+                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ \App\Helpers\FormatHelper::formatIndianPrice($productDetail[$p]['product_price'] ?? 15000) }}/-</h5>
                                                             @else
                                                                 <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> XXXXX/-</h5>
                                                             @endif

@@ -138,7 +138,7 @@
                                                     <span class="text-muted" style="font-size: 12px;">{{ date('h:i A', strtotime($product->created_at)) }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="pay-dark" style="font-weight: 700; color: #192335; font-size: 14px;">₹{{ number_format($product->product_price, 2) }}</span>
+                                                    <span class="pay-dark" style="font-weight: 700; color: #192335; font-size: 14px;">₹{{ \App\Helpers\FormatHelper::formatIndianPrice($product->product_price) }}</span>
                                                 </td>
                                                 <td>
                                                     @if($product->product_status == '1')
