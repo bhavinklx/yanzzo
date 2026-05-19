@@ -18,18 +18,33 @@ class FormatHelper
 
         $num = (string) $num;
         $num = preg_replace('/,/', '', $num);
-        
-        $dec = '';
+
         if (strpos($num, '.') !== false) {
-            list($num, $dec) = explode('.', $num);
+            $num = explode('.', $num)[0]; // Remove decimal part
         }
-        
-        $res = preg_replace('/(?<=\d)(?=(\d{2})+(?:\d)(?!\d))/', ',', $num);
-        
-        if ($dec !== '') {
-            $res .= '.' . $dec;
+
+        return preg_replace('/(?<=\d)(?=(\d{2})+(?:\d)(?!\d))/', ',', $num);
+    }
+
+    /**
+     * Format number to Indian format without decimals (e.g. 2600000 -> 26,00,000)
+     *
+     * @param int|float|string $num
+     * @return string
+     */
+    public static function formatIndianPriceWithoutDecimals($num)
+    {
+        if (empty($num)) {
+            return '0';
         }
-        
-        return $res;
+
+        $num = (string) $num;
+        $num = preg_replace('/,/', '', $num);
+
+        if (strpos($num, '.') !== false) {
+            $num = explode('.', $num)[0]; // Remove decimal part
+        }
+
+        return preg_replace('/(?<=\d)(?=(\d{2})+(?:\d)(?!\d))/', ',', $num);
     }
 }
