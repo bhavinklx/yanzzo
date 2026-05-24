@@ -103,70 +103,66 @@
                     <h2>Latest Posted <span>Used Machines</span></h2>
                     {{--<p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>--}}
                 </div>
-                <div class="row">
-                    <div class="featured-slider-group ">
-                        <div class="owl-carousel featured-venues-slider owl-theme">
-                            <!-- Featured Item -->
-                            @for($p=0; $p < count($productDetail); $p++)
-                                <div class="featured-venues-item">
-                                    <div class="listing-item listing-item-grid mb-0">
-                                        <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
-                                            @if($productDetail[$p]['product_is_sold'] == '1')
-                                                <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
-                                                    <span class="badge bg-danger text-white px-3 py-2" style="font-weight: 700; text-transform: uppercase; border-radius: 6px;">SOLD OUT</span>
-                                                </div>
+                <div class="row g-4">
+                    @foreach(array_slice($productDetail, 0, 8) as $product)
+                        <div class="col-lg-3 col-md-6">
+                            <div class="featured-venues-item h-100">
+                                <div class="listing-item listing-item-grid mb-0 h-100">
+                                    <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
+                                        @if($product['product_is_sold'] == '1')
+                                            <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
+                                                <span class="badge bg-danger text-white px-3 py-2" style="font-weight: 700; text-transform: uppercase; border-radius: 6px;">SOLD OUT</span>
+                                            </div>
+                                        @endif
+                                        <a href="{{ url('machines/' . $product['product_slug']) }}" class="h-100 w-100 d-block">
+                                            @if(count($product['pimages']) > 0)
+                                                <img src="{{ asset('uploads/product/' . $product['pimages'][0]['pimage_image']) }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $product['product_title'] }}">
+                                            @else
+                                                <img src="{{ asset('image/product-img.jpg') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $product['product_title'] }}">
                                             @endif
-                                            <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}" class="h-100 w-100 d-block">
-                                                @if(count($productDetail[$p]['pimages']) > 0)
-                                                    <img src="{{ asset('uploads/product/' . $productDetail[$p]['pimages'][0]['pimage_image']) }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
-                                                @else
-                                                    <img src="{{ asset('image/product-img.jpg') }}') }}" class="img-fluid h-100 w-100 object-fit-cover" alt="{{ $productDetail[$p]['product_title'] }}">
-                                                @endif
-                                            </a>
+                                        </a>
+                                    </div>
+                                    <div class="listing-content" style="padding: 24px 15px 24px 15px">
+                                        <h3 class="listing-title" style="font-size: 17px;">
+                                            <a href="{{ url('machines/' . $product['product_slug']) }}">{{ $product['product_title'] }}</a>
+                                        </h3>
+                                        <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
+                                            <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 22px; font-size: 11px; border-radius: 4px;">
+                                                    Year
+                                                </span>
+                                                <span class="text-dark fw-bold" style="font-size: 12px;">{{ $product['product_model'] ?? 'N/A' }}</span>
+                                            </div>
+                                            <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
+                                                <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 11px; border-radius: 4px;">
+                                                    <i class="feather-map-pin"></i>
+                                                </span>
+                                                <span class="text-dark fw-bold" style="font-size: 12px;">{{ $product['city']['city_name'] ?? 'N/A' }}</span>
+                                            </div>
                                         </div>
-                                        <div class="listing-content" style="padding: 24px 15px 24px 15px">
-                                            <h3 class="listing-title" style="font-size: 17px;">
-                                                <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}">{{ $productDetail[$p]['product_title'] }}</a>
-                                            </h3>
-                                            <div class="listing-details-group d-flex justify-content-between align-items-center mb-3">
-                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 22px; font-size: 11px; border-radius: 4px;">
-                                                        Year
-                                                    </span>
-                                                    <span class="text-dark fw-bold" style="font-size: 12px;">{{ $productDetail[$p]['product_model'] ?? 'N/A' }}</span>
-                                                </div>
-                                                <div class="white-bg d-flex align-items-center review shadow-sm py-1 px-2 border rounded">
-                                                    <span class="dark-yellow-bg d-flex align-items-center justify-content-center me-2" style="width: 25px; height: 22px; font-size: 11px; border-radius: 4px;">
-                                                        <i class="feather-map-pin"></i>
-                                                    </span>
-                                                    <span class="text-dark fw-bold" style="font-size: 12px;">{{ $productDetail[$p]['city']['city_name'] ?? 'N/A' }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="listing-details-group coach-btn mb-3">
-                                                <p class="mb-0 small text-muted" style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em;">
-                                                    {!! strip_tags($productDetail[$p]['product_short_desc']) !!}
-                                                </p>
-                                            </div>
-                                            <div class="avalbity-review mt-auto">
-                                                <ul class="d-block w-100">
-                                                    <li class="w-100 mb-0">
-                                                        <div class="avalibity-datecontent px-3 py-2 border border-primary rounded bg-light text-center">
-                                                            @if(session()->has('customer_id') && session()->has('customer_id') > 0)
-                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ \App\Helpers\FormatHelper::formatIndianPrice($productDetail[$p]['product_price']) }}/-</h5>
-                                                            @else
-                                                                <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> XXXXX/-</h5>
-                                                            @endif
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <div class="listing-details-group coach-btn mb-3">
+                                            <p class="mb-0 small text-muted" style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em;">
+                                                {!! strip_tags($product['product_short_desc']) !!}
+                                            </p>
+                                        </div>
+                                        <div class="avalbity-review mt-auto">
+                                            <ul class="d-block w-100">
+                                                <li class="w-100 mb-0">
+                                                    <div class="avalibity-datecontent px-3 py-2 border border-primary rounded bg-light text-center">
+                                                        @if(session()->has('customer_id') && session()->has('customer_id') > 0)
+                                                            <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> {{ \App\Helpers\FormatHelper::formatIndianPrice($product['product_price']) }}/-</h5>
+                                                        @else
+                                                            <h5 class="mb-0 fw-bold text-primary"><i class="fa-solid fa-indian-rupee-sign"></i> XXXXX/-</h5>
+                                                        @endif
+                                                    </div>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                            @endfor
-                        <!-- /Featured Item -->
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <!-- View More -->
@@ -235,7 +231,7 @@
         <section class="section work-section">
             <div class="container">
                 <div class="section-heading aos" data-aos="fade-up">
-                    <h2>Why <span>Choose Us</span></h2>
+                    <h2>Why <span>Trade With Us?</span></h2>
                     <p class="sub-title">Simplifying the booking process for coaches, venues, and athletes.</p>
                 </div>
                 <div class="row justify-content-center ">

@@ -13,7 +13,7 @@
     <meta property="og:description" content="@yield('description')" />
     <meta property="og:url" content="@yield('canonical')" />
     <meta property="og:type" content="Website">
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
     <!-- This page CSS -->
     @include('layouts.styles')
@@ -27,7 +27,7 @@
     @else
         <div class="main-wrapper terms-page contact-us-page">
     @endif
-    
+
         @include('layouts.header')
         @yield('content')
         @include('layouts.footer')
