@@ -1213,6 +1213,14 @@ div#global-loader,
   color: #2d4487 !important;
 }
 
+/* Keep mobile menu hover colors aligned with desktop scroll state */
+@media (max-width: 991.98px) {
+  .header-trans.header-colored .main-menu-wrapper .main-nav>li>a:hover,
+  .header-trans.header-colored .main-menu-wrapper .main-nav>li .submenu li a:hover {
+    color: #2d4487 !important;
+  }
+}
+
 .header .logo a {
   float: left;
 }
@@ -1317,7 +1325,7 @@ div#global-loader,
 
 @media (max-width: 991.98px) {
   .header .header-nav .main-nav>li .submenu li a:hover {
-    color: #FFFFFF;
+    color: #2d4487;
   }
 }
 
@@ -1556,8 +1564,23 @@ div#global-loader,
     color: #FFFFFF;
   }
 
+  .header .main-menu-wrapper .main-nav>li.active>a {
+    color: #2d4487;
+  }
+
   .header .main-menu-wrapper .main-nav>li a i {
     font-size: 14px;
+  }
+
+  .header .main-menu-wrapper .main-nav>li.active>a,
+  .header .main-menu-wrapper .main-nav>li>a:hover,
+  .header .main-menu-wrapper .main-nav>li>a:focus,
+  .header .main-menu-wrapper .main-nav>li>a:active,
+  .header .main-menu-wrapper .main-nav>li .submenu li.active>a,
+  .header .main-menu-wrapper .main-nav>li .submenu li a:hover,
+  .header .main-menu-wrapper .main-nav>li .submenu li a:focus,
+  .header .main-menu-wrapper .main-nav>li .submenu li a:active {
+    color: #2d4487 !important;
   }
 }
 
@@ -1601,23 +1624,56 @@ div#global-loader,
   .header .main-menu-wrapper .main-nav>li ul {
     background-color: #FFFFFF;
     border-radius: 5px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-    display: block;
-    font-size: 16px;
-    left: 0;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+    /* mega-menu: multiple columns */
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px 16px;
+    font-size: 14px;
+    /* anchor to viewport so it won't be positioned relative to parent; center horizontally */
+    position: fixed;
+    left: 50%;
     margin: 0;
-    min-width: 200px;
+    transform: translateX(-50%) translateY(20px);
+    min-width: 1250px;
+    max-width: calc(100vw - 80px);
+    padding: 8px 28px;
+    overflow-x: hidden;
+    box-sizing: border-box;
     opacity: 0;
-    padding: 0;
-    position: absolute;
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-    -webkit-transform: translateY(20px);
-    -ms-transform: translateY(20px);
-    transform: translateY(20px);
-    top: 100%;
+    /* positioned relative to viewport to avoid parent clipping/offsets */
+    position: fixed;
+    -webkit-transition: all 0.18s ease;
+    transition: all 0.18s ease;
+    /* place below header (header height ~85px) */
+    top: 85px;
     visibility: hidden;
     z-index: 1000;
+  }
+
+  /* small arrow pointing up */
+  .header .main-menu-wrapper .main-nav>li ul::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #FFFFFF;
+  }
+
+  .header .main-menu-wrapper .main-nav>li .submenu li {
+    display: block;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 8px;
+  }
+
+  .header .main-menu-wrapper .main-nav>li .submenu li a {
+    padding: 5px 6px;
+    white-space: nowrap;
+    color: #222;
+    display: block;
   }
 }
 
@@ -1626,9 +1682,10 @@ div#global-loader,
     visibility: visible;
     opacity: 1;
     margin-top: 0;
-    -webkit-transform: translateY(0);
-    -ms-transform: translateY(0);
-    transform: translateY(0);
+    /* preserve horizontal centering introduced on the submenu (translateX) */
+    -webkit-transform: translateX(-50%) translateY(0);
+    -ms-transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0);
     border-radius: 2px;
     border-top: 0px;
   }
@@ -1819,7 +1876,7 @@ div#global-loader,
   left: 0;
 }
 
-.menu-opened body:before {
+menu-opened body:before {
   content: "";
   background-color: rgba(0, 0, 0, 0.6);
   height: 100%;
@@ -1828,6 +1885,17 @@ div#global-loader,
   position: fixed;
   top: 0;
   left: 0;
+}
+
+/* Mobile: ensure dropdowns are single-column and not scroll-constrained */
+@media (max-width: 991.98px) {
+  .header .main-menu-wrapper .main-nav>li ul {
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+  }
 }
 
 header.header-sticky {
