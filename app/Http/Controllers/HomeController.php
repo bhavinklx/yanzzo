@@ -46,7 +46,7 @@ class HomeController extends Controller
                 return redirect('/404');
             }
             $bannerDetail = Banner::where(['banner_status' => '1'])->orderBy('banner_order')->get()->toArray();
-            $productDetail = Product::with(['pimages', 'city'])->where('product_status', '1')->orderBy('product_id', 'DESC')->take(6)->get()->toArray();
+            $productDetail = Product::with(['pimages', 'city'])->where('product_status', '1')->orderBy('product_id', 'DESC')->take(8)->get()->toArray();
             $testimonialDetail = Testimonial::where('testimonial_status', 1)->orderBy('testimonial_order')->get()->toArray();
             $sponsorDetail = Sponsor::where('sponsor_status', 1)->orderBy('sponsor_order')->get()->toArray();
             $ourFeatureDetail = Service::where(['service_status' => '1', 'service_type' => '0'])->orderBy('service_order')->get()->toArray();
