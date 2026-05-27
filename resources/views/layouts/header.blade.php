@@ -39,7 +39,7 @@
                                 $subPages = App\Models\Pages::where(['page_parent' => $pages->page_id, 'page_status' => '1', 'page_header_status' => '1'])->orderBy('page_order')->get();
                                 $categories = [];
                                 if ($pages->page_id == 3) {
-                                    $categories = App\Models\Category::where(['category_parent' => 0, 'category_status' => '1'])->orderBy('category_order')->get();
+                                    $categories = App\Models\Category::where(['category_parent' => 0, 'category_status' => '1'])->orderBy('category_title', 'ASC')->get();
                                 }
                             @endphp
                             @if((isset($subPages) && count($subPages) > 0) || (isset($categories) && count($categories) > 0))
