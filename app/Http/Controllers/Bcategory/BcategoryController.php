@@ -26,7 +26,7 @@ class BcategoryController extends Controller
             return response()->json(['slug' => $slug]);
         }
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $newSlug = $slug . '-' . $i;
             if (! $allSlugs->contains('bcategory_slug', $newSlug)) {
                 return response()->json(['slug' => $newSlug]);
