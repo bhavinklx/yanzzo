@@ -1626,9 +1626,9 @@ div#global-loader,
     border-radius: 5px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
     /* mega-menu: multiple columns */
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px 16px;
+    display: block;
+    column-count: 4;
+    column-gap: 16px;
     font-size: 14px;
     /* anchor to viewport so it won't be positioned relative to parent; center horizontally */
     position: fixed;
@@ -1664,9 +1664,13 @@ div#global-loader,
   }
 
   .header .main-menu-wrapper .main-nav>li .submenu li {
-    display: block;
+    display: inline-block; /* Helps with column breaks */
+    width: 100%;
     border-bottom: 1px solid #e8e8e8;
     padding-bottom: 8px;
+    margin-bottom: 14px;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   .header .main-menu-wrapper .main-nav>li .submenu li a {
