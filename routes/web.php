@@ -408,6 +408,7 @@ Route::controller(HomeController::class)->group(function (){
     Route::post('/contact-insert', 'contact_insert')->name('contact-insert');
     Route::get('/machines', 'product')->name('machines');
     Route::get('/machines/{slug}', 'productDetail');
+    Route::get('/search-suggestions', 'searchSuggestions')->name('search-suggestions');
     Route::get('/404', 'error404');
     Route::get('/{slug}', 'page');
 });

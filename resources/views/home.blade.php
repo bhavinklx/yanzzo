@@ -25,12 +25,17 @@
                                                     <p class="sub-info text-white mb-4" style="font-size: 1.15rem;">{{ $bannerDetail[$b]['banner_text'] }}</p>
                                                 @endif
 
-                                                <form action="{{ url('machines') }}" method="GET" class="mt-4">
-                                                    <div class="input-group mx-auto shadow-lg align-items-center" style="max-width: 650px; border-radius: 50px; background: #fff; padding: 6px 8px 6px 25px;">
-                                                        <input type="text" name="q" class="form-control border-0 shadow-none p-0" placeholder="Search by title, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required>
-                                                        <button class="btn text-white px-4 border-0 ms-2" type="submit" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); border-radius: 50px; font-weight: 600; padding-top: 10px; padding-bottom: 10px;">
-                                                            <i class="fas fa-search me-1"></i> Search
-                                                        </button>
+                                                <form action="{{ url('machines') }}" method="GET" class="mt-4" id="heroSearchForm">
+                                                    <div class="position-relative mx-auto" style="max-width: 650px;">
+                                                        <div class="input-group shadow-lg align-items-center" style="border-radius: 50px; background: #fff; padding: 6px 8px 6px 25px;">
+                                                            <input type="text" name="q" id="heroSearchInput" class="form-control border-0 shadow-none p-0" placeholder="Search by title, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required autocomplete="off">
+                                                            <button class="btn text-white px-4 border-0 ms-2" type="submit" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); border-radius: 50px; font-weight: 600; padding-top: 10px; padding-bottom: 10px;">
+                                                                <i class="fas fa-search me-1"></i> Search
+                                                            </button>
+                                                        </div>
+                                                        <div id="searchSuggestions" class="d-none" style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); z-index: 1000; overflow: hidden; max-height: 360px; overflow-y: auto;">
+                                                            <!-- suggestions injected here -->
+                                                        </div>
                                                     </div>
 
                                                     {{--
@@ -232,7 +237,7 @@
             <div class="container">
                 <div class="section-heading aos" data-aos="fade-up">
                     <h2>Why <span>Trade With Us?</span></h2>
-                    <p class="sub-title">Simplifying the booking process for coaches, venues, and athletes.</p>
+                    <p class="sub-title">Making industrial machinery trading simpler, faster, and more reliable for businesses across India.</p>
                 </div>
                 <div class="row justify-content-center ">
                     @for($w=0; $w < count($whyChooseDetail); $w++)
@@ -414,4 +419,116 @@
         </div>
     </section>--}}
     <!-- /Newsletter -->
+@endsection
+
+@section('page-js')
+    <script>
+        (function() {
+            const input = document.getElementById('heroSearchInput');
+            const dropdown = document.getElementById('searchSuggestions');
+            let debounceTimer = null;
+            let activeIndex = -1;
+            let currentData = [];
+
+            if (!input || !dropdown) return;
+
+            function closeDropdown() {
+                dropdown.classList.add('d-none');
+                activeIndex = -1;
+                currentData = [];
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function selectText(text) {
+                input.value = text;
+                closeDropdown();
+                input.focus();
+            }
+
+            function renderSuggestions(data) {
+                currentData = data;
+                activeIndex = -1;
+                if (!data || data.length === 0) {
+                    dropdown.innerHTML = '<div class="px-3 py-3 text-muted" style="font-size: 14px; text-align: left !important;">No results found</div>';
+                    dropdown.classList.remove('d-none');
+                    return;
+                }
+
+                let html = '';
+                data.forEach(function(item, index) {
+                    html += '<div class="suggestion-item px-3 py-2" data-index="' + index + '" data-text="' + escapeHtml(item.text) + '" style="cursor: pointer; border-bottom: 1px solid #f1f1f1; transition: background 0.15s; font-size: 14px; color: #333; text-align: left !important;">' +
+                        escapeHtml(item.text) +
+                        '</div>';
+                });
+
+                dropdown.innerHTML = html;
+                dropdown.classList.remove('d-none');
+
+                dropdown.querySelectorAll('.suggestion-item').forEach(function(el) {
+                    el.addEventListener('click', function() {
+                        selectText(this.dataset.text);
+                    });
+                });
+            }
+
+            function updateActiveItem() {
+                const items = dropdown.querySelectorAll('.suggestion-item');
+                items.forEach(function(item, idx) {
+                    item.style.background = (idx === activeIndex) ? '#f0f4ff' : 'transparent';
+                });
+            }
+
+            input.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const keyword = this.value.trim();
+                if (keyword.length < 2) {
+                    closeDropdown();
+                    return;
+                }
+
+                debounceTimer = setTimeout(function() {
+                    fetch('{{ route("search-suggestions") }}?q=' + encodeURIComponent(keyword), {
+                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) { renderSuggestions(data); })
+                    .catch(function() { closeDropdown(); });
+                }, 300);
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (dropdown.classList.contains('d-none')) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeIndex = Math.min(activeIndex + 1, currentData.length - 1);
+                    updateActiveItem();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeIndex = Math.max(activeIndex - 1, -1);
+                    updateActiveItem();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (activeIndex >= 0 && currentData[activeIndex]) {
+                        selectText(currentData[activeIndex].text);
+                    } else {
+                        document.getElementById('heroSearchForm').submit();
+                    }
+                } else if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+        })();
+    </script>
 @endsection
