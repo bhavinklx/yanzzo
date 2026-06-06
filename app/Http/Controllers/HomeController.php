@@ -575,15 +575,15 @@ class HomeController extends Controller
             ];
         }
 
-        // Subcategories
-        $subcategories = Category::where('category_status', '1')
-            ->where('category_parent', '>', 0)
+        // Categories
+        $categories = Category::where('category_status', '1')
+            ->where('category_parent', 0)
             ->where('category_title', 'like', '%' . $keyword . '%')
             ->select('category_title as text')
             ->limit(5)
             ->get();
 
-        foreach ($subcategories as $item) {
+        foreach ($categories as $item) {
             $suggestions[] = [
                 'type' => 'Subcategory',
                 'text' => $item->text,
