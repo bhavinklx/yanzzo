@@ -20,6 +20,7 @@ use App\Models\Contact;
 use App\Models\Setting;
 use App\Models\Service;
 use App\Models\State;
+use App\Models\City;
 use App\Models\Favourite;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -395,6 +396,12 @@ class HomeController extends Controller
                       })
                       ->orWhereHas('state', function($q3) use ($keyword) {
                           $q3->where('state_name', 'like', '%' . $keyword . '%');
+                      })
+                      ->orWhereHas('category', function($q4) use ($keyword) {
+                          $q4->where('category_title', 'like', '%' . $keyword . '%');
+                      })
+                      ->orWhereHas('subCategory', function($q5) use ($keyword) {
+                          $q5->where('category_title', 'like', '%' . $keyword . '%');
                       });
                 });
             }
@@ -436,12 +443,20 @@ class HomeController extends Controller
             ]));
 
             $categoryDetail = Category::where('category_parent', 0)
-                ->withCount([
-                    'product' => function ($q) {
-                        $q->where('product_status', '1');
+                ->where('category_status', '1')
+                ->with([
+                    'subCategory' => function ($q) {
+                        $q->where('category_status', '1')
+                            ->withCount([
+                                'product' => function ($q2) {
+                                    $q2->where('product_status', '1');
+                                }
+                            ])
+                            ->having('product_count', '>', 0)
+                            ->orderBy('category_order');
                     }
                 ])
-                ->having('product_count', '>', 0)
+                ->orderBy('category_order')
                 ->get();
 
             $subcategoryDetail = Category::where('category_parent', '>', 0)
@@ -535,6 +550,48 @@ class HomeController extends Controller
             Log::error('Machines page error: ' . $e->getMessage());
             return redirect('/404');
         }
+    }
+
+    public function searchSuggestions(Request $request)
+    {
+        $keyword = trim($request->get('q', ''));
+        if (empty($keyword) || strlen($keyword) < 2) {
+            return response()->json([]);
+        }
+
+        $suggestions = [];
+
+        // Products
+        $products = Product::where('product_status', '1')
+            ->where('product_title', 'like', '%' . $keyword . '%')
+            ->select('product_title as text')
+            ->limit(5)
+            ->get();
+
+        foreach ($products as $item) {
+            $suggestions[] = [
+                'type' => 'Product',
+                'text' => $item->text,
+            ];
+        }
+
+        // Subcategories
+        $subcategories = Category::where('category_status', '1')
+            ->where('category_parent', '>', 0)
+            ->where('category_title', 'like', '%' . $keyword . '%')
+            ->select('category_title as text')
+            ->limit(5)
+            ->get();
+
+        foreach ($subcategories as $item) {
+            $suggestions[] = [
+                'type' => 'Subcategory',
+                'text' => $item->text,
+            ];
+        }
+
+        // Return maximum 5 suggestions total
+        return response()->json(array_slice($suggestions, 0, 5));
     }
 
     public function sendMail($fromEmail = '', $toEmail = '', $fromName = '', $toName = '', $subject = '', $message = '', $isAttachment = 0, $fileName = '')

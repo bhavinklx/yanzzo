@@ -61,25 +61,28 @@
                                 };
                             @endphp
 
-                            <!-- Sub Categories -->
+                            <!-- Categories -->
                             <div class="filter-section p-3">
-                                <h5 class="fw-bold mb-3" style="font-size: 15px;">Sub Categories</h5>
-                                <ul class="filter-list list-unstyled mb-0">
-                                    <li class="mb-2 {{ $subcategorySlug == '' ? 'active' : '' }}">
-                                        <a href="{{ $getFilterUrl(['subcategory' => '']) }}" class="text-decoration-none {{ $subcategorySlug == '' ? 'text-primary' : 'text-muted' }}">
-                                            <span>All Sub Categories</span>
-                                            <span class="badge rounded-pill">{{ $productDetail->total() }}</span>
-                                        </a>
-                                    </li>
-                                    @foreach($subcategoryDetail as $subcategory)
-                                        <li class="mb-2 {{ $subcategorySlug == $subcategory->category_slug ? 'active' : '' }}">
-                                            <a href="{{ $getFilterUrl(['subcategory' => $subcategory->category_slug]) }}" class="text-decoration-none {{ $subcategorySlug == $subcategory->category_slug ? 'text-primary' : 'text-muted' }}">
-                                                <span>{{ $subcategory->category_title }}</span>
-                                                <span class="badge rounded-pill">{{ $subcategory->product_count }}</span>
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                                <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center" style="font-size: 15px;">
+                                    Categories
+                                </h5>
+                                <div class="filter-list-scroll" style="max-height: 400px; overflow-y: auto;">
+                                    <ul class="filter-list list-unstyled mb-0" style="padding-right: 10px;">
+                                        @foreach($categoryDetail as $category)
+                                            @php
+                                                $isCategoryActive = ($categorySlug == $category->category_slug);
+                                            @endphp
+                                            <li class="mb-2">
+                                                <a href="{{ $getFilterUrl(['category' => $category->category_slug, 'subcategory' => '']) }}"
+                                                   class="text-decoration-none d-flex justify-content-between align-items-center {{ $isCategoryActive ? 'text-primary fw-bold' : 'text-dark' }}"
+                                                   style="font-size: 14px; font-weight: 600;">
+                                                    <span>{{ $category->category_title }}</span>
+                                                    <span class="badge rounded-pill" style="font-size: 10px; background: #f8f9fa; color: #666; border: 1px solid #eee; font-weight: 500;">{{ $category->product_count ?? $category->subCategory->sum('product_count') }}</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
 
                             <!-- Location -->
@@ -89,7 +92,7 @@
                                    {{-- <i class="feather-chevron-down small text-muted"></i>--}}
                                 </h5>
                                 <div class="filter-list-scroll" style="max-height: 400px; overflow-y: auto;">
-                                    <ul class="filter-list list-unstyled mb-0">
+                                    <ul class="filter-list list-unstyled mb-0" style="padding-right: 10px;">
                                         @foreach($stateDetail as $state)
                                             @php
                                                 $isStateActive = ($locationId == $state->state_id);
@@ -145,7 +148,16 @@
                     <!-- Sort By / Count -->
                     <div class="sortby-section bg-white p-3 rounded shadow-sm mb-4">
                         <div class="count-search mt-0">
-                            <p class="mb-0 text-dark fw-medium mt-0" style="line-height: 1.2;">Found <span>{{ $productDetail->total() }}</span> Machines for you</p>
+                            @php
+                                $activeCategoryName = null;
+                                if (!empty($categorySlug)) {
+                                    $activeCat = $categoryDetail->firstWhere('category_slug', $categorySlug);
+                                    if ($activeCat) {
+                                        $activeCategoryName = $activeCat->category_title;
+                                    }
+                                }
+                            @endphp
+                            <p class="mb-0 text-dark fw-medium mt-0" style="line-height: 1.2;">Found <span>{{ $productDetail->total() }}</span> Machines{{ $activeCategoryName ? ' for ' . $activeCategoryName : ' for you' }}</p>
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="text-muted small me-2">Sort By:</span>
