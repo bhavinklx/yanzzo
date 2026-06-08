@@ -50,7 +50,7 @@ class SellerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "category_id"                       => "required|not_in:0",
-            "subcategory_id"                    => "required|not_in:0",
+            /*"subcategory_id"                  => "required|not_in:0",*/
             "state_id"                          => "required|not_in:0",
             "city_id"                           => "required|not_in:0",
             "product_title"                     => "required|string|max:255",
@@ -77,7 +77,7 @@ class SellerController extends Controller
             $product->fill([
                 'customer_id'                   => Session::get('customer_id'),
                 'category_id'                   => $request->category_id,
-                'subcategory_id'                => $request->subcategory_id,
+                'subcategory_id'                => $request->subcategory_id ?? 0,
                 'state_id'                      => $request->state_id,
                 'city_id'                       => $request->city_id,
                 'product_title'                 => $product_title,

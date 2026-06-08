@@ -109,7 +109,7 @@
                                             <hr>
                                         </div>
 
-                                        <div class="col-lg-6 col-md-6 mb-3">
+                                        <div class="col-lg-12 col-md-12 mb-3">
                                             <div class="input-space mb-0">
                                                 <label for="category_id" class="form-label">Category *</label>
                                                 <select id="category_id" name="category_id" class="form-select">
@@ -122,7 +122,7 @@
                                             <div id="err_category_id" class="text-danger small mt-1"></div>
                                         </div>
 
-                                        <div class="col-lg-6 col-md-6 mb-3">
+                                        {{--<div class="col-lg-6 col-md-6 mb-3">
                                             <div class="input-space mb-0">
                                                 <label for="subcategory_id" class="form-label">Sub Category *</label>
                                                 <select id="subcategory_id" name="subcategory_id" class="form-select">
@@ -130,7 +130,7 @@
                                                 </select>
                                             </div>
                                             <div id="err_subcategory_id" class="text-danger small mt-1"></div>
-                                        </div>
+                                        </div>--}}
 
                                         <div class="col-12 mt-4">
                                             <button type="button" onclick="goToStep(2)" class="btn btn-primary px-5 py-2">Next: Enter Details <i class="feather-arrow-right ms-2"></i></button>
@@ -258,10 +258,10 @@ $(document).ready(function() {
                 $('#err_category_id').html('Please select a category');
                 valid = false;
             }
-            if (subcategory == 0) {
+            /*if (subcategory == 0) {
                 $('#err_subcategory_id').html('Please select a sub-category');
                 valid = false;
-            }
+            }*/
 
             if (!valid) return;
 
