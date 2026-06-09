@@ -321,20 +321,18 @@ $(document).ready(function() {
     @endif
 
     $('.conversation-item').on('click', function(e) {
-        if ($(window).width() > 768) {
-            e.preventDefault();
-            $('.conversation-item').removeClass('active');
-            $(this).addClass('active');
+        e.preventDefault();
+        $('.conversation-item').removeClass('active');
+        $(this).addClass('active');
 
-            currentOtherId = $(this).data('other-id');
-            $(this).find('.unread-badge').remove();
+        currentOtherId = $(this).data('other-id');
+        $(this).find('.unread-badge').remove();
 
-            // Update URL without refreshing
-            let url = $(this).attr('href');
-            history.pushState(null, null, url);
+        // Update URL without refreshing
+        let url = $(this).attr('href');
+        history.pushState(null, null, url);
 
-            loadMessages(currentOtherId);
-        }
+        loadMessages(currentOtherId);
     });
 
     function formatChatDate(dateStr) {

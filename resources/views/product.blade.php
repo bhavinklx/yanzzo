@@ -20,10 +20,22 @@
     @endif
     <section class="breadcrumb breadcrumb-list mb-0" style="background-image: url({{ $pageBanner }});">
         <div class="container">
-            <h1 class="text-white">{{ $pagesDetail->page_title ?? '' }}</h1>
+            @php
+                $headerTitle = $pagesDetail->page_title ?? '';
+                if (!empty($categorySlug)) {
+                    $activeCat = $categoryDetail->firstWhere('category_slug', $categorySlug);
+                    if ($activeCat) {
+                        $headerTitle = $activeCat->category_title;
+                    }
+                }
+            @endphp
+            <h1 class="text-white">{{ $headerTitle }}</h1>
             <ul>
                 <li><a href="{{ url('/') }}">Home</a></li>
-                <li>{{ $pagesDetail->page_title ?? '' }}</li>
+                <li><a href="{{ route('machines') }}">{{ $pagesDetail->page_title ?? 'Machines' }}</a></li>
+                @if(!empty($categorySlug) && $activeCat)
+                    <li>{{ $activeCat->category_title }}</li>
+                @endif
             </ul>
         </div>
     </section>
