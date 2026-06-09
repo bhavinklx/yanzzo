@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="{{ url('plugins/fontawesome/css/all.min.css') }}">
 <!-- Feathericon CSS -->
 <link rel="stylesheet" href="{{ url('css/feather.css') }}">
-<link rel="stylesheet" href="{{ url('css/style.css') }}">
-<link rel="stylesheet" href="{{ url('css/chat.css') }}">
+<link rel="stylesheet" href="{{ url('css/style.css?v=') . time() }}">
+<link rel="stylesheet" href="{{ url('css/chat.css?v=') . time() }}">
 <link rel="stylesheet" type="text/css" href="{{ url('build/css/intlTelInput.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url('build/css/demo.css') }}">
 <link rel="stylesheet" href="{{ url('assets/vendor/dropzone/dropzone.min.css') }}">
@@ -19,10 +19,10 @@
 
 <style>
     /* Global Form Styling matched to Seller Inquiry */
-    .form-control, 
+    .form-control,
     .form-select,
     .dropzone,
-    .input-space .form-control, 
+    .input-space .form-control,
     .input-space .form-select {
         background-color: #fcfcfc !important;
         border: 1px solid #e0e0e0 !important;
@@ -30,9 +30,9 @@
         transition: all 0.3s ease;
         padding: 10px 15px;
     }
-    .form-control:focus, 
+    .form-control:focus,
     .form-select:focus,
-    .input-space .form-control:focus, 
+    .input-space .form-control:focus,
     .input-space .form-select:focus {
         background-color: #fff !important;
         border-color: #1b84ee !important;
@@ -126,7 +126,7 @@
     .contact-info-content a:hover {
         color: #37ae94 !important;
     }
-    
+
     .contact-group .seller-section {
         background-color: #f9fbfb;
         padding: 80px 0;
