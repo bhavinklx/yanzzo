@@ -89,6 +89,23 @@
                             <a href="{{ url('/my-account') }}">Dashboard</a>
                         </li>
                         <li class="login-link">
+                            <a href="{{ url('/seller-inquiry') }}">Sell Your Machine</a>
+                        </li>
+                        <li class="login-link">
+                            <a href="{{ url('/my-listing') }}">My Machines</a>
+                        </li>
+                        <li class="login-link">
+                            <a href="{{ url('/chat') }}">Messages
+                                @php
+                                    $unreadHeader = \App\Models\Chat::where('receiver_id', Session::get('customer_id'))->where('is_read', false)->count();
+                                @endphp
+                                @if($unreadHeader > 0)
+                                    <span class="badge badge-danger rounded-circle ms-1"
+                                          style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="login-link">
                             <a href="javascript: void (0)" onclick="return logout()">Logout</a>
                         </li>
                     @else
@@ -109,8 +126,7 @@
                                 <i class="feather-user"></i> <span class="user-name-text">{{ Session::get('customer_name') }}</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
                             </a>
                             <div class="user-header-menu">
-                                <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i>
-                                    Dashboard</a>
+                                <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i>Dashboard</a>
                                 <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i class="feather-plus-square"></i> Sell Your Machine</a>
                                 <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My Machines</a>
                                 <a class="user-header-item" href="{{ url('/chat') }}">
