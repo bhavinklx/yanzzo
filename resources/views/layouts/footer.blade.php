@@ -260,7 +260,7 @@
             <div class="modal-body">
                 <form method="post" id="login_form" name="login_form" enctype="multipart/form-data">
                     <input type="hidden" id="URI" name="URI"
-                        value="<?= base64_encode(url('/seller-inquiry')); ?>">
+                        value="<?= base64_encode("https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"); ?>">
                     <div class="mb-3">
                         <div class="input-space mb-0">
                             <label class="form-label">Mobile Number</label>
