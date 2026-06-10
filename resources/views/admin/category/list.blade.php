@@ -76,7 +76,7 @@
                                             <td>
                                                 <div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="{{ $subCategory->category_id }}"></div>
                                             </td>
-                                            <td>&nbsp; <img src="{{ url("assets/img/arrow-01.gif") }}">&nbsp; {{ $subCategory->category_title }}</td>
+                                            <td>&nbsp; <img src="{{ asset("assets/img/arrow-01.gif") }}">&nbsp; {{ $subCategory->category_title }}</td>
                                             <td>{{ date('d-m-Y h:i:s A', strtotime($subCategory->created_at)) }}</td>
                                             <td>
                                                 @if($subCategory->category_status=='1')
