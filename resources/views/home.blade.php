@@ -4,6 +4,13 @@
 @section('description', $pagesDetail->page_meta_desc ?? DEFAULT_META_DESCRIPTION)
 @section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')
 @section("content")
+    <style>
+        #heroSearchInput:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+    </style>
     <!-- Hero Section -->
     @if(is_array($bannerDetail) && count($bannerDetail) > 0)
         <section class="hero-section position-relative p-0" style="overflow: hidden;">
