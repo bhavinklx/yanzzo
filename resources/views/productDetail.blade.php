@@ -46,9 +46,9 @@
                             <div class="owl-carousel gallery-slider owl-theme">
                                 @if(count($productDetail->pimages) > 0)
                                     @foreach($productDetail->pimages as $image)
-                                        <div class="gallery-widget-item" style="height: 500px; overflow: hidden;">
-                                            <a class="corner-radius-10 d-block h-100" href="{{ asset('uploads/product/' . $image->pimage_image) }}" data-fancybox="gallery2" style="height: 100%;">
-                                                <img class="img-fluid corner-radius-10" alt="{{ $productDetail->product_title }}" src="{{ asset('uploads/product/' . $image->pimage_image) }}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                        <div class="gallery-widget-item">
+                                            <a class="corner-radius-10 d-block" href="{{ asset('uploads/product/' . $image->pimage_image) }}" data-fancybox="gallery2">
+                                                <img class="img-fluid corner-radius-10" alt="{{ $productDetail->product_title }}" src="{{ asset('uploads/product/' . $image->pimage_image) }}" style="width: 100%; height: auto; display: block;">
                                             </a>
                                         </div>
                                     @endforeach
@@ -438,5 +438,28 @@ function toggleFavourite(productId, btn) {
 }
 </script>
 <style>
+    .gallery-slider .owl-stage,
+    .gallery-slider .owl-stage-outer,
+    .gallery-slider .owl-item {
+        transition: height 0.3s ease;
+    }
+    .gallery-widget-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f4f4f4;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .gallery-widget-item a {
+        width: 100%;
+        line-height: 0;
+    }
+    .gallery-widget-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+    }
 </style>
 @endsection
