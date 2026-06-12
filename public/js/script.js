@@ -482,12 +482,13 @@ Version      : 1.0
 
 	if ($('.gallery-slider').length > 0) {
 		$('.gallery-slider').owlCarousel({
-			loop: false,
+			loop: true,
 			margin: 10,
 			nav: true,
 			dots: false,
 			autoplay: true,
 			smartSpeed: 2000,
+			autoHeight: true,
 			navText: ["<i class='feather-chevron-left'></i>", "<i class='feather-chevron-right'></i>"],
 			responsive: {
 				0: {
