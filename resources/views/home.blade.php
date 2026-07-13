@@ -115,11 +115,11 @@
                     <h2>Latest Posted <span>Used Machines</span></h2>
                     {{--<p class="sub-title">Get the latest buzz from the badminton world- stay informed and inspired by the thrilling updates and remarkable achievements in the sport.</p>--}}
                 </div>
-                <div class="row g-4">
+                <div class="row g-4 mb-5">
                     @foreach(array_slice($productDetail, 0, 8) as $product)
                         <div class="col-lg-3 col-md-6">
                             <div class="featured-venues-item h-100">
-                                <div class="listing-item listing-item-grid mb-0 h-100">
+                                <div class="listing-item listing-item-grid mb-0 h-100 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #f0f0f0;">
                                     <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
                                         @if($product['product_is_sold'] == '1')
                                             <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
@@ -134,7 +134,7 @@
                                             @endif
                                         </a>
                                     </div>
-                                    <div class="listing-content" style="padding: 24px 15px 24px 15px">
+                                    <div class="listing-content d-flex flex-column flex-grow-1" style="padding: 20px;">
                                         <h3 class="listing-title" style="font-size: 17px;">
                                             <a href="{{ url('machines/' . $product['product_slug']) }}">{{ $product['product_title'] }}</a>
                                         </h3>
@@ -152,7 +152,7 @@
                                                 <span class="text-dark fw-bold" style="font-size: 12px;">{{ $product['city']['city_name'] ?? 'N/A' }}</span>
                                             </div>
                                         </div>
-                                        <div class="listing-details-group coach-btn mb-3">
+                                        <div class="listing-details-group coach-btn mb-3 flex-grow-1">
                                             <p class="mb-0 small text-muted" style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.8em;">
                                                 {!! strip_tags($product['product_short_desc']) !!}
                                             </p>
@@ -193,7 +193,7 @@
             <div class="container">
                 <div class="section-heading aos" data-aos="fade-up">
                     <h2>Why <span>Choose Us</span></h2>
-                    <p class="sub-title">Discover your potential with our comprehensive training, expert trainers, and advanced facilities. Join us to improve your athletic career.</p>
+                    <p class="sub-title">Simplifying the buying and selling of pre-owned industrial machinery through a trusted, transparent and technology-driven marketplace.</p>
                 </div>
                 {{--<div class="row">
                     <div class="col-lg-12">
