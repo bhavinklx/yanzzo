@@ -186,7 +186,7 @@
                         @if(count($productDetail) > 0) @for($p=0; $p < count($productDetail); $p++)
                             <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                                 <div class="featured-venues-item h-100">
-                                    <div class="listing-item listing-item-grid h-100 mb-0">
+                                    <div class="listing-item listing-item-grid h-100 mb-0 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #f0f0f0;">
                                         <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
                                             @if($productDetail[$p]['product_is_sold'] == '1')
                                                 <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
@@ -201,7 +201,7 @@
                                                 @endif
                                             </a>
                                         </div>
-                                        <div class="listing-content" style="padding: 24px 0 24px 0">
+                                        <div class="listing-content d-flex flex-column flex-grow-1" style="padding: 20px;">
                                             <h3 class="listing-title" style="font-size: 17px;">
                                                 <a href="{{ url('machines/' . $productDetail[$p]['product_slug']) }}">{{ $productDetail[$p]['product_title'] }}</a>
                                             </h3>
@@ -219,7 +219,7 @@
                                                     <span class="text-dark fw-bold" style="font-size: 12px;">{{ $productDetail[$p]->city->city_name ?? 'N/A' }}</span>
                                                 </div>
                                             </div>
-                                            <div class="listing-details-group coach-btn mb-3">
+                                            <div class="listing-details-group coach-btn mb-3 flex-grow-1">
                                                 <p class="mb-0 small text-muted" style="line-height: 1.4;">
                                                     {!! \Illuminate\Support\Str::limit(strip_tags($productDetail[$p]['product_short_desc']), 90, '...') !!}
                                                 </p>
