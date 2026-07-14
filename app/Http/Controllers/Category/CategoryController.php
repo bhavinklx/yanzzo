@@ -80,7 +80,7 @@ class CategoryController extends Controller
 
     public function view()
     {
-        $categoryDetail = Category::select('category_id', 'category_title', 'category_order', 'category_status', 'created_at')->with(['subCategory' => function($query) {
+        $categoryDetail = Category::select('category_id', 'category_title', 'category_order', 'category_status', 'category_home_status', 'created_at')->with(['subCategory' => function($query) {
             $query->select('category_id', 'category_title', 'category_parent', 'category_order', 'category_status', 'created_at');
         }])->where('category_parent', '0')->orderBy('category_order')->get();
         return view("admin.category.list")->with('categoryDetail', $categoryDetail);
@@ -95,6 +95,23 @@ class CategoryController extends Controller
         if (!empty($request->all()))
         {
             Category::where('category_id', $request->category_id)->update(["category_status" => $request->status]);
+            if ($request->status == 1) {
+                echo 'Status Activate successfully';
+            } else if ($request->status == 0){
+                echo 'Status Inactivate successfully';
+            }
+        }
+    }
+
+    public function change_home_status(Request $request)
+    {
+        if (!$request->ajax())
+        {
+            exit('No direct script access allowed');
+        }
+        if (!empty($request->all()))
+        {
+            Category::where('category_id', $request->category_id)->update(["category_home_status" => $request->status]);
             if ($request->status == 1) {
                 echo 'Status Activate successfully';
             } else if ($request->status == 0){
