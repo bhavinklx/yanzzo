@@ -23,6 +23,7 @@ class Category extends Model
         "category_meta_desc",
         "category_order",
         "category_status",
+        "category_home_status",
         "created_at"
     ];
 

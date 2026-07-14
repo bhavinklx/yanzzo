@@ -42,6 +42,7 @@
                                     <th>Title</th>
                                     <th>Created Date</th>
                                     <th>Status</th>
+                                    <th>Home Status</th>
                                     <th>Action</th>
                                 </tr>
                                 </thead>
@@ -58,6 +59,13 @@
                                                 <div id="td_status_{{ $category->category_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $category->category_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
                                             @else
                                                 <div id="td_status_{{ $category->category_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $category->category_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if($category->category_home_status=='1')
+                                                <div id="td_home_status_{{ $category->category_id }}"><a href="javascript:void(0)" onclick="change_home_status('{{ $category->category_id }}',0)" ><span class="badge bg-success">Active</span></a></div>
+                                            @else
+                                                <div id="td_home_status_{{ $category->category_id }}"><a href="javascript:void(0)" onclick="change_home_status('{{ $category->category_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
                                             @endif
                                         </td>
                                         <td>
@@ -85,6 +93,7 @@
                                                     <div id="td_status_{{ $subCategory->category_id }}"><a href="javascript:void(0)" onclick="change_status('{{ $subCategory->category_id }}',1)" ><span class="badge bg-danger">Inactive</span></a></div>
                                                 @endif
                                             </td>
+                                            <td></td>
                                             <td>
                                                 <div class="d-inline-flex gap-1">
                                                     {{--@if(auth()->user()->can('category-delete'))--}}
@@ -222,6 +231,35 @@
                         $("#td_status_"+category_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+category_id+"', '0')\" ><span class=\"badge bg-success\">Active</span></a>");
                     } else {
                         $("#td_status_"+category_id).html("<a href=\"javascript:void(0)\" onclick=\"change_status('"+category_id+"', '1')\" ><span class=\"badge bg-danger\">Inactive</span></a>");
+                    }
+                }
+            });
+        }
+
+        function change_home_status(category_id, status) {
+            $.ajax({
+                url: "{{ route('category-change-home-status') }}",
+                method: "POST",
+                data: {
+                    category_id:category_id,
+                    status:status,
+                    _token:"{{ csrf_token() }}"
+                },
+                success: function (response) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',      // top-right corner
+                        icon: 'success',          // success, error, warning, info
+                        title: response,          // message text
+                        showConfirmButton: false, // no OK button
+                        timer: 3500,              // auto close after 3.5 seconds
+                        timerProgressBar: true,
+                        padding: '0.5em 1em',      // smaller padding
+                    });
+                    if (status == 1){
+                        $("#td_home_status_"+category_id).html("<a href=\"javascript:void(0)\" onclick=\"change_home_status('"+category_id+"', '0')\" ><span class=\"badge bg-success\">Active</span></a>");
+                    } else {
+                        $("#td_home_status_"+category_id).html("<a href=\"javascript:void(0)\" onclick=\"change_home_status('"+category_id+"', '1')\" ><span class=\"badge bg-danger\">Inactive</span></a>");
                     }
                 }
             });
