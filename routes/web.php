@@ -266,6 +266,7 @@ Route::middleware(['force.www'])->group(function () {
         });
         Route::get("/admin/category-create-slug", "createSlug")->name("category-create-slug");
         Route::post("/admin/category-change-status", "change_status")->name("category-change-status");
+        Route::post("/admin/category-change-home-status", "change_home_status")->name("category-change-home-status");
         Route::post("/admin/category-update-order", "update_order")->name("category-update-order");
         Route::post('/admin/category-image-upload', 'uploadImage')->name('category-image-upload');
     });

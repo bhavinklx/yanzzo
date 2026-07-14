@@ -47,7 +47,16 @@ class HomeController extends Controller
                 return redirect('/404');
             }
             $bannerDetail = Banner::where(['banner_status' => '1'])->orderBy('banner_order')->get()->toArray();
-            $productDetail = Product::with(['pimages', 'city'])->where('product_status', '1')->orderBy('product_id', 'DESC')->take(8)->get()->toArray();
+            $categoryDetail = Category::where('category_home_status', '1')->orderBy('category_order')->take(3)->get()->toArray();
+            foreach ($categoryDetail as $key => $cat) {
+                $query = Product::with(['pimages', 'city'])->where('product_status', '1');
+                if ($cat['category_parent'] == 0) {
+                    $query->where('category_id', $cat['category_id']);
+                } else {
+                    $query->where('subcategory_id', $cat['category_id']);
+                }
+                $categoryDetail[$key]['products'] = $query->orderBy('product_id', 'DESC')->take(4)->get()->toArray();
+            }
             $testimonialDetail = Testimonial::where('testimonial_status', 1)->orderBy('testimonial_order')->get()->toArray();
             $sponsorDetail = Sponsor::where('sponsor_status', 1)->orderBy('sponsor_order')->get()->toArray();
             $ourFeatureDetail = Service::where(['service_status' => '1', 'service_type' => '0'])->orderBy('service_order')->get()->toArray();
@@ -57,7 +66,7 @@ class HomeController extends Controller
             return view('home')->with([
                 'pagesDetail' => $pagesDetail,
                 'bannerDetail' => $bannerDetail,
-                'productDetail' => $productDetail,
+                'categoryDetail' => $categoryDetail,
                 'testimonialDetail' => $testimonialDetail,
                 'sponsorDetail' => $sponsorDetail,
                 'ourFeatureDetail' => $ourFeatureDetail,
