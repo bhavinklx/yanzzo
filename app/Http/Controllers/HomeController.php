@@ -47,7 +47,7 @@ class HomeController extends Controller
                 return redirect('/404');
             }
             $bannerDetail = Banner::where(['banner_status' => '1'])->orderBy('banner_order')->get()->toArray();
-            $categoryDetail = Category::where('category_home_status', '1')->orderBy('category_order')->take(3)->get()->toArray();
+            $categoryDetail = Category::where('category_parent', '0')->where('category_home_status', '1')->orderBy('category_order')->take(3)->get()->toArray();
             foreach ($categoryDetail as $key => $cat) {
                 $query = Product::with(['pimages', 'city'])->where('product_status', '1');
                 if ($cat['category_parent'] == 0) {
@@ -55,7 +55,7 @@ class HomeController extends Controller
                 } else {
                     $query->where('subcategory_id', $cat['category_id']);
                 }
-                $categoryDetail[$key]['products'] = $query->orderBy('product_id', 'DESC')->take(4)->get()->toArray();
+                $categoryDetail[$key]['products'] = $query->orderBy('product_id', 'DESC')->take(8)->get()->toArray();
             }
             $testimonialDetail = Testimonial::where('testimonial_status', 1)->orderBy('testimonial_order')->get()->toArray();
             $sponsorDetail = Sponsor::where('sponsor_status', 1)->orderBy('sponsor_order')->get()->toArray();
@@ -225,7 +225,7 @@ class HomeController extends Controller
                     </tr>";
 
             //mail sent to user
-            $this->sendMail(FROM_EMAIL, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) .' '. ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
+            $this->sendMail(FROM_EMAIL, $_POST['email'], $fromName, ucwords(strtolower($_POST['fname'])) . ' ' . ucwords(strtolower($_POST['lname'])), $subjectUser, $messageHeaderUser . $message . $messageFooterUser);
 
             //mail sent to admin
             if (ADMIN_EMAIL != "") {
@@ -295,7 +295,8 @@ class HomeController extends Controller
                                                 href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>"><?= $blogDetail[$b]['blog_title']; ?></a>
                                         </h3>
                                         <div class="listing-button read-new text-center">
-                                            <span><a href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>">5 Min
+                                            <span><a href="<?= url('/' . $pagesDetail->page_slug . '/' . $blogDetail[$b]['blog_slug']); ?>">5
+                                                    Min
                                                     To Read</a></span>
                                         </div>
                                     </div>
@@ -396,22 +397,22 @@ class HomeController extends Controller
             if (!empty($keyword)) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('product_title', 'like', '%' . $keyword . '%')
-                      ->orWhere('product_model', 'like', '%' . $keyword . '%')
-                      ->orWhere('product_short_desc', 'like', '%' . $keyword . '%')
-                      ->orWhere('product_desc', 'like', '%' . $keyword . '%')
-                      ->orWhere('product_meta_keyword', 'like', '%' . $keyword . '%')
-                      ->orWhereHas('city', function($q2) use ($keyword) {
-                          $q2->where('city_name', 'like', '%' . $keyword . '%');
-                      })
-                      ->orWhereHas('state', function($q3) use ($keyword) {
-                          $q3->where('state_name', 'like', '%' . $keyword . '%');
-                      })
-                      ->orWhereHas('category', function($q4) use ($keyword) {
-                          $q4->where('category_title', 'like', '%' . $keyword . '%');
-                      })
-                      ->orWhereHas('subCategory', function($q5) use ($keyword) {
-                          $q5->where('category_title', 'like', '%' . $keyword . '%');
-                      });
+                        ->orWhere('product_model', 'like', '%' . $keyword . '%')
+                        ->orWhere('product_short_desc', 'like', '%' . $keyword . '%')
+                        ->orWhere('product_desc', 'like', '%' . $keyword . '%')
+                        ->orWhere('product_meta_keyword', 'like', '%' . $keyword . '%')
+                        ->orWhereHas('city', function ($q2) use ($keyword) {
+                            $q2->where('city_name', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('state', function ($q3) use ($keyword) {
+                            $q3->where('state_name', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('category', function ($q4) use ($keyword) {
+                            $q4->where('category_title', 'like', '%' . $keyword . '%');
+                        })
+                        ->orWhereHas('subCategory', function ($q5) use ($keyword) {
+                            $q5->where('category_title', 'like', '%' . $keyword . '%');
+                        });
                 });
             }
 
