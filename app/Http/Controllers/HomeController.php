@@ -372,6 +372,8 @@ class HomeController extends Controller
             // Get selected slugs from URL
             $categorySlug = $request->category;
             $subcategorySlug = $request->subcategory;
+            $categoryId = null;
+            $subcategoryId = null;
 
             // Fetch active products with pagination
             $query = Product::with(['pimages', 'city', 'state'])->where('product_status', '1');
@@ -480,17 +482,29 @@ class HomeController extends Controller
 
             $stateDetail = State::where('state_status', '1')
                 ->withCount([
-                    'product' => function ($q) {
+                    'product' => function ($q) use ($categoryId, $subcategoryId) {
                         $q->where('product_status', '1');
+                        if (!empty($categoryId)) {
+                            $q->where('category_id', $categoryId);
+                        }
+                        if (!empty($subcategoryId)) {
+                            $q->where('subcategory_id', $subcategoryId);
+                        }
                     }
                 ])
                 ->having('product_count', '>', 0)
                 ->with([
-                    'cities' => function ($q) {
+                    'cities' => function ($q) use ($categoryId, $subcategoryId) {
                         $q->where('city_status', '1')
                             ->withCount([
-                                'product' => function ($q2) {
+                                'product' => function ($q2) use ($categoryId, $subcategoryId) {
                                     $q2->where('product_status', '1');
+                                    if (!empty($categoryId)) {
+                                        $q2->where('category_id', $categoryId);
+                                    }
+                                    if (!empty($subcategoryId)) {
+                                        $q2->where('subcategory_id', $subcategoryId);
+                                    }
                                 }
                             ])
                             ->having('product_count', '>', 0)
@@ -565,7 +579,7 @@ class HomeController extends Controller
     public function searchSuggestions(Request $request)
     {
         $keyword = trim($request->get('q', ''));
-        if (empty($keyword) || strlen($keyword) < 2) {
+        if (empty($keyword) || strlen($keyword) < 3) {
             return response()->json([]);
         }
 
