@@ -120,7 +120,7 @@
                             <div class="owl-carousel featured-venues-slider owl-theme">
                                 @foreach($category['products'] as $product)
                                     <div class="featured-venues-item h-100" style="padding: 5px;">
-                                        <div class="listing-item listing-item-grid mb-0 h-100 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #f0f0f0;">
+                                        <div class="listing-item listing-item-grid mb-0 h-100 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.10); transition: 0.3s; border: 1px solid #f0f0f0;">
                                             <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
                                                 @if($product['product_is_sold'] == '1')
                                                     <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
@@ -496,7 +496,7 @@
             input.addEventListener('input', function() {
                 clearTimeout(debounceTimer);
                 const keyword = this.value.trim();
-                if (keyword.length < 2) {
+                if (keyword.length < 3) {
                     closeDropdown();
                     return;
                 }

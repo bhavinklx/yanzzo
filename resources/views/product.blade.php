@@ -186,7 +186,7 @@
                         @if(count($productDetail) > 0) @for($p=0; $p < count($productDetail); $p++)
                             <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                                 <div class="featured-venues-item h-100">
-                                    <div class="listing-item listing-item-grid h-100 mb-0 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: 0.3s; border: 1px solid #f0f0f0;">
+                                    <div class="listing-item listing-item-grid h-100 mb-0 d-flex flex-column" style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,0.10); transition: 0.3s; border: 1px solid #f0f0f0;">
                                         <div class="listing-img" style="position: relative; height: 200px; overflow: hidden;">
                                             @if($productDetail[$p]['product_is_sold'] == '1')
                                                 <div class="fav-item-ls" style="position: absolute; top: 10px; right: 10px; z-index: 2;">
