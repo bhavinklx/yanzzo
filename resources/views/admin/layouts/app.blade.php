@@ -11,7 +11,7 @@
     <meta property="og:title" content="Admin Templates - Dashboard Templates">
     <meta property="og:description" content="Marketplace for Bootstrap Admin Dashboards">
     <meta property="og:type" content="Website">
-    <link rel="shortcut icon" href="{{ asset('image/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('image/favicon.png?v=' . time()) }}">
 
     <!-- This page CSS -->
     @include('admin.layouts.styles')
