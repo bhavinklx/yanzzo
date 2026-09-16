@@ -11,7 +11,7 @@
     <meta property="og:title" content="Admin Templates - Dashboard Templates">
     <meta property="og:description" content="Marketplace for Bootstrap Admin Dashboards">
     <meta property="og:type" content="Website">
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('image/favicon.png?v=' . time()) }}">
 
     <link rel="stylesheet" href="{{ asset('assets/fonts/remix/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/main.min.css') }}">
@@ -34,19 +34,21 @@
                         <label class="form-label" for="email">Your email <span class="text-danger">*</span></label>
                         <input type="text" name="email" id="email" class="form-control" placeholder="Enter your email">
                         @error("email")
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label" for="password">Your password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" placeholder="Enter password">
+                        <label class="form-label" for="password">Your password <span
+                                class="text-danger">*</span></label>
+                        <input type="password" name="password" id="password" class="form-control"
+                            autocomplete="new-password" placeholder="Enter password">
                         @error("password")
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                         @enderror
                     </div>
 
@@ -109,4 +111,5 @@
     </script>
 </body>
 <!-- END BODY -->
+
 </html>
