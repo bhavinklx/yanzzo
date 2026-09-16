@@ -22,7 +22,7 @@ class SellerController extends Controller
     {
         date_default_timezone_set('Asia/Kolkata');
         $settingDetail = Setting::get()->toArray();
-        for ($s=0; $s < count($settingDetail); $s++) {
+        for ($s = 0; $s < count($settingDetail); $s++) {
             if (!defined($settingDetail[$s]['setting_name'])) {
                 define($settingDetail[$s]['setting_name'], $settingDetail[$s]['setting_value']);
             }
@@ -33,13 +33,13 @@ class SellerController extends Controller
     {
         try {
             $pagesDetail = Pages::where('page_id', 11)->first();
-            if(!$pagesDetail){
+            if (!$pagesDetail) {
                 return redirect()->route('404');
             }
             $categoryDetail = Category::where(["category_status" => "1", "category_parent" => "0"])->get();
             $stateDetail = State::where("country_id", 101)->where("state_status", "1")->orderBy("state_name")->get();
             $customerDetail = Customer::where('customer_id', Session::get('customer_id'))->first();
-            
+
             return view("seller", compact('categoryDetail', 'stateDetail', 'pagesDetail', 'customerDetail'));
         } catch (\Exception $e) {
             return back()->with('failedMsg', 'Error loading page: ' . $e->getMessage());
@@ -49,20 +49,20 @@ class SellerController extends Controller
     public function insert(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "category_id"                       => "required|not_in:0",
+            "category_id" => "required|not_in:0",
             /*"subcategory_id"                  => "required|not_in:0",*/
-            "state_id"                          => "required|not_in:0",
-            "city_id"                           => "required|not_in:0",
-            "product_title"                     => "required|string|max:255",
-            "product_brand"                     => "required|string|max:255",
-            "product_model"                     => "required|string|max:255",
+            "state_id" => "required|not_in:0",
+            "city_id" => "required|not_in:0",
+            "product_title" => "required|string|max:255",
+            "product_brand" => "required|string|max:255",
+            "product_model" => "required|string|max:255",
             /*"product_year"                    => "required|numeric|min:1900|max:" . (date('Y') + 1),*/
-            "product_price"                     => "required|numeric",
-            "product_desc"                      => "required|string",
+            "product_price" => "required|numeric",
+            "product_desc" => "required|string",
             /*"product_specification"           => "required|string",*/
-            "product_images"                    => "required|array|min:1"
+            "product_images" => "required|array|min:1"
         ], [
-            "product_images.required"           => "Please upload at least one machine photo."
+            "product_images.required" => "Please upload at least one machine photo."
         ]);
 
         if ($validator->fails()) {
@@ -70,33 +70,33 @@ class SellerController extends Controller
         }
 
         try {
-            $product                            = new Product();
-            $product_title                      = $request->product_title;
-            $lastOrder                          = Product::orderBy("product_order", "DESC")->first();
-            
+            $product = new Product();
+            $product_title = $request->product_title;
+            $lastOrder = Product::orderBy("product_order", "DESC")->first();
+
             $product->fill([
-                'customer_id'                   => Session::get('customer_id'),
-                'category_id'                   => $request->category_id,
-                'subcategory_id'                => $request->subcategory_id ?? 0,
-                'state_id'                      => $request->state_id,
-                'city_id'                       => $request->city_id,
-                'product_title'                 => $product_title,
-                'product_slug'                  => $this->generateUniqueSlug($product_title),
-                'product_date'                  => date('Y-m-d'), // Set current date as listing date
-                'product_short_desc'            => Str::limit(strip_tags($request->product_desc), 250), // Auto-generate from description
-                'product_desc'                  => $request->product_desc,
-                'product_specification'         => $request->product_specification,
-                'product_price'                 => $request->product_price,
-                'product_brand'                 => $request->product_brand,
-                'product_model'                 => $request->product_model,
-                'product_location'              => $request->product_location,
-                'product_meta_title'            => $product_title,
-                'product_meta_keyword'          => $product_title,
-                'product_meta_desc'             => Str::limit(strip_tags($request->product_desc), 160),
-                'product_listing_id'            => $this->generateUniqueListingId(),
-                'product_order'                 => (!empty($lastOrder)) ? $lastOrder->product_order + 1 : 1,
-                'product_status'                => '0', // Pending approval
-                'created_at'                    => date('Y-m-d H:i:s')
+                'customer_id' => Session::get('customer_id'),
+                'category_id' => $request->category_id,
+                'subcategory_id' => $request->subcategory_id ?? 0,
+                'state_id' => $request->state_id,
+                'city_id' => $request->city_id,
+                'product_title' => $product_title,
+                'product_slug' => $this->generateUniqueSlug($product_title),
+                'product_date' => date('Y-m-d'), // Set current date as listing date
+                'product_short_desc' => Str::limit(strip_tags($request->product_desc), 250), // Auto-generate from description
+                'product_desc' => $request->product_desc,
+                'product_specification' => $request->product_specification,
+                'product_price' => $request->product_price,
+                'product_brand' => $request->product_brand,
+                'product_model' => $request->product_model,
+                'product_location' => $request->product_location,
+                'product_meta_title' => $product_title,
+                'product_meta_keyword' => $product_title,
+                'product_meta_desc' => Str::limit(strip_tags($request->product_desc), 160),
+                'product_listing_id' => $this->generateUniqueListingId(),
+                'product_order' => (!empty($lastOrder)) ? $lastOrder->product_order + 1 : 1,
+                'product_status' => '0', // Pending approval
+                'created_at' => date('Y-m-d H:i:s')
             ]);
 
             $product->save();
@@ -104,10 +104,10 @@ class SellerController extends Controller
             if ($request->product_images) {
                 foreach ($request->product_images as $image) {
                     if ($image != "") {
-                        $pimage                 = new Pimage();
-                        $pimage->product_id     = $product->product_id;
-                        $pimage->pimage_image   = $image;
-                        $pimage->created_at     = date('Y-m-d H:i:s');
+                        $pimage = new Pimage();
+                        $pimage->product_id = $product->product_id;
+                        $pimage->pimage_image = $image;
+                        $pimage->created_at = date('Y-m-d H:i:s');
                         $pimage->save();
                     }
                 }
@@ -148,7 +148,62 @@ class SellerController extends Controller
     protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '-' . rand(100, 999) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/product'), $filename);
+        $destinationPath = public_path('uploads/product');
+        
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $targetWidth = 800;
+        $targetHeight = 500;
+        
+        list($origWidth, $origHeight) = getimagesize($file->getRealPath());
+        $origRatio = $origWidth / $origHeight;
+        $targetRatio = $targetWidth / $targetHeight;
+
+        $targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        
+        // Fill canvas with white background
+        $white = imagecolorallocate($targetImage, 255, 255, 255);
+        imagefilledrectangle($targetImage, 0, 0, $targetWidth, $targetHeight, $white);
+
+        $mime = mime_content_type($file->getRealPath());
+        switch ($mime) {
+            case 'image/jpeg': $sourceImage = imagecreatefromjpeg($file->getRealPath()); break;
+            case 'image/png': $sourceImage = imagecreatefrompng($file->getRealPath()); break;
+            case 'image/webp': $sourceImage = imagecreatefromwebp($file->getRealPath()); break;
+            default:
+                $file->move($destinationPath, $filename);
+                return $filename;
+        }
+
+        // Calculate proportional sizes to fit inside 800x500
+        if ($origRatio > $targetRatio) {
+            // Original is wider: width will be 800, calculate height
+            $newWidth = $targetWidth;
+            $newHeight = (int)($targetWidth / $origRatio);
+            $dstX = 0;
+            $dstY = (int)(($targetHeight - $newHeight) / 2);
+        } else {
+            // Original is taller: height will be 500, calculate width
+            $newHeight = $targetHeight;
+            $newWidth = (int)($targetHeight * $origRatio);
+            $dstY = 0;
+            $dstX = (int)(($targetWidth - $newWidth) / 2);
+        }
+
+        imagecopyresampled($targetImage, $sourceImage, $dstX, $dstY, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+        $targetFile = $destinationPath . '/' . $filename;
+        switch ($mime) {
+            case 'image/jpeg': imagejpeg($targetImage, $targetFile, 90); break;
+            case 'image/png': imagepng($targetImage, $targetFile, 9); break;
+            case 'image/webp': imagewebp($targetImage, $targetFile, 90); break;
+        }
+
+        imagedestroy($targetImage);
+        imagedestroy($sourceImage);
+
         return $filename;
     }
 
@@ -185,13 +240,13 @@ class SellerController extends Controller
             ->where('product_slug', 'like', $slug . '%')
             ->get();
 
-        if (! $allSlugs->contains('product_slug', $slug)) {
+        if (!$allSlugs->contains('product_slug', $slug)) {
             return $slug;
         }
 
         for ($i = 1; $i <= 100; $i++) {
             $newSlug = $slug . '-' . $i;
-            if (! $allSlugs->contains('product_slug', $newSlug)) {
+            if (!$allSlugs->contains('product_slug', $newSlug)) {
                 return $newSlug;
             }
         }
