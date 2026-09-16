@@ -47,12 +47,18 @@
             <div class="row align-items-start">
                 <!-- Filter Sidebar -->
                 <div class="col-xl-3 col-lg-4 col-md-12">
-                    <div class="card filter-card border-0 shadow-sm mb-4 mt-0">
-                        <div class="card-body p-0">
-                            <div class="filter-header p-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4 class="fw-bold mb-0 mt-0" style="color: #2d4487; font-size: 18px; line-height: 1.2;">Filters</h4>
-                                <a href="{{ route('machines') }}" class="text-primary small fw-bold text-decoration-none">Reset All</a>
-                            </div>
+                    <button class="btn w-100 mb-3 d-lg-none d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); color: white; border-radius: 8px; font-weight: 600;">
+                        <span><i class="feather-filter me-2"></i> Toggle Filters</span>
+                        <i class="feather-chevron-down"></i>
+                    </button>
+                    
+                    <div class="collapse d-lg-block" id="filterSidebar">
+                        <div class="card filter-card border-0 shadow-sm mb-4 mt-0">
+                            <div class="card-body p-0">
+                                <div class="filter-header p-3 border-bottom d-flex justify-content-between align-items-center">
+                                    <h4 class="fw-bold mb-0 mt-0" style="color: #2d4487; font-size: 18px; line-height: 1.2;">Filters</h4>
+                                    <a href="{{ route('machines') }}" class="text-primary small fw-bold text-decoration-none">Reset All</a>
+                                </div>
 
                             @php
                                 $getFilterUrl = function($params) use ($categorySlug, $subcategorySlug, $locationId, $cityId, $sortBy) {
@@ -152,13 +158,14 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /Filter Sidebar -->
 
                 <div class="col-xl-9 col-lg-8 col-md-12">
                     <!-- Sort By / Count -->
-                    <div class="sortby-section bg-white p-3 rounded shadow-sm mb-4">
+                    <div class="sortby-section bg-white p-3 rounded shadow-sm mb-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" style="flex-wrap: wrap;">
                         <div class="count-search mt-0">
                             @php
                                 $activeCategoryName = null;

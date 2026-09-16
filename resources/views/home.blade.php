@@ -5,7 +5,7 @@
 @section('canonical', 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ?? '')
 @section("content")
     <style>
-        #heroSearchInput:focus {
+        .heroSearchInput:focus {
             outline: none !important;
             box-shadow: none !important;
             border: none !important;
@@ -32,15 +32,15 @@
                                                     <p class="sub-info text-white mb-4" style="font-size: 1.15rem;">{{ $bannerDetail[$b]['banner_text'] }}</p>
                                                 @endif
 
-                                                <form action="{{ url('machines') }}" method="GET" class="mt-4" id="heroSearchForm">
+                                                <form action="{{ url('machines') }}" method="GET" class="mt-4 heroSearchForm">
                                                     <div class="position-relative mx-auto" style="max-width: 650px;">
                                                         <div class="input-group shadow-lg align-items-center" style="border-radius: 50px; background: #fff; padding: 6px 8px 6px 25px;">
-                                                            <input type="text" name="q" id="heroSearchInput" class="form-control border-0 shadow-none p-0" placeholder="Search by title, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required autocomplete="off">
+                                                            <input type="text" name="q" class="form-control border-0 shadow-none p-0 heroSearchInput" placeholder="Search by title, keyword, country or region..." aria-label="Search" style="background: transparent; font-size: 15px;" required autocomplete="off">
                                                             <button class="btn text-white px-4 border-0 ms-2" type="submit" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); border-radius: 50px; font-weight: 600; padding-top: 10px; padding-bottom: 10px;">
                                                                 <i class="fas fa-search me-1"></i> Search
                                                             </button>
                                                         </div>
-                                                        <div id="searchSuggestions" class="d-none" style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); z-index: 1000; overflow: hidden; max-height: 360px; overflow-y: auto;">
+                                                        <div class="d-none searchSuggestions" style="position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); z-index: 1000; overflow: hidden; max-height: 360px; overflow-y: auto;">
                                                             <!-- suggestions injected here -->
                                                         </div>
                                                     </div>
@@ -434,16 +434,27 @@
 @section('page-js')
     <script>
         (function() {
-            const input = document.getElementById('heroSearchInput');
-            const dropdown = document.getElementById('searchSuggestions');
             let debounceTimer = null;
             let activeIndex = -1;
             let currentData = [];
+            
+            function getDropdown(input) {
+                const form = input.closest('.heroSearchForm');
+                return form ? form.querySelector('.searchSuggestions') : null;
+            }
 
-            if (!input || !dropdown) return;
+            function closeDropdown(dropdown) {
+                if (dropdown) {
+                    dropdown.classList.add('d-none');
+                }
+                activeIndex = -1;
+                currentData = [];
+            }
 
-            function closeDropdown() {
-                dropdown.classList.add('d-none');
+            function closeAllDropdowns() {
+                document.querySelectorAll('.searchSuggestions').forEach(function(dd) {
+                    dd.classList.add('d-none');
+                });
                 activeIndex = -1;
                 currentData = [];
             }
@@ -454,13 +465,13 @@
                 return div.innerHTML;
             }
 
-            function selectText(text) {
+            function selectText(input, text) {
                 input.value = text;
-                closeDropdown();
+                closeAllDropdowns();
                 input.focus();
             }
 
-            function renderSuggestions(data) {
+            function renderSuggestions(dropdown, input, data) {
                 currentData = data;
                 activeIndex = -1;
                 if (!data || data.length === 0) {
@@ -478,65 +489,93 @@
 
                 dropdown.innerHTML = html;
                 dropdown.classList.remove('d-none');
-
-                dropdown.querySelectorAll('.suggestion-item').forEach(function(el) {
-                    el.addEventListener('click', function() {
-                        selectText(this.dataset.text);
-                    });
-                });
             }
 
-            function updateActiveItem() {
+            function updateActiveItem(dropdown) {
                 const items = dropdown.querySelectorAll('.suggestion-item');
                 items.forEach(function(item, idx) {
                     item.style.background = (idx === activeIndex) ? '#f0f4ff' : 'transparent';
                 });
             }
 
-            input.addEventListener('input', function() {
-                clearTimeout(debounceTimer);
-                const keyword = this.value.trim();
-                if (keyword.length < 3) {
-                    closeDropdown();
-                    return;
-                }
+            // Delegate input events
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.classList.contains('heroSearchInput')) {
+                    const input = e.target;
+                    const dropdown = getDropdown(input);
+                    if (!dropdown) return;
 
-                debounceTimer = setTimeout(function() {
-                    fetch('{{ route("search-suggestions") }}?q=' + encodeURIComponent(keyword), {
-                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) { renderSuggestions(data); })
-                    .catch(function() { closeDropdown(); });
-                }, 300);
+                    clearTimeout(debounceTimer);
+                    const keyword = input.value.trim();
+                    if (keyword.length < 3) {
+                        closeDropdown(dropdown);
+                        return;
+                    }
+
+                    debounceTimer = setTimeout(function() {
+                        fetch('{{ route("search-suggestions") }}?q=' + encodeURIComponent(keyword), {
+                            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) { renderSuggestions(dropdown, input, data); })
+                        .catch(function() { closeDropdown(dropdown); });
+                    }, 300);
+                }
             });
 
-            input.addEventListener('keydown', function(e) {
-                if (dropdown.classList.contains('d-none')) return;
-
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    activeIndex = Math.min(activeIndex + 1, currentData.length - 1);
-                    updateActiveItem();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    activeIndex = Math.max(activeIndex - 1, -1);
-                    updateActiveItem();
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (activeIndex >= 0 && currentData[activeIndex]) {
-                        selectText(currentData[activeIndex].text);
-                    } else {
-                        document.getElementById('heroSearchForm').submit();
+            // Pause owl carousel on focus to prevent scrolling while typing
+            document.addEventListener('focusin', function(e) {
+                if (e.target && e.target.classList.contains('heroSearchInput')) {
+                    if (typeof $ !== 'undefined' && $('.hero-carousel').length) {
+                        $('.hero-carousel').trigger('stop.owl.autoplay');
                     }
-                } else if (e.key === 'Escape') {
-                    closeDropdown();
+                }
+            });
+
+            document.addEventListener('focusout', function(e) {
+                if (e.target && e.target.classList.contains('heroSearchInput')) {
+                    if (typeof $ !== 'undefined' && $('.hero-carousel').length) {
+                        $('.hero-carousel').trigger('play.owl.autoplay');
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.target && e.target.classList.contains('heroSearchInput')) {
+                    const input = e.target;
+                    const dropdown = getDropdown(input);
+                    if (!dropdown || dropdown.classList.contains('d-none')) return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        activeIndex = Math.min(activeIndex + 1, currentData.length - 1);
+                        updateActiveItem(dropdown);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        activeIndex = Math.max(activeIndex - 1, -1);
+                        updateActiveItem(dropdown);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (activeIndex >= 0 && currentData[activeIndex]) {
+                            selectText(input, currentData[activeIndex].text);
+                        } else {
+                            const form = input.closest('.heroSearchForm');
+                            if (form) form.submit();
+                        }
+                    } else if (e.key === 'Escape') {
+                        closeDropdown(dropdown);
+                    }
                 }
             });
 
             document.addEventListener('click', function(e) {
-                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-                    closeDropdown();
+                if (e.target.classList.contains('suggestion-item')) {
+                    const input = e.target.closest('.heroSearchForm').querySelector('.heroSearchInput');
+                    if (input) {
+                        selectText(input, e.target.dataset.text);
+                    }
+                } else if (!e.target.classList.contains('heroSearchInput') && !e.target.closest('.searchSuggestions')) {
+                    closeAllDropdowns();
                 }
             });
         })();
