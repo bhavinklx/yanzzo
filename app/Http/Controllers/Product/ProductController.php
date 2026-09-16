@@ -27,13 +27,13 @@ class ProductController extends Controller
         $slug = Str::slug($request->product_title);
         $allSlugs = $this->checkSlug($slug);
 
-        if (! $allSlugs->contains('product_slug', $slug)) {
+        if (!$allSlugs->contains('product_slug', $slug)) {
             return response()->json(['slug' => $slug]);
         }
 
         for ($i = 1; $i <= 50; $i++) {
             $newSlug = $slug . '-' . $i;
-            if (! $allSlugs->contains('product_slug', $newSlug)) {
+            if (!$allSlugs->contains('product_slug', $newSlug)) {
                 return response()->json(['slug' => $newSlug]);
             }
         }
@@ -65,7 +65,7 @@ class ProductController extends Controller
         Session::flash('successMsg', 'Product added successfully');
         return response()->json(['redirect_url' => route('product-list')]);
     }
-    
+
     public function edit($id)
     {
         $productDetail = Product::find($id);
@@ -97,16 +97,16 @@ class ProductController extends Controller
     {
         $productDetail = Product::orderBy("product_order", "DESC");
         return DataTables::of($productDetail)
-            ->editColumn("checkbox", function ($product){
+            ->editColumn("checkbox", function ($product) {
                 return '<div class="form-check m-0"> <input class="form-check-input check_class" type="checkbox" id="check[]" name="check[]" value="' . $product->product_id . '"> </div>';
             })
-            ->editColumn("title", function ($product){
+            ->editColumn("title", function ($product) {
                 return $product->product_title;
             })
-            ->editColumn("price", function ($product){
+            ->editColumn("price", function ($product) {
                 return $product->product_price;
             })
-            ->editColumn("date", function ($product){
+            ->editColumn("date", function ($product) {
                 return date('d-m-Y h:i:s A', strtotime($product->created_at));
             })
             ->editColumn("status", function ($product) {
@@ -123,15 +123,15 @@ class ProductController extends Controller
                     return '<span class="badge badge-success-light-bg">Available</span>';
                 }
             })
-            ->editColumn("action", function ($product){
+            ->editColumn("action", function ($product) {
                 $action = '<div class="d-inline-flex gap-1">';
                 if (auth()->user()->can('product-delete')) {
-                    $action.= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $product->product_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Product"> <i class="ri-delete-bin-line"></i> </button>';
+                    $action .= '<button class="btn btn-outline-danger btn-sm" onclick="openDeleteModal(' . $product->product_id . ');" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete Product"> <i class="ri-delete-bin-line"></i> </button>';
                 }
                 if (auth()->user()->can('product-edit')) {
-                    $action.= '<a href="'.route("product-edit", ['id' => $product->product_id]).'" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Product"> <i class="ri-edit-box-line"></i> </a>';
+                    $action .= '<a href="' . route("product-edit", ['id' => $product->product_id]) . '" class="btn btn-outline-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Product"> <i class="ri-edit-box-line"></i> </a>';
                 }
-                $action.= '</div>';
+                $action .= '</div>';
                 return $action;
             })
             ->setRowClass(function () {
@@ -151,16 +151,14 @@ class ProductController extends Controller
 
     public function change_status(Request $request)
     {
-        if (!$request->ajax())
-        {
+        if (!$request->ajax()) {
             exit('No direct script access allowed');
         }
-        if (!empty($request->all()))
-        {
+        if (!empty($request->all())) {
             Product::where("product_id", $request->product_id)->update(["product_status" => $request->status]);
             if ($request->status == 1) {
                 echo 'Status Activate successfully';
-            } else if ($request->status == 0){
+            } else if ($request->status == 0) {
                 echo 'Status Inactivate successfully';
             }
         }
@@ -177,7 +175,7 @@ class ProductController extends Controller
     public function delete(Request $request)
     {
         $product = Product::findOrFail($request->product_id);
-        
+
         // Delete associated images
         foreach ($product->pimages as $pimage) {
             $this->removeFile($pimage->pimage_image);
@@ -191,55 +189,55 @@ class ProductController extends Controller
     private function validateData(Request $request)
     {
         return $request->validate([
-            "product_title"             => 'required|string|max:255',
-            "product_slug"              => 'required|string|max:255',
-            "category_id"               => "required|not_in:0",
-            "subcategory_id"            => "required|not_in:0",
-            "product_price"             => "required",
+            "product_title" => 'required|string|max:255',
+            "product_slug" => 'required|string|max:255',
+            "category_id" => "required|not_in:0",
+            "subcategory_id" => "required|not_in:0",
+            "product_price" => "required",
         ]);
     }
 
     private function saveUpdateData(Product $product, Request $request, $isUpdate = false)
     {
         if ($isUpdate) {
-            $product->updated_at        = date('Y-m-d H:i:s');
+            $product->updated_at = date('Y-m-d H:i:s');
         } else {
-            $lastOrder                  = Product::orderBy("product_order", "DESC")->first();
-            $product->product_order     = (!empty($lastOrder)) ? $lastOrder->product_order + 1 : 1;
-            $product->created_at        = date('Y-m-d H:i:s');
+            $lastOrder = Product::orderBy("product_order", "DESC")->first();
+            $product->product_order = (!empty($lastOrder)) ? $lastOrder->product_order + 1 : 1;
+            $product->created_at = date('Y-m-d H:i:s');
             $product->product_listing_id = $this->generateUniqueListingId();
         }
 
         $product->fill([
-            'customer_id'               => $request->customer_id,
-            'category_id'               => $request->category_id,
-            'subcategory_id'            => $request->subcategory_id,
-            'state_id'                  => $request->state_id,
-            'city_id'                   => $request->city_id,
-            'product_title'             => $request->product_title,
-            'product_slug'              => $request->product_slug,
-            'product_date'              => $request->product_date ? date('Y-m-d', strtotime($request->product_date)) : date('Y-m-d'),
-            'product_short_desc'        => addslashes($request->product_short_desc),
-            'product_desc'              => $request->product_desc,
-            'product_specification'     => $request->product_specification,
-            'product_price'             => $request->product_price,
-            'product_brand'             => $request->product_brand,
-            'product_model'             => $request->product_model,
-            'product_location'          => $request->product_location,
-            'product_meta_title'        => $request->product_meta_title,
-            'product_meta_keyword'      => $request->product_meta_keyword,
-            'product_meta_desc'         => $request->product_meta_desc,
-            'product_listing_id'        => $product->product_listing_id,
-            'product_status'            => '1'
+            'customer_id' => $request->customer_id,
+            'category_id' => $request->category_id,
+            'subcategory_id' => $request->subcategory_id,
+            'state_id' => $request->state_id,
+            'city_id' => $request->city_id,
+            'product_title' => $request->product_title,
+            'product_slug' => $request->product_slug,
+            'product_date' => $request->product_date ? date('Y-m-d', strtotime($request->product_date)) : date('Y-m-d'),
+            'product_short_desc' => addslashes($request->product_short_desc),
+            'product_desc' => $request->product_desc,
+            'product_specification' => $request->product_specification,
+            'product_price' => $request->product_price,
+            'product_brand' => $request->product_brand,
+            'product_model' => $request->product_model,
+            'product_location' => $request->product_location,
+            'product_meta_title' => $request->product_meta_title,
+            'product_meta_keyword' => $request->product_meta_keyword,
+            'product_meta_desc' => $request->product_meta_desc,
+            'product_listing_id' => $product->product_listing_id,
+            'product_status' => '1'
         ]);
 
         $product->save();
         if ($request->product_images) {
             foreach ($request->product_images as $image) {
-                $pimage                 = new Pimage();
-                $pimage->product_id     = $product->product_id;
-                $pimage->pimage_image   = $image;
-                $pimage->created_at     = date('Y-m-d H:i:s');
+                $pimage = new Pimage();
+                $pimage->product_id = $product->product_id;
+                $pimage->pimage_image = $image;
+                $pimage->created_at = date('Y-m-d H:i:s');
                 $pimage->save();
             }
         }
@@ -261,7 +259,62 @@ class ProductController extends Controller
     protected function storeImage($file)
     {
         $filename = 'IMG-' . time() . '-' . rand(100, 999) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/product'), $filename);
+        $destinationPath = public_path('uploads/product');
+        
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        $targetWidth = 800;
+        $targetHeight = 500;
+        
+        list($origWidth, $origHeight) = getimagesize($file->getRealPath());
+        $origRatio = $origWidth / $origHeight;
+        $targetRatio = $targetWidth / $targetHeight;
+
+        $targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
+        
+        // Fill canvas with white background
+        $white = imagecolorallocate($targetImage, 255, 255, 255);
+        imagefilledrectangle($targetImage, 0, 0, $targetWidth, $targetHeight, $white);
+
+        $mime = mime_content_type($file->getRealPath());
+        switch ($mime) {
+            case 'image/jpeg': $sourceImage = imagecreatefromjpeg($file->getRealPath()); break;
+            case 'image/png': $sourceImage = imagecreatefrompng($file->getRealPath()); break;
+            case 'image/webp': $sourceImage = imagecreatefromwebp($file->getRealPath()); break;
+            default:
+                $file->move($destinationPath, $filename);
+                return $filename;
+        }
+
+        // Calculate proportional sizes to fit inside 800x500
+        if ($origRatio > $targetRatio) {
+            // Original is wider: width will be 800, calculate height
+            $newWidth = $targetWidth;
+            $newHeight = (int)($targetWidth / $origRatio);
+            $dstX = 0;
+            $dstY = (int)(($targetHeight - $newHeight) / 2);
+        } else {
+            // Original is taller: height will be 500, calculate width
+            $newHeight = $targetHeight;
+            $newWidth = (int)($targetHeight * $origRatio);
+            $dstY = 0;
+            $dstX = (int)(($targetWidth - $newWidth) / 2);
+        }
+
+        imagecopyresampled($targetImage, $sourceImage, $dstX, $dstY, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+        $targetFile = $destinationPath . '/' . $filename;
+        switch ($mime) {
+            case 'image/jpeg': imagejpeg($targetImage, $targetFile, 90); break;
+            case 'image/png': imagepng($targetImage, $targetFile, 9); break;
+            case 'image/webp': imagewebp($targetImage, $targetFile, 90); break;
+        }
+
+        imagedestroy($targetImage);
+        imagedestroy($sourceImage);
+
         return $filename;
     }
 
@@ -273,7 +326,7 @@ class ProductController extends Controller
             $pimage->delete();
             return response()->json(['success' => true]);
         }
-        
+
         // If it's a temp file (not saved in DB yet)
         if ($request->filename) {
             $this->removeFile($request->filename);
