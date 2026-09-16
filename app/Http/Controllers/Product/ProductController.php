@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use App\Helpers\FormatHelper;
 
 class ProductController extends Controller
 {
@@ -104,7 +105,7 @@ class ProductController extends Controller
                 return $product->product_title;
             })
             ->editColumn("price", function ($product) {
-                return $product->product_price;
+                return '<span style="font-size: 15px; font-weight: 500;">&#8377;</span> ' . FormatHelper::formatIndianPrice($product->product_price);
             })
             ->editColumn("date", function ($product) {
                 return date('d-m-Y h:i:s A', strtotime($product->created_at));
@@ -145,7 +146,7 @@ class ProductController extends Controller
                     return $product->product_id;
                 }
             ])
-            ->rawColumns(["checkbox", "status", "sold_status", "action"])
+            ->rawColumns(["checkbox", "status", "sold_status", "action", "price"])
             ->make(true);
     }
 
