@@ -2,7 +2,7 @@
 <header class="header header-trans">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg header-nav">
-            <div class="navbar-header">
+            <div class="navbar-header" style="position: relative;">
                 <a id="mobile_btn" href="javascript:void(0);">
                     <span class="bar-icon">
                         <span></span>
@@ -11,7 +11,13 @@
                     </span>
                 </a>
                 <a href="{{ url('/') }}" class="navbar-brand logo">
-                    <img src="{{ asset('image/logo.png') }}') }}" class="img-fluid" alt="Logo">
+                    <img src="{{ asset('image/logo.png') }}" class="img-fluid" alt="Logo">
+                </a>
+                <a href="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? url('/seller-inquiry') : 'javascript:void(0)' }}" 
+                   onclick="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? '' : 'return signin_popup()' }}" 
+                   class="btn-sell-new d-lg-none" 
+                   style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); padding: 6px 12px; font-size: 13px; font-weight: 600;">
+                    <i class="feather-plus-circle me-1"></i> SELL
                 </a>
             </div>
             <div class="main-menu-wrapper">
@@ -89,7 +95,7 @@
                             <a href="{{ url('/my-account') }}">Dashboard</a>
                         </li>
                         <li class="login-link">
-                            <a href="{{ url('/seller-inquiry') }}">Sell Your Machine</a>
+                            <a href="{{ url('/seller-inquiry') }}" class="text-white fw-bold mx-3 mt-2 rounded" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell Your Machine</a>
                         </li>
                         <li class="login-link">
                             <a href="{{ url('/my-listing') }}">My Machines</a>
@@ -110,7 +116,7 @@
                         </li>
                     @else
                         <li class="login-link">
-                            <a href="javascript: void (0)" onclick="return signin_popup()">Sell</a>
+                            <a href="javascript: void (0)" onclick="return signin_popup()" class="text-white fw-bold mx-3 mt-2 rounded" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell</a>
                         </li>
                         <li class="login-link">
                             <a href="javascript: void (0)" onclick="return signin_popup()">Login</a>

@@ -80,7 +80,7 @@
                             @endphp
 
                             <!-- Categories -->
-                            <div class="filter-section p-3">
+                            <div class="filter-section p-3 d-none d-lg-block">
                                 <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center" style="font-size: 15px;">
                                     Categories
                                 </h5>
