@@ -482,7 +482,7 @@ class HomeController extends Controller
 
             $stateDetail = State::where('state_status', '1')
                 ->withCount([
-                    'product' => function ($q) use ($categoryId, $subcategoryId) {
+                    'product' => function ($q) use ($categoryId, $subcategoryId, $keyword) {
                         $q->where('product_status', '1');
                         if (!empty($categoryId)) {
                             $q->where('category_id', $categoryId);
@@ -490,20 +490,50 @@ class HomeController extends Controller
                         if (!empty($subcategoryId)) {
                             $q->where('subcategory_id', $subcategoryId);
                         }
+                        if (!empty($keyword)) {
+                            $q->where(function ($q1) use ($keyword) {
+                                $q1->where('product_title', 'like', '%' . $keyword . '%')
+                                    ->orWhere('product_model', 'like', '%' . $keyword . '%')
+                                    ->orWhere('product_short_desc', 'like', '%' . $keyword . '%')
+                                    ->orWhere('product_desc', 'like', '%' . $keyword . '%')
+                                    ->orWhere('product_meta_keyword', 'like', '%' . $keyword . '%')
+                                    ->orWhereHas('category', function ($q4) use ($keyword) {
+                                        $q4->where('category_title', 'like', '%' . $keyword . '%');
+                                    })
+                                    ->orWhereHas('subCategory', function ($q5) use ($keyword) {
+                                        $q5->where('category_title', 'like', '%' . $keyword . '%');
+                                    });
+                            });
+                        }
                     }
                 ])
                 ->having('product_count', '>', 0)
                 ->with([
-                    'cities' => function ($q) use ($categoryId, $subcategoryId) {
+                    'cities' => function ($q) use ($categoryId, $subcategoryId, $keyword) {
                         $q->where('city_status', '1')
                             ->withCount([
-                                'product' => function ($q2) use ($categoryId, $subcategoryId) {
+                                'product' => function ($q2) use ($categoryId, $subcategoryId, $keyword) {
                                     $q2->where('product_status', '1');
                                     if (!empty($categoryId)) {
                                         $q2->where('category_id', $categoryId);
                                     }
                                     if (!empty($subcategoryId)) {
                                         $q2->where('subcategory_id', $subcategoryId);
+                                    }
+                                    if (!empty($keyword)) {
+                                        $q2->where(function ($q3) use ($keyword) {
+                                            $q3->where('product_title', 'like', '%' . $keyword . '%')
+                                                ->orWhere('product_model', 'like', '%' . $keyword . '%')
+                                                ->orWhere('product_short_desc', 'like', '%' . $keyword . '%')
+                                                ->orWhere('product_desc', 'like', '%' . $keyword . '%')
+                                                ->orWhere('product_meta_keyword', 'like', '%' . $keyword . '%')
+                                                ->orWhereHas('category', function ($q4) use ($keyword) {
+                                                    $q4->where('category_title', 'like', '%' . $keyword . '%');
+                                                })
+                                                ->orWhereHas('subCategory', function ($q5) use ($keyword) {
+                                                    $q5->where('category_title', 'like', '%' . $keyword . '%');
+                                                });
+                                        });
                                     }
                                 }
                             ])
