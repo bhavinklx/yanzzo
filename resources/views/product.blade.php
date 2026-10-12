@@ -61,23 +61,89 @@
                                 </div>
 
                             @php
-                                $getFilterUrl = function($params) use ($categorySlug, $subcategorySlug, $locationId, $cityId, $sortBy) {
+                                $keyword = request('q');
+                                $getFilterUrl = function($params) use ($categorySlug, $subcategorySlug, $locationId, $cityId, $sortBy, $keyword) {
                                     $query = [
-                                        'category' => $params['category'] ?? $categorySlug,
-                                        'subcategory' => $params['subcategory'] ?? $subcategorySlug,
-                                        'location' => $params['location'] ?? $locationId,
-                                        'city' => $params['city'] ?? $cityId,
-                                        'sort' => $params['sort'] ?? $sortBy,
+                                        'q' => array_key_exists('q', $params) ? $params['q'] : $keyword,
+                                        'category' => array_key_exists('category', $params) ? $params['category'] : $categorySlug,
+                                        'subcategory' => array_key_exists('subcategory', $params) ? $params['subcategory'] : $subcategorySlug,
+                                        'location' => array_key_exists('location', $params) ? $params['location'] : $locationId,
+                                        'city' => array_key_exists('city', $params) ? $params['city'] : $cityId,
+                                        'sort' => array_key_exists('sort', $params) ? $params['sort'] : $sortBy,
                                     ];
-                                    if (isset($params['category']) && $params['category'] === '') $query['category'] = null;
-                                    if (isset($params['subcategory']) && $params['subcategory'] === '') $query['subcategory'] = null;
-                                    if (isset($params['location']) && $params['location'] === '') $query['location'] = null;
-                                    if (isset($params['city']) && $params['city'] === '') $query['city'] = null;
-                                    if (isset($params['sort']) && $params['sort'] === '') $query['sort'] = null;
+                                    if (isset($query['q']) && $query['q'] === '') $query['q'] = null;
+                                    if (isset($query['category']) && $query['category'] === '') $query['category'] = null;
+                                    if (isset($query['subcategory']) && $query['subcategory'] === '') $query['subcategory'] = null;
+                                    if (isset($query['location']) && $query['location'] === '') $query['location'] = null;
+                                    if (isset($query['city']) && $query['city'] === '') $query['city'] = null;
+                                    if (isset($query['sort']) && $query['sort'] === '') $query['sort'] = null;
 
                                     return route('machines', array_filter($query));
                                 };
                             @endphp
+
+                            <!-- Search -->
+                            <div class="filter-section p-3 border-bottom">
+                                <form action="{{ route('machines') }}" method="GET" class="m-0" id="filterSearchForm">
+                                    @if($categorySlug)
+                                        <input type="hidden" name="category" value="{{ $categorySlug }}">
+                                    @endif
+                                    @if($subcategorySlug)
+                                        <input type="hidden" name="subcategory" value="{{ $subcategorySlug }}">
+                                    @endif
+                                    @if($locationId)
+                                        <input type="hidden" name="location" value="{{ is_array($locationId) ? implode(',', $locationId) : $locationId }}">
+                                    @endif
+                                    @if($cityId)
+                                        <input type="hidden" name="city" value="{{ $cityId }}">
+                                    @endif
+                                    @if($sortBy && $sortBy != 'newest')
+                                        <input type="hidden" name="sort" value="{{ $sortBy }}">
+                                    @endif
+
+                                    <div class="position-relative">
+                                        <input type="text"
+                                               name="q"
+                                               id="sidebarSearchInput"
+                                               value="{{ request('q') }}"
+                                               class="form-control form-control-sm"
+                                               placeholder="Search machines..."
+                                               title="{{ request('q') }}"
+                                               autocomplete="off"
+                                               style="border-radius: 6px; font-size: 13px; height: 38px; padding-left: 12px; padding-right: 68px !important; text-overflow: ellipsis; border-color: #dee2e6;">
+                                        
+                                        <button type="button"
+                                                id="clearSearchBtn"
+                                                class="btn btn-link position-absolute p-0 text-muted d-flex align-items-center justify-content-center {{ request('q') ? '' : 'd-none' }}"
+                                                title="Clear search input"
+                                                style="right: 32px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; text-decoration: none; z-index: 5;">
+                                            <i class="feather-x" style="font-size: 15px;"></i>
+                                        </button>
+                                        
+                                        <button type="submit"
+                                                class="btn btn-link position-absolute text-primary p-0 d-flex align-items-center justify-content-center"
+                                                title="Search"
+                                                style="right: 8px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; text-decoration: none; z-index: 5;">
+                                            <i class="feather-search" style="font-size: 15px;"></i>
+                                        </button>
+
+                                        <div class="d-none sidebarSearchSuggestions" style="position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1050; max-height: 250px; overflow-y: auto; border: 1px solid #e2e8f0;">
+                                            <!-- suggestions injected here -->
+                                        </div>
+                                    </div>
+
+                                    @if(request('q'))
+                                        <div class="mt-2 d-flex align-items-center justify-content-between p-2 rounded bg-light border" style="font-size: 11px;">
+                                            <div class="text-truncate me-2" title="{{ request('q') }}">
+                                                <span class="text-muted">Filtering by:</span> <strong class="text-dark">"{{ request('q') }}"</strong>
+                                            </div>
+                                            <a href="{{ $getFilterUrl(['q' => '']) }}" class="text-danger fw-bold text-decoration-none d-flex align-items-center" title="Remove search filter" style="font-size: 11px; white-space: nowrap;">
+                                                <span>Clear</span> <i class="feather-x ms-1"></i>
+                                            </a>
+                                        </div>
+                                    @endif
+                                </form>
+                            </div>
 
                             <!-- Categories -->
                             <div class="filter-section p-3 d-none d-lg-block">
@@ -291,5 +357,154 @@
                 icon.classList.add('feather-plus-square');
             }
         }
+
+        // Sidebar Search Enhancements
+        (function() {
+            var searchInput = document.getElementById('sidebarSearchInput');
+            var clearBtn = document.getElementById('clearSearchBtn');
+            var searchForm = document.getElementById('filterSearchForm');
+            var suggestionsBox = document.querySelector('.sidebarSearchSuggestions');
+            var debounceTimer = null;
+            var currentSuggestions = [];
+            var activeSuggestionIdx = -1;
+
+            if (!searchInput) return;
+
+            // Auto-select text on focus so user can immediately type to replace long search string
+            searchInput.addEventListener('focus', function() {
+                if (this.value) {
+                    this.select();
+                }
+            });
+
+            // Toggle clear button and trigger suggestions on typing
+            searchInput.addEventListener('input', function() {
+                var val = this.value.trim();
+                if (clearBtn) {
+                    if (val.length > 0) {
+                        clearBtn.classList.remove('d-none');
+                    } else {
+                        clearBtn.classList.add('d-none');
+                    }
+                }
+
+                clearTimeout(debounceTimer);
+                if (val.length < 3) {
+                    closeSuggestions();
+                    return;
+                }
+
+                debounceTimer = setTimeout(function() {
+                    fetch('{{ route("search-suggestions") }}?q=' + encodeURIComponent(val), {
+                        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        renderSuggestions(data);
+                    })
+                    .catch(function() {
+                        closeSuggestions();
+                    });
+                }, 300);
+            });
+
+            // Fast clear button handler
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchInput.value = '';
+                    clearBtn.classList.add('d-none');
+                    searchInput.focus();
+                    closeSuggestions();
+                });
+            }
+
+            function renderSuggestions(data) {
+                if (!suggestionsBox) return;
+                currentSuggestions = data || [];
+                activeSuggestionIdx = -1;
+
+                if (!data || data.length === 0) {
+                    suggestionsBox.innerHTML = '<div class="px-3 py-2 text-muted small">No matches found</div>';
+                    suggestionsBox.classList.remove('d-none');
+                    return;
+                }
+
+                var html = '';
+                data.forEach(function(item, idx) {
+                    var icon = item.type === 'Product' ? 'feather-box' : 'feather-grid';
+                    html += '<div class="sidebar-suggest-item px-3 py-2 d-flex align-items-center justify-content-between" data-index="' + idx + '" data-text="' + encodeURIComponent(item.text) + '" style="cursor: pointer; border-bottom: 1px solid #f5f5f5; font-size: 13px; color: #333; transition: background 0.15s;">' +
+                                '<span class="text-truncate me-2">' + escapeHtml(item.text) + '</span>' +
+                                '<span class="badge bg-light text-muted border" style="font-size: 10px;">' + (item.type || 'Item') + '</span>' +
+                            '</div>';
+                });
+
+                suggestionsBox.innerHTML = html;
+                suggestionsBox.classList.remove('d-none');
+            }
+
+            function escapeHtml(text) {
+                var div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function closeSuggestions() {
+                if (suggestionsBox) {
+                    suggestionsBox.classList.add('d-none');
+                    suggestionsBox.innerHTML = '';
+                    currentSuggestions = [];
+                    activeSuggestionIdx = -1;
+                }
+            }
+
+            // Keyboard navigation for suggestions
+            searchInput.addEventListener('keydown', function(e) {
+                if (!suggestionsBox || suggestionsBox.classList.contains('d-none')) return;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeSuggestionIdx = Math.min(activeSuggestionIdx + 1, currentSuggestions.length - 1);
+                    updateActiveItem();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeSuggestionIdx = Math.max(activeSuggestionIdx - 1, -1);
+                    updateActiveItem();
+                } else if (e.key === 'Enter') {
+                    if (activeSuggestionIdx >= 0 && currentSuggestions[activeSuggestionIdx]) {
+                        e.preventDefault();
+                        selectSuggestion(currentSuggestions[activeSuggestionIdx].text);
+                    }
+                } else if (e.key === 'Escape') {
+                    closeSuggestions();
+                }
+            });
+
+            function updateActiveItem() {
+                var items = suggestionsBox.querySelectorAll('.sidebar-suggest-item');
+                items.forEach(function(item, idx) {
+                    item.style.backgroundColor = (idx === activeSuggestionIdx) ? '#f0f4ff' : 'transparent';
+                });
+            }
+
+            function selectSuggestion(text) {
+                searchInput.value = text;
+                closeSuggestions();
+                if (searchForm) {
+                    searchForm.submit();
+                }
+            }
+
+            // Click delegation for suggestions
+            document.addEventListener('click', function(e) {
+                var item = e.target.closest('.sidebar-suggest-item');
+                if (item) {
+                    var text = decodeURIComponent(item.dataset.text);
+                    selectSuggestion(text);
+                } else if (!e.target.closest('#filterSearchForm')) {
+                    closeSuggestions();
+                }
+            });
+        })();
     </script>
 @endsection

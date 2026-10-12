@@ -13,10 +13,10 @@
                 <a href="{{ url('/') }}" class="navbar-brand logo">
                     <img src="{{ asset('image/logo.png') }}" class="img-fluid" alt="Logo">
                 </a>
-                <a href="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? url('/seller-inquiry') : 'javascript:void(0)' }}" 
-                   onclick="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? '' : 'return signin_popup()' }}" 
-                   class="btn-sell-new d-lg-none" 
-                   style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); padding: 6px 12px; font-size: 13px; font-weight: 600;">
+                <a href="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? url('/seller-inquiry') : 'javascript:void(0)' }}"
+                    onclick="{{ session()->has('customer_id') && session()->has('customer_id') > 0 ? '' : 'return signin_popup()' }}"
+                    class="btn-sell-new d-lg-none"
+                    style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); padding: 6px 12px; font-size: 13px; font-weight: 600;">
                     <i class="feather-plus-circle me-1"></i> SELL
                 </a>
             </div>
@@ -95,7 +95,9 @@
                             <a href="{{ url('/my-account') }}">Dashboard</a>
                         </li>
                         <li class="login-link">
-                            <a href="{{ url('/seller-inquiry') }}" class="text-white fw-bold mx-3 mt-2 rounded" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell Your Machine</a>
+                            <a href="{{ url('/seller-inquiry') }}" class="text-white fw-bold mx-3 mt-2 rounded"
+                                style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell
+                                Your Machine</a>
                         </li>
                         <li class="login-link">
                             <a href="{{ url('/my-listing') }}">My Machines</a>
@@ -107,7 +109,7 @@
                                 @endphp
                                 @if($unreadHeader > 0)
                                     <span class="badge badge-danger rounded-circle ms-1"
-                                          style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
+                                        style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
                                 @endif
                             </a>
                         </li>
@@ -116,7 +118,9 @@
                         </li>
                     @else
                         <li class="login-link">
-                            <a href="javascript: void (0)" onclick="return signin_popup()" class="text-white fw-bold mx-3 mt-2 rounded" style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell</a>
+                            <a href="javascript: void (0)" onclick="return signin_popup()"
+                                class="text-white fw-bold mx-3 mt-2 rounded"
+                                style="background: linear-gradient(135deg, #0d6e7a 0%, #39a68d 100%); padding: 10px 15px; text-align: center;">Sell</a>
                         </li>
                         <li class="login-link">
                             <a href="javascript: void (0)" onclick="return signin_popup()">Login</a>
@@ -129,12 +133,17 @@
                     <li class="nav-item">
                         <div class="user-header-dropdown">
                             <a href="javascript:void(0)" class="user-header-toggle">
-                                <i class="feather-user"></i> <span class="user-name-text">{{ Session::get('customer_name') }}</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
+                                <i class="feather-user"></i> <span
+                                    class="user-name-text">{{ Session::get('customer_name') }}</span> <i
+                                    class="fas fa-chevron-down" style="font-size:10px;"></i>
                             </a>
                             <div class="user-header-menu">
-                                <a class="user-header-item" href="{{ url('/my-account') }}"><i class="feather-grid"></i>Dashboard</a>
-                                <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i class="feather-plus-square"></i> Sell Your Machine</a>
-                                <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My Machines</a>
+                                <a class="user-header-item" href="{{ url('/my-account') }}"><i
+                                        class="feather-grid"></i>Dashboard</a>
+                                <a class="user-header-item" href="{{ url('/seller-inquiry') }}"><i
+                                        class="feather-plus-square"></i> Sell Your Machine</a>
+                                <a class="user-header-item" href="{{ url('/my-listing') }}"><i class="feather-list"></i> My
+                                    Machines</a>
                                 <a class="user-header-item" href="{{ url('/chat') }}">
                                     <i class="feather-message-square"></i> Messages
                                     @php
@@ -145,7 +154,8 @@
                                             style="background: #ff4d4d; font-size: 8px; width: 14px; height: 14px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">{{ $unreadHeader }}</span>
                                     @endif
                                 </a>
-                                <a class="user-header-item" href="javascript:void(0)" onclick="return logout()"><i class="feather-log-out"></i> Logout</a>
+                                <a class="user-header-item" href="javascript:void(0)" onclick="return logout()"><i
+                                        class="feather-log-out"></i> Logout</a>
                             </div>
                         </div>
                     </li>
