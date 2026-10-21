@@ -135,7 +135,7 @@ class SellerController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120', // Increased limit for machine photos
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240', // Increased limit for machine photos
         ]);
 
         $filename = $this->storeImage($request->file('file'));
