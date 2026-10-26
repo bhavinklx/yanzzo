@@ -4,6 +4,97 @@
 @section('description', $pagesDetail->page_meta_desc ?? '')
 @section('canonical', url('/seller-inquiry'))
 
+@section('page-css')
+<style>
+    /* Dropzone Custom Styling for Seller Machine Photos */
+    #product-images-upload {
+        min-height: 180px;
+        background: #fafcfe !important;
+        border: 2px dashed #b9cddc !important;
+        border-radius: 12px !important;
+        transition: all 0.25s ease-in-out;
+        padding: 20px;
+    }
+    #product-images-upload:hover {
+        border-color: #0d6e7a !important;
+        background: #f0f8f9 !important;
+    }
+    #product-images-upload.is-invalid {
+        border-color: #dc3545 !important;
+        background: #fff8f8 !important;
+    }
+    .dropzone .dz-preview {
+        margin: 12px;
+        position: relative;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .dropzone .dz-preview .dz-image {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e1e7ec;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    /* Prominent Red Remove Button below preview */
+    .dropzone .dz-preview .dz-remove {
+        margin-top: 8px;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #dc3545 !important;
+        background: #fff;
+        border: 1px solid #f1c0c5;
+        border-radius: 6px;
+        padding: 4px 10px;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.08);
+        width: 100%;
+    }
+    .dropzone .dz-preview .dz-remove:hover {
+        background: #dc3545;
+        color: #fff !important;
+        border-color: #dc3545;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.25);
+    }
+    /* Floating top-right remove badge for instant 1-click removal */
+    .dropzone .dz-preview .dz-remove-corner {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 26px;
+        height: 26px;
+        background: #dc3545;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1050;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transition: transform 0.2s, background 0.2s;
+    }
+    .dropzone .dz-preview .dz-remove-corner:hover {
+        background: #b02a37;
+        transform: scale(1.15);
+    }
+    /* Ensure error tooltip does not block buttons */
+    .dropzone .dz-preview .dz-error-message {
+        top: 135px !important;
+        pointer-events: none !important;
+        z-index: 990 !important;
+    }
+</style>
+@endsection
+
 @section("content")
     <!-- Breadcrumb -->
     @if($pagesDetail->page_image!='' && file_exists(public_path('/uploads/pages/'.$pagesDetail->page_image)))
@@ -213,14 +304,30 @@
                                         </div>
 
                                         <div class="col-sm-12">
-                                            <div class="input-space">
-                                                <label class="form-label">Machine Photos *</label>
-                                                <div class="dropzone dz-clickable bg-light" id="product-images-upload" style="border: 2px dashed #ddd; border-radius: 10px;">
-                                                    <div class="dz-message text-center">
-                                                        <img src="{{ url('/public/image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 40px;">
-                                                        <p class="mb-0">Click or drop here to upload photos</p>
+                                            <div class="input-space mb-3">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <label class="form-label mb-0">Machine Photos *</label>
+                                                    <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 11.5px; font-weight: 500;">
+                                                        <i class="feather-info text-primary me-1"></i>Max 10 MB per photo
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="dropzone dz-clickable bg-light" id="product-images-upload">
+                                                    <div class="dz-message text-center py-3">
+                                                        <img src="{{ asset('image/img-icon.svg') }}" class="img-fluid mb-2" alt="Upload" style="width: 42px;">
+                                                        <p class="mb-1 fw-bold text-dark" style="font-size: 15px;">Click or drop here to upload photos</p>
+                                                        <p class="mb-0 text-muted small">
+                                                            Supported formats: <strong>JPG, JPEG, PNG, WEBP</strong> &bull; Maximum file size: <strong class="text-danger">10 MB</strong> (Up to 20 photos)
+                                                        </p>
                                                     </div>
                                                 </div>
+
+                                                <div class="alert alert-warning d-flex align-items-center mt-2 py-2 px-3 border-0 rounded-2" style="background-color: #fff9e6; color: #856404; font-size: 12.5px;">
+                                                    <div>
+                                                        <strong>Note:</strong> Images larger than <strong>10 MB</strong> will not be accepted. Please ensure each photo is under 10 MB before uploading.
+                                                    </div>
+                                                </div>
+
                                                 <div id="product-images-container"></div>
                                                 <div id="msg_product_images"></div>
                                             </div>
@@ -318,27 +425,114 @@ $(document).ready(function() {
     });
 
     // Dropzone image upload
+    Dropzone.autoDiscover = false;
+
     let productImagesDz = new Dropzone("#product-images-upload", {
         url: "{{ route('seller-inquiry-image-upload') }}",
         maxFiles: 20,
+        maxFilesize: 10, // 10 MB strict client-side limit
         acceptedFiles: ".jpg,.jpeg,.png,.webp",
         addRemoveLinks: true,
+        dictRemoveFile: '<i class="feather-trash-2 me-1"></i> Remove',
+        dictCancelUpload: '<i class="feather-x me-1"></i> Cancel',
+        dictFileTooBig: "File size exceeds 10 MB limit (@{{filesize}}MB). Please upload images under 10 MB.",
+        dictInvalidFileType: "Invalid format. Only JPG, JPEG, PNG, and WEBP images are allowed.",
         headers: {
             'X-CSRF-TOKEN': "{{ csrf_token() }}"
         },
         init: function() {
-            this.on("success", function(file, response) {
-                $(file.previewElement).attr('data-filename', response.filename);
-                $('#product-images-container').append('<input type="hidden" name="product_images[]" value="' + response.filename + '" id="img_' + response.filename.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "") + '">');
+            var myDropzone = this;
+
+            // When a file is added
+            this.on("addedfile", function(file) {
+                // Add floating corner remove button on the preview thumbnail
+                var cornerBtn = Dropzone.createElement('<span class="dz-remove-corner" title="Remove this photo"><i class="feather-x"></i></span>');
+                cornerBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.removeFile(file);
+                });
+                file.previewElement.appendChild(cornerBtn);
+
+                // If file size exceeds 10 MB, immediately inform user
+                if (file.size > 10 * 1024 * 1024) {
+                    $('#product-images-upload').addClass("is-invalid");
+                    $("#msg_product_images").html('<div class="invalid-feedback d-block"><small class="text-danger">File "' + file.name + '" exceeds the maximum 10 MB limit. Please remove it and upload a photo under 10 MB.</small></div>');
+                }
             });
-            this.on("removedfile", function(file) {
-                let filename = $(file.previewElement).attr('data-filename');
+
+            this.on("success", function(file, response) {
+                var filename = null;
+                if (typeof response === 'object' && response !== null) {
+                    filename = response.filename;
+                } else if (typeof response === 'string') {
+                    try {
+                        var parsed = JSON.parse(response);
+                        filename = parsed.filename;
+                    } catch(e) {
+                        filename = response;
+                    }
+                }
+
                 if (filename) {
-                    $.post("{{ route('seller-inquiry-image-delete') }}", {
-                        filename: filename,
-                        _token: "{{ csrf_token() }}"
+                    file.serverFilename = filename;
+                    $(file.previewElement).attr('data-filename', filename);
+                    $(file.previewElement).data('filename', filename);
+
+                    // Add hidden input with safe ID and value
+                    var safeId = 'img_' + filename.replace(/[^a-zA-Z0-9]/g, "");
+                    if ($('#' + safeId).length === 0) {
+                        $('#product-images-container').append('<input type="hidden" name="product_images[]" value="' + filename + '" id="' + safeId + '">');
+                    }
+
+                    // Clear error state if any
+                    $('#product-images-upload').removeClass("is-invalid");
+                    $("#msg_product_images").empty();
+                }
+            });
+
+            this.on("error", function(file, message, xhr) {
+                var errorText = "Upload failed.";
+                if (typeof message === "string") {
+                    errorText = message;
+                } else if (message && message.message) {
+                    errorText = message.message;
+                } else if (xhr && xhr.responseText) {
+                    try {
+                        var res = JSON.parse(xhr.responseText);
+                        errorText = res.message || (res.errors && res.errors.file ? res.errors.file[0] : errorText);
+                    } catch(e) {}
+                }
+                
+                $(file.previewElement).find('.dz-error-message span').text(errorText);
+                $('#product-images-upload').addClass("is-invalid");
+                $("#msg_product_images").html('<div class="invalid-feedback d-block"><small class="text-danger">' + errorText + '</small></div>');
+            });
+
+            this.on("removedfile", function(file) {
+                var filename = file.serverFilename || $(file.previewElement).data('filename') || $(file.previewElement).attr('data-filename');
+                
+                if (filename) {
+                    // Remove hidden input immediately from DOM by value and by ID
+                    $('#product-images-container input[value="' + filename + '"]').remove();
+                    $('#img_' + filename.replace(/[^a-zA-Z0-9]/g, "")).remove();
+
+                    // Notify server to delete file from uploads
+                    $.ajax({
+                        url: "{{ route('seller-inquiry-image-delete') }}",
+                        type: "POST",
+                        data: {
+                            filename: filename,
+                            _token: "{{ csrf_token() }}"
+                        }
                     });
-                    $('#img_' + filename.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "")).remove();
+                }
+
+                // If no remaining error files exist, clear error message
+                var hasErrors = myDropzone.getRejectedFiles().length > 0;
+                if (!hasErrors) {
+                    $('#product-images-upload').removeClass("is-invalid");
+                    $("#msg_product_images").empty();
                 }
             });
         }
