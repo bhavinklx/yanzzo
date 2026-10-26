@@ -134,15 +134,38 @@ class SellerController extends Controller
 
     public function uploadImage(Request $request)
     {
-        $request->validate([
-            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240', // Increased limit for machine photos
+        if (!$request->hasFile('file') || !$request->file('file')->isValid()) {
+            return response()->json([
+                'message' => 'Upload failed. The image may exceed the maximum limit of 10 MB.'
+            ], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240', // 10 MB = 10240 KB
+        ], [
+            'file.required' => 'Please select an image file to upload.',
+            'file.image' => 'The uploaded file must be a valid image.',
+            'file.mimes' => 'Only JPG, JPEG, PNG, and WEBP formats are allowed.',
+            'file.max' => 'The image exceeds the maximum limit of 10 MB. Please upload an image under 10 MB.',
         ]);
 
-        $filename = $this->storeImage($request->file('file'));
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first('file')
+            ], 422);
+        }
 
-        return response()->json([
-            'filename' => $filename
-        ]);
+        try {
+            $filename = $this->storeImage($request->file('file'));
+
+            return response()->json([
+                'filename' => $filename
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to process image: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     protected function storeImage($file)
@@ -213,11 +236,12 @@ class SellerController extends Controller
             $this->removeFile($request->filename);
             return response()->json(['success' => true]);
         }
-        return response()->json(['success' => false], 404);
+        return response()->json(['success' => false, 'message' => 'Filename is required'], 400);
     }
 
     private function removeFile($filename)
     {
+        $filename = basename($filename);
         if ($filename != '' && file_exists(public_path('/uploads/product/' . $filename))) {
             @unlink(public_path('/uploads/product/' . $filename));
         }
